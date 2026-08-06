@@ -1,0 +1,3197 @@
+{
+  "UC_AST_001": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · AstAssetGroup + FE catalog"
+  },
+  "UC_AST_002": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · AstAsset thẻ TS + FE"
+  },
+  "UC_AST_003": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · nguyên giá / ngày ghi tăng"
+  },
+  "UC_AST_004": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · AstLocation vị trí/CN"
+  },
+  "UC_AST_008": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · AstDepreciationMethod"
+  },
+  "UC_AST_009": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · thời gian / tỷ lệ KH trên nhóm & PP"
+  },
+  "UC_AST_010": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · tính KH định kỳ StraightLine/DB"
+  },
+  "UC_AST_011": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · sổ KH theo kỳ (run/lines)"
+  },
+  "UC_AST_012": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · đẩy FIN stub (JE Auto hoặc mark Pushed)"
+  },
+  "UC_AST_014": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · ghi tăng từ mua sắm (PurchaseRef)"
+  },
+  "UC_AST_016": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · điều chuyển nội bộ AstMovementDoc Transfer"
+  },
+  "UC_AST_017": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · bàn giao NV AstMovementDoc Handover"
+  },
+  "UC_AST_018": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · thanh lý / nhượng bán Disposal → Disposed"
+  },
+  "UC_AST_021": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · đợt kiểm kê AstStocktake + snapshot Active"
+  },
+  "UC_AST_022": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · đối chiếu thiếu/thừa Variance trên dòng KK"
+  },
+  "UC_AST_030": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · sổ TSCĐ /api/ast/reports/register"
+  },
+  "UC_AST_031": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · BC khấu hao theo kỳ"
+  },
+  "UC_AST_032": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · BC tài sản theo vị trí"
+  },
+  "UC_AST_034": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · xuất CSV báo cáo TSCĐ"
+  },
+  "UC_BI_001": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · BiDataset catalog + FE"
+  },
+  "UC_BI_002": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · refresh stub + BiDatasetRefresh log"
+  },
+  "UC_BI_003": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · BiReportPermission Role/User"
+  },
+  "UC_BI_006": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · BiDashboard Executive"
+  },
+  "UC_BI_007": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · BiDashboard Module"
+  },
+  "UC_BI_008": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · BiWidget Revenue/Profit stub"
+  },
+  "UC_BI_013": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · BiReport catalog theo module"
+  },
+  "UC_BI_014": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · chạy BC với filter JSON stub"
+  },
+  "UC_BI_016": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · xuất Excel/PDF stub (metadata file)"
+  },
+  "UC_BI_018": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · so sánh kỳ / mục tiêu BiKpiTarget + ComparePeriods"
+  },
+  "UC_BI_019": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · cấu hình ngưỡng BiAlertThreshold evaluate on-read"
+  },
+  "UC_BI_021": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · bảng Target vs Actual + breach flag"
+  },
+  "UC_CRM_001": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Person customer + /app/crm/customers"
+  },
+  "UC_CRM_002": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Organization + CompanyName"
+  },
+  "UC_CRM_003": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · upsert customer"
+  },
+  "UC_CRM_004": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · chặn/gợi ý trùng SĐT·MST"
+  },
+  "UC_CRM_005": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · merge + Merged status"
+  },
+  "UC_CRM_006": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Segment Lead/Prospect/Customer/Partner"
+  },
+  "UC_CRM_008": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · assign OwnerUserId"
+  },
+  "UC_CRM_009": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · handover log"
+  },
+  "UC_CRM_010": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · 360 contacts+handover+dups (chưa lead/đơn)"
+  },
+  "UC_CRM_011": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · CrmContact primary"
+  },
+  "UC_CRM_014": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · CSV import/export"
+  },
+  "UC_CRM_015": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · search đa tiêu chí"
+  },
+  "UC_CRM_024": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · CrmLeadSource catalog"
+  },
+  "UC_CRM_049": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · tạo lead thủ công + FE"
+  },
+  "UC_CRM_050": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · auto-intake website stub"
+  },
+  "UC_CRM_051": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · phân bổ OwnerUserId"
+  },
+  "UC_CRM_053": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · pipeline New→Qualified"
+  },
+  "UC_CRM_054": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · CrmLeadTask follow-up"
+  },
+  "UC_CRM_055": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · nhắc việc IsReminder + NextFollowUpAt"
+  },
+  "UC_CRM_056": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · CrmLeadActivity nhật ký"
+  },
+  "UC_CRM_057": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · convert lead → opportunity + KH"
+  },
+  "UC_CRM_058": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · mark Lost + lý do"
+  },
+  "UC_CRM_060": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · import lead CSV"
+  },
+  "UC_CRM_061": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · báo cáo chuyển đổi lead"
+  },
+  "UC_CRM_062": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · tạo cơ hội từ lead/KH"
+  },
+  "UC_CRM_063": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · pipeline stage cơ hội"
+  },
+  "UC_CRM_065": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · dòng SP / estimated value"
+  },
+  "UC_CRM_067": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · tạo báo giá từ cơ hội + copy dòng"
+  },
+  "UC_CRM_068": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · đóng Won/Lost"
+  },
+  "UC_CRM_070": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · tạo báo giá từ cơ hội"
+  },
+  "UC_CRM_071": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · dòng SP/DV báo giá + FE"
+  },
+  "UC_CRM_072": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · bảng giá CRM + áp giá"
+  },
+  "UC_CRM_073": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · xin/duyệt chiết khấu"
+  },
+  "UC_CRM_074": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · gửi báo giá Email/PDF stub"
+  },
+  "UC_CRM_077": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · chuyển báo giá → đơn"
+  },
+  "UC_CRM_079": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · tạo đơn từ báo giá"
+  },
+  "UC_CRM_081": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · cập nhật trạng thái đơn"
+  },
+  "UC_CRM_082": {
+    "done": true,
+    "pct": 75,
+    "note": "L2 · giữ tồn stub (StockHoldStatus)"
+  },
+  "UC_CRM_084": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · hủy đơn có lý do"
+  },
+  "UC_CRM_087": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · theo dõi thanh toán đơn"
+  },
+  "UC_CRM_088": {
+    "done": true,
+    "pct": 75,
+    "note": "L2 · đẩy kho/LOG stub"
+  },
+  "UC_FIN_001": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · FinAccount COA + FE catalog"
+  },
+  "UC_FIN_002": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · FinAccountGroup + FE catalog"
+  },
+  "UC_FIN_003": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · FinFiscalYear/Period + generate months"
+  },
+  "UC_FIN_004": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · khóa/mở kỳ + chặn ghi BT"
+  },
+  "UC_FIN_006": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · FinCostCenter + FE"
+  },
+  "UC_FIN_008": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · FinPaymentMethod + FE"
+  },
+  "UC_FIN_009": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · FinTax + FE"
+  },
+  "UC_FIN_010": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · FinJournal thủ công Draft/Post"
+  },
+  "UC_FIN_012": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · đảo BT (reversal JE)"
+  },
+  "UC_FIN_013": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · sổ cái theo TK"
+  },
+  "UC_FIN_014": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · sổ CT theo ĐT/TTCP"
+  },
+  "UC_FIN_015": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · BT tự động stub (Source=Auto)"
+  },
+  "UC_FIN_018": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · FinCashFund + FE /fin/cash"
+  },
+  "UC_FIN_019": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · phiếu thu Receipt Draft→Post→Void + JE stub"
+  },
+  "UC_FIN_020": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · phiếu chi Payment kiểm số dư sổ"
+  },
+  "UC_FIN_023": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · sổ quỹ opening/in/out/closing"
+  },
+  "UC_FIN_024": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · FinBankAccount + FE /fin/bank"
+  },
+  "UC_FIN_025": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · giấy báo Credit/Debit Draft→Post→Void + JE stub"
+  },
+  "UC_FIN_026": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · sao kê tay + khớp/bỏ khớp giấy báo Posted"
+  },
+  "UC_FIN_027": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · đề nghị CK Draft→Submit→Approve→Execute"
+  },
+  "UC_FIN_029": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · sổ số dư NH bank-book"
+  },
+  "UC_FIN_030": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · FinArInvoice Draft→Open + JE stub"
+  },
+  "UC_FIN_031": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · công nợ theo KH customer-balances"
+  },
+  "UC_FIN_032": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · thu tiền + phân bổ · đẩy Cash/Bank"
+  },
+  "UC_FIN_035": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · hạn mức tín dụng + cảnh báo Warning/Exceeded"
+  },
+  "UC_FIN_036": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · bảng tuổi nợ AR aging"
+  },
+  "UC_FIN_039": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · FinApInvoice Draft→Open + JE stub"
+  },
+  "UC_FIN_040": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · công nợ theo NCC vendor-balances"
+  },
+  "UC_FIN_041": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · đề nghị TT AP Draft→Submit"
+  },
+  "UC_FIN_042": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · duyệt/từ chối đề nghị TT"
+  },
+  "UC_FIN_043": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · chi trả + phân bổ · đẩy Cash/Bank voucher"
+  },
+  "UC_FIN_044": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · bảng tuổi nợ AP aging"
+  },
+  "UC_FIN_052": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · tính GTGT đầu ra/vào + summary net payable"
+  },
+  "UC_FIN_053": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · bảng kê FinVatDocument Output/Input"
+  },
+  "UC_FIN_056": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · cấu hình thuế suất TaxType/IsDefault/hiệu lực"
+  },
+  "UC_FIN_057": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · ghi nhận doanh thu từ POS Paid + soft-wire"
+  },
+  "UC_FIN_058": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · ghi nhận doanh thu từ đơn CRM Delivered / AR"
+  },
+  "UC_FIN_060": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · ghi nhận giá vốn từ phiếu xuất Sales"
+  },
+  "UC_FSM_001": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · FsmServiceType + FE catalog"
+  },
+  "UC_FSM_002": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · FsmFaultCode"
+  },
+  "UC_FSM_003": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · FsmPart"
+  },
+  "UC_FSM_005": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · FsmSlaPolicy theo priority"
+  },
+  "UC_FSM_008": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · FsmAsset install base"
+  },
+  "UC_FSM_009": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Serial/Model/ActivatedAt/WarrantyEnd"
+  },
+  "UC_FSM_010": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · FsmAssetHistory"
+  },
+  "UC_FSM_013": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Ticket từ Channel"
+  },
+  "UC_FSM_014": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Priority + SLA auto"
+  },
+  "UC_FSM_015": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Assign technician"
+  },
+  "UC_FSM_017": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Escalate / đổi KTV"
+  },
+  "UC_FSM_018": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · lịch hẹn AppointmentAt"
+  },
+  "UC_FSM_022": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · nguyên nhân & xử lý work-log"
+  },
+  "UC_FSM_024": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · xuất LK theo ticket FsmTicketPartLine"
+  },
+  "UC_FSM_027": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · check-out → Resolved"
+  },
+  "UC_FSM_028": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · nghiệm thu web (signer name)"
+  },
+  "UC_FSM_030": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · đóng ticket + SLA met/trễ"
+  },
+  "UC_FSM_037": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · tồn kho KT FsmPartStock Warehouse"
+  },
+  "UC_FSM_038": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · cấp LK kho → KTV FsmPartIssueDoc"
+  },
+  "UC_FSM_039": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · đối soát LK FsmPartReconcileDoc"
+  },
+  "UC_FSM_045": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · SLA compliance /reports"
+  },
+  "UC_FSM_046": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · năng suất KTV"
+  },
+  "UC_FSM_047": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · BC chi phí LK /reports/parts"
+  },
+  "UC_FSM_050": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · xuất CSV báo cáo FSM"
+  },
+  "UC_HRM_001": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · org/status/code/export/HĐ Day-1"
+  },
+  "UC_HRM_002": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · org/status/code/export/HĐ Day-1"
+  },
+  "UC_HRM_003": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · org/status/code/export/HĐ Day-1"
+  },
+  "UC_HRM_004": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · org/status/code/export/HĐ Day-1"
+  },
+  "UC_HRM_006": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · org/status/code/export/HĐ Day-1"
+  },
+  "UC_HRM_007": {
+    "done": true,
+    "pct": 100,
+    "note": "M1 · job titles"
+  },
+  "UC_HRM_009": {
+    "done": true,
+    "pct": 100,
+    "note": "M1 · employee types"
+  },
+  "UC_HRM_010": {
+    "done": true,
+    "pct": 80,
+    "note": "M1 · job levels SYS"
+  },
+  "UC_HRM_012": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · org/status/code/export/HĐ Day-1"
+  },
+  "UC_HRM_013": {
+    "done": true,
+    "pct": 100,
+    "note": "M1 · employee upsert"
+  },
+  "UC_HRM_014": {
+    "done": true,
+    "pct": 100,
+    "note": "M1 · employee upsert"
+  },
+  "UC_HRM_017": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · employee_document upload/list/delete"
+  },
+  "UC_HRM_018": {
+    "done": true,
+    "pct": 100,
+    "note": "M1 · org on employee"
+  },
+  "UC_HRM_019": {
+    "done": true,
+    "pct": 100,
+    "note": "M1 · dept on employee"
+  },
+  "UC_HRM_020": {
+    "done": true,
+    "pct": 100,
+    "note": "M1 · title/level"
+  },
+  "UC_HRM_021": {
+    "done": true,
+    "pct": 100,
+    "note": "M1 · employee type"
+  },
+  "UC_HRM_025": {
+    "done": true,
+    "pct": 90,
+    "note": "M1 · list q="
+  },
+  "UC_HRM_026": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · org/status/code/export/HĐ Day-1"
+  },
+  "UC_HRM_027": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · org/status/code/export/HĐ Day-1"
+  },
+  "UC_HRM_028": {
+    "done": true,
+    "pct": 90,
+    "note": "M1 · data scope"
+  },
+  "UC_HRM_029": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · org/status/code/export/HĐ Day-1"
+  },
+  "UC_HRM_030": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · org/status/code/export/HĐ Day-1"
+  },
+  "UC_HRM_032": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · org/status/code/export/HĐ Day-1"
+  },
+  "UC_HRM_033": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · org/status/code/export/HĐ Day-1"
+  },
+  "UC_HRM_034": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · org/status/code/export/HĐ Day-1"
+  },
+  "UC_HRM_035": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · org/status/code/export/HĐ Day-1"
+  },
+  "UC_HRM_036": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · org/status/code/export/HĐ Day-1"
+  },
+  "UC_HRM_038": {
+    "done": true,
+    "pct": 90,
+    "note": "M1 · contract upsert"
+  },
+  "UC_HRM_039": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · org/status/code/export/HĐ Day-1"
+  },
+  "UC_HRM_040": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · org/status/code/export/HĐ Day-1"
+  },
+  "UC_HRM_041": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · org/status/code/export/HĐ Day-1"
+  },
+  "UC_HRM_042": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · org/status/code/export/HĐ Day-1"
+  },
+  "UC_HRM_043": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · org/status/code/export/HĐ Day-1"
+  },
+  "UC_HRM_045": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · org/status/code/export/HĐ Day-1"
+  },
+  "UC_HRM_046": {
+    "done": true,
+    "pct": 80,
+    "note": "M1 · contract list · N1"
+  },
+  "UC_HRM_047": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · recruit demand"
+  },
+  "UC_HRM_048": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · recruit demand"
+  },
+  "UC_HRM_049": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · recruit demand"
+  },
+  "UC_HRM_050": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · recruit demand"
+  },
+  "UC_HRM_051": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · recruit demand"
+  },
+  "UC_HRM_052": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · recruit demand"
+  },
+  "UC_HRM_053": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · recruit demand"
+  },
+  "UC_HRM_054": {
+    "done": true,
+    "pct": 75,
+    "note": "L2 · job posting + candidate pipeline"
+  },
+  "UC_HRM_055": {
+    "done": true,
+    "pct": 75,
+    "note": "L2 · job posting + candidate pipeline"
+  },
+  "UC_HRM_056": {
+    "done": true,
+    "pct": 75,
+    "note": "L2 · job posting + candidate pipeline"
+  },
+  "UC_HRM_057": {
+    "done": true,
+    "pct": 75,
+    "note": "L2 · job posting + candidate pipeline"
+  },
+  "UC_HRM_059": {
+    "done": true,
+    "pct": 75,
+    "note": "L2 · job posting + candidate pipeline"
+  },
+  "UC_HRM_060": {
+    "done": true,
+    "pct": 75,
+    "note": "L2 · job posting + candidate pipeline"
+  },
+  "UC_HRM_061": {
+    "done": true,
+    "pct": 75,
+    "note": "L2 · job posting + candidate pipeline"
+  },
+  "UC_HRM_062": {
+    "done": true,
+    "pct": 75,
+    "note": "L2 · job posting + candidate pipeline"
+  },
+  "UC_HRM_063": {
+    "done": true,
+    "pct": 75,
+    "note": "L2 · job posting + candidate pipeline"
+  },
+  "UC_HRM_064": {
+    "done": true,
+    "pct": 75,
+    "note": "L2 · job posting + candidate pipeline"
+  },
+  "UC_HRM_065": {
+    "done": true,
+    "pct": 75,
+    "note": "L2 · job posting + candidate pipeline"
+  },
+  "UC_HRM_066": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · onboarding"
+  },
+  "UC_HRM_067": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · onboarding"
+  },
+  "UC_HRM_068": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · onboarding"
+  },
+  "UC_HRM_069": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · onboarding"
+  },
+  "UC_HRM_070": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · onboarding"
+  },
+  "UC_HRM_071": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · onboarding"
+  },
+  "UC_HRM_072": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · onboarding"
+  },
+  "UC_HRM_073": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · onboarding"
+  },
+  "UC_HRM_074": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · onboarding"
+  },
+  "UC_HRM_075": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · định biên ĐV"
+  },
+  "UC_HRM_076": {
+    "done": true,
+    "pct": 70,
+    "note": "L2 · định biên ca (ShiftCode)"
+  },
+  "UC_HRM_077": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · định biên bộ phận"
+  },
+  "UC_HRM_078": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · so sánh thực tế"
+  },
+  "UC_HRM_079": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · cảnh báo thiếu"
+  },
+  "UC_HRM_080": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · duyệt thay đổi"
+  },
+  "UC_HRM_081": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · mẫu ca"
+  },
+  "UC_HRM_082": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · xếp ca NV"
+  },
+  "UC_HRM_083": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · xếp tuần/tháng"
+  },
+  "UC_HRM_084": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · đổi ca"
+  },
+  "UC_HRM_085": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · hủy lịch ca"
+  },
+  "UC_HRM_086": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · lịch theo ĐV"
+  },
+  "UC_HRM_087": {
+    "done": true,
+    "pct": 70,
+    "note": "L2 · lịch cá nhân (web)"
+  },
+  "UC_HRM_089": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · sao chép lịch"
+  },
+  "UC_HRM_090": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · khóa kỳ"
+  },
+  "UC_HRM_091": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · xuất CSV"
+  },
+  "UC_HRM_092": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · lệnh điều động"
+  },
+  "UC_HRM_093": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · đề xuất điều động"
+  },
+  "UC_HRM_094": {
+    "done": true,
+    "pct": 70,
+    "note": "L2 · nhận lệnh (web)"
+  },
+  "UC_HRM_095": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · theo dõi điều động"
+  },
+  "UC_HRM_096": {
+    "done": true,
+    "pct": 70,
+    "note": "L2 · nhãn TRANSFER (chờ chấm công)"
+  },
+  "UC_HRM_097": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · báo cáo giờ/CP"
+  },
+  "UC_HRM_098": {
+    "done": true,
+    "pct": 70,
+    "note": "L2 · cấu hình vân tay"
+  },
+  "UC_HRM_099": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · cấu hình APP"
+  },
+  "UC_HRM_100": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · cấu hình QR"
+  },
+  "UC_HRM_101": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · đăng ký thiết bị"
+  },
+  "UC_HRM_102": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · geo-fence"
+  },
+  "UC_HRM_103": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · quy tắc trễ"
+  },
+  "UC_HRM_104": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · trừ công trễ"
+  },
+  "UC_HRM_105": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · quên checkout"
+  },
+  "UC_HRM_106": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · hạn điều chỉnh"
+  },
+  "UC_HRM_107": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · cấu hình OT"
+  },
+  "UC_HRM_108": {
+    "done": true,
+    "pct": 70,
+    "note": "L2 · ca đêm/lễ flag"
+  },
+  "UC_HRM_109": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · check-in"
+  },
+  "UC_HRM_110": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · check-out"
+  },
+  "UC_HRM_111": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · lịch sử cá nhân"
+  },
+  "UC_HRM_112": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · bảng theo ĐV"
+  },
+  "UC_HRM_113": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · bảng công ty"
+  },
+  "UC_HRM_114": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · cảnh báo thiếu"
+  },
+  "UC_HRM_115": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · tính phút trễ"
+  },
+  "UC_HRM_116": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · trừ công trễ"
+  },
+  "UC_HRM_117": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · đánh dấu thiếu"
+  },
+  "UC_HRM_118": {
+    "done": true,
+    "pct": 70,
+    "note": "L2 · sync máy stub"
+  },
+  "UC_HRM_119": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · OT tự động"
+  },
+  "UC_HRM_120": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · phiếu điều chỉnh"
+  },
+  "UC_HRM_121": {
+    "done": true,
+    "pct": 70,
+    "note": "L2 · lý do/bằng chứng"
+  },
+  "UC_HRM_122": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · duyệt điều chỉnh"
+  },
+  "UC_HRM_123": {
+    "done": true,
+    "pct": 70,
+    "note": "L2 · ghi nhận trễ"
+  },
+  "UC_HRM_126": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · khóa bảng công"
+  },
+  "UC_HRM_127": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · mở khóa kỳ"
+  },
+  "UC_HRM_128": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · xác nhận công"
+  },
+  "UC_HRM_129": {
+    "done": true,
+    "pct": 100,
+    "note": "M1 · leave types"
+  },
+  "UC_HRM_130": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · quỹ phép theo loại NS"
+  },
+  "UC_HRM_131": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · cấp phát/điều chỉnh quỹ"
+  },
+  "UC_HRM_132": {
+    "done": true,
+    "pct": 100,
+    "note": "M1 · leave request"
+  },
+  "UC_HRM_133": {
+    "done": true,
+    "pct": 70,
+    "note": "M1 · WF 1 cấp Approve/Reject"
+  },
+  "UC_HRM_134": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · hủy đơn nghỉ"
+  },
+  "UC_HRM_135": {
+    "done": true,
+    "pct": 100,
+    "note": "M1 · leave balances"
+  },
+  "UC_HRM_136": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · lịch nghỉ theo ĐV"
+  },
+  "UC_HRM_137": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · import ngày lễ"
+  },
+  "UC_HRM_138": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · báo cáo quỹ phép"
+  },
+  "UC_HRM_139": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · quyết định khen thưởng"
+  },
+  "UC_HRM_140": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · quyết định kỷ luật"
+  },
+  "UC_HRM_141": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · đính kèm quyết định"
+  },
+  "UC_HRM_142": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · áp dụng ảnh hưởng lương"
+  },
+  "UC_HRM_143": {
+    "done": true,
+    "pct": 75,
+    "note": "L2 · báo cáo KT–KL"
+  },
+  "UC_HRM_144": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · tạo đơn nghỉ việc"
+  },
+  "UC_HRM_145": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · cấu hình/kiểm tra báo trước"
+  },
+  "UC_HRM_146": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · duyệt đơn nghỉ việc"
+  },
+  "UC_HRM_147": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · checklist bàn giao"
+  },
+  "UC_HRM_148": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · thu hồi quyền user"
+  },
+  "UC_HRM_149": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · quyết toán phép/lương NV"
+  },
+  "UC_HRM_150": {
+    "done": true,
+    "pct": 70,
+    "note": "L2 · phỏng vấn nghỉ việc"
+  },
+  "UC_HRM_151": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · báo cáo nghỉ việc/lý do"
+  },
+  "UC_HRM_152": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · thang bậc lương"
+  },
+  "UC_HRM_153": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · gán bậc theo NV"
+  },
+  "UC_HRM_154": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · bậc theo trạng thái NV"
+  },
+  "UC_HRM_155": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · đơn giá giờ/ngày"
+  },
+  "UC_HRM_156": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · lương thực tế chi trả"
+  },
+  "UC_HRM_157": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · danh mục phụ cấp"
+  },
+  "UC_HRM_158": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · rule phụ cấp theo ca"
+  },
+  "UC_HRM_159": {
+    "done": true,
+    "pct": 70,
+    "note": "L2 · rule phụ cấp đặc thù (shift null)"
+  },
+  "UC_HRM_160": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · cấu hình BH NV"
+  },
+  "UC_HRM_161": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · thuế TNCN flat Day-1"
+  },
+  "UC_HRM_162": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · tạm ứng/khấu trừ qua adjustment"
+  },
+  "UC_HRM_163": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · tạo kỳ lương"
+  },
+  "UC_HRM_164": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · tổng hợp công → kỳ"
+  },
+  "UC_HRM_165": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · tính lương tự động"
+  },
+  "UC_HRM_166": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · thưởng/PC phát sinh"
+  },
+  "UC_HRM_167": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · khấu trừ/tạm ứng"
+  },
+  "UC_HRM_168": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · xem/chỉnh bảng lương"
+  },
+  "UC_HRM_169": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · xác nhận bảng lương"
+  },
+  "UC_HRM_170": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · khóa kỳ lương"
+  },
+  "UC_HRM_171": {
+    "done": true,
+    "pct": 60,
+    "note": "L2 · phiếu lương web (APP sau)"
+  },
+  "UC_HRM_172": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · xuất CSV bảng lương"
+  },
+  "UC_HRM_173": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · xuất CSV chi ngân hàng"
+  },
+  "UC_HRM_174": {
+    "done": false,
+    "pct": 0,
+    "note": "skip · đồng bộ FIN sau"
+  },
+  "UC_HRM_175": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · CP lương theo ĐV"
+  },
+  "UC_HRM_176": {
+    "done": true,
+    "pct": 75,
+    "note": "L2 · so sánh kỳ này/trước"
+  },
+  "UC_HRM_182": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · dashboard headcount & biến động"
+  },
+  "UC_HRM_183": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · BC công/OT/đi trễ"
+  },
+  "UC_HRM_184": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · funnel tuyển dụng"
+  },
+  "UC_HRM_185": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · BC quỹ phép theo ĐV"
+  },
+  "UC_HRM_186": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · BC chi phí NS (payroll)"
+  },
+  "UC_HRM_187": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · định biên vs thực tế"
+  },
+  "UC_INV_001": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · InvSku API + FE /app/inv/items"
+  },
+  "UC_INV_002": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · InvItemGroup"
+  },
+  "UC_INV_003": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · UoM + conversion"
+  },
+  "UC_INV_004": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · TrackLot/Serial/Expiry flags"
+  },
+  "UC_INV_005": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · Costing Average/Fifo + StandardCost"
+  },
+  "UC_INV_007": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Active/Inactive SKU"
+  },
+  "UC_INV_008": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · CSV import/export SKU"
+  },
+  "UC_INV_010": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Min/Max/Reorder"
+  },
+  "UC_INV_011": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · InvWarehouse + FE warehouses"
+  },
+  "UC_INV_012": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · InvWarehouseType"
+  },
+  "UC_INV_014": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · WarehouseKeeper assign"
+  },
+  "UC_INV_015": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · PickPolicy Fifo/Fefo trên kho"
+  },
+  "UC_INV_016": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · AllowNegativeStock"
+  },
+  "UC_INV_017": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · nhập từ GRN PUR thật"
+  },
+  "UC_INV_019": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · nhập điều chỉnh / KK"
+  },
+  "UC_INV_022": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · lô/HSD khi nhập (TrackLot)"
+  },
+  "UC_INV_026": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · xuất nội bộ"
+  },
+  "UC_INV_029": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · xuất FEFO/FIFO auto khi Post Issue"
+  },
+  "UC_INV_030": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · xuất điều chỉnh"
+  },
+  "UC_INV_031": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · tạo phiếu chuyển kho"
+  },
+  "UC_INV_033": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · ship/receive 2 bước"
+  },
+  "UC_INV_035": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · InTransit qty"
+  },
+  "UC_INV_037": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · giữ hàng InvStockReservation Active"
+  },
+  "UC_INV_038": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · giải phóng giữ hàng Release"
+  },
+  "UC_INV_039": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · xem tồn thực tế"
+  },
+  "UC_INV_040": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · tồn khả dụng = onhand-reserved"
+  },
+  "UC_INV_041": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · tồn đang chuyển"
+  },
+  "UC_INV_042": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · cảnh báo/chặn không đủ ATP"
+  },
+  "UC_INV_043": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · tồn theo lô + HSD trên /stock"
+  },
+  "UC_INV_044": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · cảnh báo cận/quá HSD reports"
+  },
+  "UC_INV_045": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · chặn xuất lô quá HSD khi Post"
+  },
+  "UC_INV_048": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · BC sắp hết hạn near-expiry CSV"
+  },
+  "UC_INV_049": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · tạo phiếu kiểm kê"
+  },
+  "UC_INV_050": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · nhập số đếm"
+  },
+  "UC_INV_052": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · đối chiếu lệch"
+  },
+  "UC_INV_053": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · duyệt/post điều chỉnh KK"
+  },
+  "UC_INV_055": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · báo cáo kết quả kiểm kê"
+  },
+  "UC_INV_060": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · xem giá trị tồn"
+  },
+  "UC_INV_063": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · báo cáo giá trị tồn"
+  },
+  "UC_INV_064": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · XNT theo kỳ"
+  },
+  "UC_INV_065": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · thẻ kho / lịch sử SP"
+  },
+  "UC_INV_067": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · dưới min / trên max"
+  },
+  "UC_INV_069": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · dashboard tồn & cảnh báo"
+  },
+  "UC_INV_070": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · xuất CSV báo cáo kho"
+  },
+  "UC_LMS_001": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · LmsProgram API + FE courses"
+  },
+  "UC_LMS_002": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · LmsCourse domain + /app/lms/courses"
+  },
+  "UC_LMS_003": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · DeliveryMode Online/Offline/Blended"
+  },
+  "UC_LMS_004": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Chapter/Lesson CRUD"
+  },
+  "UC_LMS_005": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · Video via ContentUrl (chưa upload binary)"
+  },
+  "UC_LMS_006": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · Document/PDF via ContentUrl"
+  },
+  "UC_LMS_009": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Draft/Published/Hidden"
+  },
+  "UC_LMS_010": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · LmsQuestion NHCH + /app/lms/exams"
+  },
+  "UC_LMS_012": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · đề cố định ExamQuestion"
+  },
+  "UC_LMS_014": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · PassScore + MaxAttempts"
+  },
+  "UC_LMS_016": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · lớp offline upsert/open"
+  },
+  "UC_LMS_017": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · sessions + GV/địa điểm"
+  },
+  "UC_LMS_018": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · enrollment học viên"
+  },
+  "UC_LMS_019": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · điểm danh buổi học"
+  },
+  "UC_LMS_022": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · đóng lớp + tổng kết"
+  },
+  "UC_LMS_023": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · gán mentor"
+  },
+  "UC_LMS_028": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · map SYS auth (AppUser) — không tách LMS identity"
+  },
+  "UC_LMS_029": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · map SYS login/đổi MK hiện có"
+  },
+  "UC_LMS_030": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · /app/lms/catalog Published"
+  },
+  "UC_LMS_031": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · enroll mock pay (chưa gateway)"
+  },
+  "UC_LMS_032": {
+    "done": true,
+    "pct": 75,
+    "note": "L2 · voucher FREE/DEMO100"
+  },
+  "UC_LMS_033": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · tự Unlocked sau enroll"
+  },
+  "UC_LMS_034": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · learn page Video/PDF/Text"
+  },
+  "UC_LMS_035": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · complete lesson API"
+  },
+  "UC_LMS_036": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · resume LastLessonId"
+  },
+  "UC_LMS_037": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · ProgressPct enrollment"
+  },
+  "UC_LMS_040": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · ChapterQuiz trên learn"
+  },
+  "UC_LMS_041": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Final exam attempt"
+  },
+  "UC_LMS_042": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · chấm tự động SingleChoice/TF"
+  },
+  "UC_LMS_043": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · xem kết quả + đáp án sau nộp"
+  },
+  "UC_LMS_044": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · điều kiện: xong bài + đậu Final"
+  },
+  "UC_LMS_045": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · cấp CERT- + /certificates"
+  },
+  "UC_LMS_049": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · hồ sơ giảng viên /instructors"
+  },
+  "UC_LMS_050": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · role LMS_INSTRUCTOR + grant"
+  },
+  "UC_LMS_051": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · roster learners reports"
+  },
+  "UC_LMS_065": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · dashboard tiến độ đào tạo"
+  },
+  "UC_LMS_066": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · hoàn thành theo đơn vị"
+  },
+  "UC_LMS_070": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · xuất CSV báo cáo LMS"
+  },
+  "UC_LOG_001": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · LogCarrier API + FE /app/log/carriers"
+  },
+  "UC_LOG_006": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · DeliveryOrder từ SO + lines"
+  },
+  "UC_LOG_008": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · tách đợt ParentOrderId"
+  },
+  "UC_LOG_009": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Pick list StartPick/ConfirmPick"
+  },
+  "UC_LOG_010": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Dispatch xuất hàng"
+  },
+  "UC_LOG_011": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · WaybillNo + PrintedAt"
+  },
+  "UC_LOG_012": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Cancel/Return lệnh giao"
+  },
+  "UC_LOG_013": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Assign carrier/driver"
+  },
+  "UC_LOG_014": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · UpdateStatus + ShipmentEvent"
+  },
+  "UC_LOG_017": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Fail + FailureReason"
+  },
+  "UC_LOG_020": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · MarkCod IsCod+Pending trên lệnh giao"
+  },
+  "UC_LOG_021": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · SetCodAmount"
+  },
+  "UC_LOG_022": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · ConfirmCollected"
+  },
+  "UC_LOG_023": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · CodHandover Draft→Submitted"
+  },
+  "UC_LOG_024": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · đối soát expected/collected/remitted"
+  },
+  "UC_LOG_025": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · CodOverdue + /cod/overdue"
+  },
+  "UC_LOG_026": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · ResolveVariance"
+  },
+  "UC_LOG_027": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · LogReturnNote từ lệnh giao"
+  },
+  "UC_LOG_028": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · CountLine + ConfirmCount"
+  },
+  "UC_LOG_029": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · PostReceiptFromLogReturn INV Source=Return"
+  },
+  "UC_LOG_034": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · PromisedAt + % giao đúng hạn ops"
+  },
+  "UC_LOG_035": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · /reports/ops tỷ lệ hoàn/thất bại"
+  },
+  "UC_LOG_038": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · báo cáo COD tồn/đã nộp /cod/report"
+  },
+  "UC_LOG_039": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · dashboard vận hành cards trên /returns"
+  },
+  "UC_MFG_001": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · MfgItem FG/SFG + FE catalog"
+  },
+  "UC_MFG_002": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · MfgItem RM"
+  },
+  "UC_MFG_003": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · MfgWorkshop Workshop/Line"
+  },
+  "UC_MFG_006": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · BOM multi-level lines"
+  },
+  "UC_MFG_007": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · BOM Version + Activate"
+  },
+  "UC_MFG_008": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · BomLine định mức"
+  },
+  "UC_MFG_013": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · MfgPlan theo SO"
+  },
+  "UC_MFG_017": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · WorkOrder create"
+  },
+  "UC_MFG_018": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Approve WO"
+  },
+  "UC_MFG_019": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Release + PrintedAt"
+  },
+  "UC_MFG_020": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · MaterialIssue"
+  },
+  "UC_MFG_022": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · FgReceipt nhập TP"
+  },
+  "UC_MFG_023": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · MfgScrap Scrap/Loss + QtyScrap"
+  },
+  "UC_MFG_024": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Pause/Resume/Cancel lệnh SX"
+  },
+  "UC_MFG_025": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · Close WO khóa vận hành"
+  },
+  "UC_MFG_027": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · tập hợp chi phí NVL CostSheet lines"
+  },
+  "UC_MFG_029": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · đơn giá TP = MaterialCost/GoodQty"
+  },
+  "UC_MFG_031": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · đẩy StandardCost INV + JE WIP→TP stub"
+  },
+  "UC_MFG_041": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · tiến độ lệnh SX /reports/wo-progress"
+  },
+  "UC_MFG_042": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · sản lượng theo ngày/xưởng (ca stub)"
+  },
+  "UC_MFG_043": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · variance NVL BOM vs xuất"
+  },
+  "UC_MFG_045": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · dashboard sản xuất"
+  },
+  "UC_MFG_046": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · xuất CSV báo cáo SX"
+  },
+  "UC_PJM_001": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · PjmProjectType + FE catalog"
+  },
+  "UC_PJM_002": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · WbsTemplate + items"
+  },
+  "UC_PJM_004": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · PjmProjectStatus chuẩn"
+  },
+  "UC_PJM_005": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · tạo DA từ SourceOpportunityCode"
+  },
+  "UC_PJM_006": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · tạo DA thủ công"
+  },
+  "UC_PJM_007": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · CustomerName + ContractCode"
+  },
+  "UC_PJM_008": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · PM + ProjectMember"
+  },
+  "UC_PJM_009": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Budget + Start/EndDate"
+  },
+  "UC_PJM_011": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · PjmWbsItem"
+  },
+  "UC_PJM_012": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · gán Assignee WBS"
+  },
+  "UC_PJM_013": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · % HT trên WBS PercentComplete"
+  },
+  "UC_PJM_014": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · Milestone + DueDate WBS"
+  },
+  "UC_PJM_017": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · cảnh báo trễ DueDate / health Late"
+  },
+  "UC_PJM_019": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · phân công NS AllocationPct/From-To"
+  },
+  "UC_PJM_021": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · xuất NVL soft PjmMaterialIssue"
+  },
+  "UC_PJM_022": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · ghi chi phí PjmExpense Posted"
+  },
+  "UC_PJM_023": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · NS vs thực tế costSummary + BC"
+  },
+  "UC_PJM_031": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · BBNT giai đoạn Phase"
+  },
+  "UC_PJM_032": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · NT cuối Final + bàn giao"
+  },
+  "UC_PJM_033": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · khách ký SignerName"
+  },
+  "UC_PJM_034": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · ghi DT soft RecognizedRevenue"
+  },
+  "UC_PJM_035": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · quyết toán P&L margin"
+  },
+  "UC_PJM_036": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · đóng DA → Completed"
+  },
+  "UC_PJM_038": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · portfolio /reports"
+  },
+  "UC_PJM_039": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · tiến độ & sức khỏe dự án"
+  },
+  "UC_PJM_040": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · BC lợi nhuận /reports/profit"
+  },
+  "UC_PJM_042": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · xuất CSV báo cáo PJM"
+  },
+  "UC_POS_001": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · PosStore + /app/pos/stores"
+  },
+  "UC_POS_002": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · PosTerminal quầy/máy"
+  },
+  "UC_POS_003": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · PosPrinter Receipt/Kitchen"
+  },
+  "UC_POS_007": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Cashier/Supervisor assignment"
+  },
+  "UC_POS_009": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · PosProductCategory"
+  },
+  "UC_POS_010": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · PosProduct + /catalog"
+  },
+  "UC_POS_012": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · PosBomLine định mức"
+  },
+  "UC_POS_014": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Suspended/Active toggle"
+  },
+  "UC_POS_015": {
+    "done": true,
+    "pct": 75,
+    "note": "L2 · sync stamp back-office (stub)"
+  },
+  "UC_POS_016": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · PriceList theo điểm bán"
+  },
+  "UC_POS_019": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · PosTaxRate GTGT"
+  },
+  "UC_POS_021": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · PosPromotion + apply trên đơn Open"
+  },
+  "UC_POS_022": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · PosVoucher redeem + UsedCount khi Paid"
+  },
+  "UC_POS_024": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · giảm tay Pending→duyệt pos.promo.manage"
+  },
+  "UC_POS_026": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · mở đơn + khu vực"
+  },
+  "UC_POS_027": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · thêm/sửa/hủy dòng SP"
+  },
+  "UC_POS_032": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · giữ đơn / mở lại"
+  },
+  "UC_POS_033": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · thanh toán tiền mặt"
+  },
+  "UC_POS_034": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · thanh toán Transfer/QR"
+  },
+  "UC_POS_035": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · thanh toán Card/Wallet"
+  },
+  "UC_POS_037": {
+    "done": true,
+    "pct": 75,
+    "note": "L2 · in hóa đơn stub"
+  },
+  "UC_POS_038": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · hủy sản phẩm trên đơn"
+  },
+  "UC_POS_039": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · hủy cả bill"
+  },
+  "UC_POS_040": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · trả hàng / hoàn tiền"
+  },
+  "UC_POS_042": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · mở ca thu ngân"
+  },
+  "UC_POS_043": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · tiền đầu ca"
+  },
+  "UC_POS_045": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · doanh thu trong ca"
+  },
+  "UC_POS_046": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · đóng ca & đếm quỹ"
+  },
+  "UC_POS_047": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · đối soát lệch quỹ"
+  },
+  "UC_POS_048": {
+    "done": true,
+    "pct": 75,
+    "note": "L2 · in báo cáo ca stub"
+  },
+  "UC_POS_061": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · DT theo giờ/ngày/ca"
+  },
+  "UC_POS_062": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · DT theo sản phẩm"
+  },
+  "UC_POS_063": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · DT theo thu ngân"
+  },
+  "UC_POS_064": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · tỷ lệ hủy / giảm giá"
+  },
+  "UC_POS_068": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · xuất CSV báo cáo POS"
+  },
+  "UC_PRT_001": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · PrtAccount đăng ký + FE"
+  },
+  "UC_PRT_002": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · login/forgot password stub"
+  },
+  "UC_PRT_003": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · liên kết CustomerCode"
+  },
+  "UC_PRT_007": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · PrtOrder danh sách"
+  },
+  "UC_PRT_008": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · chi tiết đơn + trạng thái"
+  },
+  "UC_PRT_014": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · AR summary stub"
+  },
+  "UC_PRT_015": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · hóa đơn chưa TT"
+  },
+  "UC_PRT_016": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · lịch sử thanh toán"
+  },
+  "UC_PRT_019": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · tạo ticket hỗ trợ"
+  },
+  "UC_PRT_020": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · xem trạng thái ticket"
+  },
+  "UC_PRT_037": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · cấu hình module portal theo gói PrtPortalPackage"
+  },
+  "UC_PUR_001": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · PurVendor + /app/pur/vendors"
+  },
+  "UC_PUR_003": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · contact + payment terms"
+  },
+  "UC_PUR_009": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · VendorProduct gắn SP–NCC"
+  },
+  "UC_PUR_010": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · VendorPrice bảng giá mua"
+  },
+  "UC_PUR_014": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · PR + lines /orders"
+  },
+  "UC_PUR_017": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · submit/approve PR"
+  },
+  "UC_PUR_018": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · reject/return PR"
+  },
+  "UC_PUR_019": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · status Draft→… trên list"
+  },
+  "UC_PUR_026": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · PO từ PR / thủ công"
+  },
+  "UC_PUR_027": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · hạn mức 10tr tự duyệt"
+  },
+  "UC_PUR_028": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · Send PO → Sent"
+  },
+  "UC_PUR_030": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · revise PO phiên bản"
+  },
+  "UC_PUR_031": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · ReceivedQty / % nhận từng phần"
+  },
+  "UC_PUR_032": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · đóng / hủy PO"
+  },
+  "UC_PUR_033": {
+    "done": true,
+    "pct": 75,
+    "note": "L2 · in/xuất PO stub"
+  },
+  "UC_PUR_034": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · GRN từ PO + FE"
+  },
+  "UC_PUR_035": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · lệch SL / từ chối CL"
+  },
+  "UC_PUR_037": {
+    "done": true,
+    "pct": 75,
+    "note": "L2 · đẩy INV stub"
+  },
+  "UC_PUR_040": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · hóa đơn NCC + FE"
+  },
+  "UC_PUR_041": {
+    "done": true,
+    "pct": 85,
+    "note": "L2 · đối soát 3 chiều PO–GRN–HĐ"
+  },
+  "UC_PUR_043": {
+    "done": true,
+    "pct": 75,
+    "note": "L2 · đẩy AP stub"
+  },
+  "UC_PUR_048": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · mua theo NCC/SP"
+  },
+  "UC_PUR_051": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · Open PR/PO aging"
+  },
+  "UC_PUR_052": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · xuất CSV báo cáo mua"
+  },
+  "UC_SYS_001": {
+    "done": true,
+    "pct": 100,
+    "note": "M1 · login JWT"
+  },
+  "UC_SYS_002": {
+    "done": true,
+    "pct": 100,
+    "note": "N1 · logout API + FE"
+  },
+  "UC_SYS_003": {
+    "done": true,
+    "pct": 100,
+    "note": "N1 · change-password"
+  },
+  "UC_SYS_004": {
+    "done": true,
+    "pct": 90,
+    "note": "N2 · forgot OTP stub log"
+  },
+  "UC_SYS_005": {
+    "done": true,
+    "pct": 90,
+    "note": "N2 · reset with OTP"
+  },
+  "UC_SYS_006": {
+    "done": true,
+    "pct": 100,
+    "note": "N1 · password.policy setting"
+  },
+  "UC_SYS_007": {
+    "done": true,
+    "pct": 100,
+    "note": "N1 · FailedLoginCount lock"
+  },
+  "UC_SYS_008": {
+    "done": true,
+    "pct": 80,
+    "note": "N2 · 2FA begin/confirm Dev"
+  },
+  "UC_SYS_010": {
+    "done": true,
+    "pct": 90,
+    "note": "N2 · user_session list"
+  },
+  "UC_SYS_011": {
+    "done": true,
+    "pct": 90,
+    "note": "N2 · max 5 sessions"
+  },
+  "UC_SYS_013": {
+    "done": true,
+    "pct": 90,
+    "note": "M1 · upsert + multi-dept/job level"
+  },
+  "UC_SYS_014": {
+    "done": true,
+    "pct": 90,
+    "note": "M1 · upsert + multi-dept/job level"
+  },
+  "UC_SYS_015": {
+    "done": true,
+    "pct": 70,
+    "note": "M1 · status Locked/Disabled trên SideSheet"
+  },
+  "UC_SYS_016": {
+    "done": true,
+    "pct": 100,
+    "note": "N1 · soft delete user"
+  },
+  "UC_SYS_017": {
+    "done": true,
+    "pct": 90,
+    "note": "N1 · validate primaryOrgUnitId"
+  },
+  "UC_SYS_018": {
+    "done": true,
+    "pct": 100,
+    "note": "N1 · admin reset-password"
+  },
+  "UC_SYS_019": {
+    "done": true,
+    "pct": 70,
+    "note": "N2 · invite via forgot stub"
+  },
+  "UC_SYS_020": {
+    "done": true,
+    "pct": 100,
+    "note": "N2 · import users = 072"
+  },
+  "UC_SYS_021": {
+    "done": true,
+    "pct": 80,
+    "note": "M1 · list + data scope"
+  },
+  "UC_SYS_022": {
+    "done": true,
+    "pct": 100,
+    "note": "N2 · export users = 074"
+  },
+  "UC_SYS_023": {
+    "done": true,
+    "pct": 90,
+    "note": "M1 · API + FE roles"
+  },
+  "UC_SYS_024": {
+    "done": true,
+    "pct": 100,
+    "note": "N2 · copy role"
+  },
+  "UC_SYS_025": {
+    "done": true,
+    "pct": 100,
+    "note": "Catalog quyền chỉ xem · seed khi ship feature"
+  },
+  "UC_SYS_026": {
+    "done": true,
+    "pct": 100,
+    "note": "M1 · set role permissions · PermissionPicker"
+  },
+  "UC_SYS_027": {
+    "done": true,
+    "pct": 100,
+    "note": "M1 · multi-role · union quyền"
+  },
+  "UC_SYS_028": {
+    "done": true,
+    "pct": 80,
+    "note": "M1 · data scope"
+  },
+  "UC_SYS_029": {
+    "done": true,
+    "pct": 60,
+    "note": "N2 · sales_point scope stub entity"
+  },
+  "UC_SYS_030": {
+    "done": true,
+    "pct": 80,
+    "note": "M1 · data scope dept"
+  },
+  "UC_SYS_032": {
+    "done": true,
+    "pct": 100,
+    "note": "N2 · permission-matrix"
+  },
+  "UC_SYS_033": {
+    "done": true,
+    "pct": 100,
+    "note": "N2 · permission_change_log"
+  },
+  "UC_SYS_034": {
+    "done": true,
+    "pct": 100,
+    "note": "N1 · GET/PUT tenant"
+  },
+  "UC_SYS_035": {
+    "done": true,
+    "pct": 100,
+    "note": "N2 · legal_entity"
+  },
+  "UC_SYS_036": {
+    "done": true,
+    "pct": 90,
+    "note": "M1 · org-units FE"
+  },
+  "UC_SYS_037": {
+    "done": true,
+    "pct": 100,
+    "note": "N2 · sales_point CRUD"
+  },
+  "UC_SYS_038": {
+    "done": true,
+    "pct": 90,
+    "note": "M1 · departments FE"
+  },
+  "UC_SYS_039": {
+    "done": true,
+    "pct": 80,
+    "note": "M1 · job level/title"
+  },
+  "UC_SYS_040": {
+    "done": true,
+    "pct": 90,
+    "note": "N2 · org-chart API"
+  },
+  "UC_SYS_041": {
+    "done": true,
+    "pct": 100,
+    "note": "N1 · TZ/locale/currency"
+  },
+  "UC_SYS_042": {
+    "done": true,
+    "pct": 70,
+    "note": "N2 · locale/date via tenant settings"
+  },
+  "UC_SYS_043": {
+    "done": true,
+    "pct": 100,
+    "note": "N2 · province CRUD"
+  },
+  "UC_SYS_044": {
+    "done": true,
+    "pct": 100,
+    "note": "N1 · GET modules catalog"
+  },
+  "UC_SYS_045": {
+    "done": true,
+    "pct": 100,
+    "note": "M1 · license middleware"
+  },
+  "UC_SYS_046": {
+    "done": true,
+    "pct": 100,
+    "note": "N1 · license CRUD"
+  },
+  "UC_SYS_047": {
+    "done": true,
+    "pct": 100,
+    "note": "N1 · MaxUsers/MaxOrgUnits enforce"
+  },
+  "UC_SYS_048": {
+    "done": true,
+    "pct": 100,
+    "note": "N1 · license/status"
+  },
+  "UC_SYS_049": {
+    "done": true,
+    "pct": 100,
+    "note": "M1 · shell menu"
+  },
+  "UC_SYS_050": {
+    "done": true,
+    "pct": 100,
+    "note": "M1 · license API gate"
+  },
+  "UC_SYS_051": {
+    "done": true,
+    "pct": 100,
+    "note": "N1 · system_setting"
+  },
+  "UC_SYS_052": {
+    "done": true,
+    "pct": 70,
+    "note": "N2 · settings key scoped"
+  },
+  "UC_SYS_053": {
+    "done": true,
+    "pct": 100,
+    "note": "N1 · lookup category/item"
+  },
+  "UC_SYS_054": {
+    "done": true,
+    "pct": 100,
+    "note": "N1 · number_sequence"
+  },
+  "UC_SYS_055": {
+    "done": true,
+    "pct": 100,
+    "note": "N1 · NextNumberAsync"
+  },
+  "UC_SYS_056": {
+    "done": true,
+    "pct": 100,
+    "note": "N2 · message_template"
+  },
+  "UC_SYS_057": {
+    "done": true,
+    "pct": 100,
+    "note": "N2 · work_calendar"
+  },
+  "UC_SYS_059": {
+    "done": true,
+    "pct": 90,
+    "note": "N1 · in-app notifications"
+  },
+  "UC_SYS_060": {
+    "done": true,
+    "pct": 60,
+    "note": "N2 · email stub via message_template"
+  },
+  "UC_SYS_061": {
+    "done": true,
+    "pct": 60,
+    "note": "N2 · SMS stub channel"
+  },
+  "UC_SYS_063": {
+    "done": true,
+    "pct": 90,
+    "note": "N1 · notification_rule"
+  },
+  "UC_SYS_065": {
+    "done": true,
+    "pct": 80,
+    "note": "N2 · integration_call_log"
+  },
+  "UC_SYS_066": {
+    "done": true,
+    "pct": 90,
+    "note": "M1 · local storage"
+  },
+  "UC_SYS_067": {
+    "done": true,
+    "pct": 80,
+    "note": "M1 · download API"
+  },
+  "UC_SYS_068": {
+    "done": true,
+    "pct": 100,
+    "note": "N2 · file_folder"
+  },
+  "UC_SYS_069": {
+    "done": true,
+    "pct": 70,
+    "note": "N2 · file linkedEntity ACL light"
+  },
+  "UC_SYS_070": {
+    "done": true,
+    "pct": 100,
+    "note": "N2 · soft delete/restore file"
+  },
+  "UC_SYS_072": {
+    "done": true,
+    "pct": 100,
+    "note": "N1 · import users CSV"
+  },
+  "UC_SYS_073": {
+    "done": true,
+    "pct": 100,
+    "note": "N1 · import template"
+  },
+  "UC_SYS_074": {
+    "done": true,
+    "pct": 90,
+    "note": "N1 · export users CSV"
+  },
+  "UC_SYS_075": {
+    "done": true,
+    "pct": 50,
+    "note": "N2 · CSV export as PDF substitute Day-1"
+  },
+  "UC_SYS_076": {
+    "done": true,
+    "pct": 60,
+    "note": "N2 · import result counts as job"
+  },
+  "UC_SYS_078": {
+    "done": true,
+    "pct": 90,
+    "note": "M1 · audit interceptor"
+  },
+  "UC_SYS_079": {
+    "done": true,
+    "pct": 100,
+    "note": "N1 · login_audit"
+  },
+  "UC_SYS_080": {
+    "done": true,
+    "pct": 70,
+    "note": "N2 · PermissionChangeLog detail"
+  },
+  "UC_SYS_081": {
+    "done": true,
+    "pct": 70,
+    "note": "N2 · login-audits API"
+  },
+  "UC_SYS_083": {
+    "done": true,
+    "pct": 90,
+    "note": "N1 · SessionMinutes / JWT exp"
+  },
+  "UC_SYS_084": {
+    "done": true,
+    "pct": 100,
+    "note": "N2 · api_key"
+  },
+  "UC_SYS_085": {
+    "done": true,
+    "pct": 100,
+    "note": "N2 · webhook"
+  },
+  "UC_SYS_086": {
+    "done": true,
+    "pct": 100,
+    "note": "N2 · integration logs"
+  },
+  "UC_SYS_087": {
+    "done": true,
+    "pct": 70,
+    "note": "G4 · outbox_message + dispatcher"
+  },
+  "UC_SYS_088": {
+    "done": true,
+    "pct": 70,
+    "note": "N2 · external_integration Email"
+  },
+  "UC_SYS_089": {
+    "done": true,
+    "pct": 70,
+    "note": "N2 · external_integration SMS"
+  },
+  "UC_SYS_090": {
+    "done": true,
+    "pct": 100,
+    "note": "N2 · external_integration"
+  },
+  "UC_SYS_091": {
+    "done": true,
+    "pct": 100,
+    "note": "N2 · locale_pack"
+  },
+  "UC_SYS_092": {
+    "done": true,
+    "pct": 100,
+    "note": "N2 · PUT me/locale"
+  },
+  "UC_SYS_095": {
+    "done": true,
+    "pct": 100,
+    "note": "G4.9 · Direct conversation API/FE"
+  },
+  "UC_SYS_096": {
+    "done": true,
+    "pct": 100,
+    "note": "N1 · FE group chat"
+  },
+  "UC_SYS_097": {
+    "done": true,
+    "pct": 100,
+    "note": "G4.9 · send message REST"
+  },
+  "UC_SYS_098": {
+    "done": true,
+    "pct": 100,
+    "note": "G4.9 · SignalR /hubs/msg"
+  },
+  "UC_SYS_099": {
+    "done": true,
+    "pct": 100,
+    "note": "G4.9 · message history"
+  },
+  "UC_SYS_100": {
+    "done": true,
+    "pct": 100,
+    "note": "G4.9 · read + unread badge"
+  },
+  "UC_SYS_101": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · attachmentFileId on send"
+  },
+  "UC_SYS_102": {
+    "done": true,
+    "pct": 100,
+    "note": "N1 · recall message"
+  },
+  "UC_WF_001": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · work-type/project/item/workload"
+  },
+  "UC_WF_004": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · work-type/project/item/workload"
+  },
+  "UC_WF_005": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · work-type/project/item/workload"
+  },
+  "UC_WF_006": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · work-type/project/item/workload"
+  },
+  "UC_WF_007": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · work-type/project/item/workload"
+  },
+  "UC_WF_009": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · work-type/project/item/workload"
+  },
+  "UC_WF_010": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · work-type/project/item/workload"
+  },
+  "UC_WF_012": {
+    "done": true,
+    "pct": 90,
+    "note": "M1 · sourceDoc leave"
+  },
+  "UC_WF_014": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · work-type/project/item/workload"
+  },
+  "UC_WF_017": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · work-type/project/item/workload"
+  },
+  "UC_WF_022": {
+    "done": true,
+    "pct": 70,
+    "note": "M1 · seed LEAVE_APPROVE"
+  },
+  "UC_WF_023": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · work-type/project/item/workload"
+  },
+  "UC_WF_024": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · work-type/project/item/workload"
+  },
+  "UC_WF_025": {
+    "done": true,
+    "pct": 80,
+    "note": "M1 · leave_request"
+  },
+  "UC_WF_028": {
+    "done": true,
+    "pct": 100,
+    "note": "M1 · /app/wf/tasks"
+  },
+  "UC_WF_029": {
+    "done": true,
+    "pct": 90,
+    "note": "M1 · Approve/Reject"
+  },
+  "UC_WF_032": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · ủy quyền duyệt"
+  },
+  "UC_WF_033": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · work-type/project/item/workload"
+  },
+  "UC_WF_034": {
+    "done": true,
+    "pct": 70,
+    "note": "M1 · WfTaskAction"
+  },
+  "UC_WF_038": {
+    "done": true,
+    "pct": 80,
+    "note": "N1 · work-type/project/item/workload"
+  },
+  "UC_WF_040": {
+    "done": true,
+    "pct": 80,
+    "note": "L2 · dashboard WF"
+  }
+}

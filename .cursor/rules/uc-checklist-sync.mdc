@@ -1,0 +1,20 @@
+---
+description: Luôn regenerate CHECKLIST_UC.md sau mỗi lần cập nhật tiến độ UC
+alwaysApply: true
+---
+
+# Checklist UC — cập nhật liên tục
+
+**File chuẩn:** `Làm/Nghiệp vụ/00. Tổng quan/Timeline/CHECKLIST_UC.md`  
+**Không** dùng `CHECKLIST_UC_TOAN_BO.md` (chỉ còn stub chuyển hướng).
+
+Sau **mọi** thay đổi `uc_progress.json` (đánh dấu UC xong / partial / skip note):
+
+1. Chạy ngay:
+   ```bash
+   python "Làm/Nghiệp vụ/00. Tổng quan/Timeline/build_uc_checklist.py"
+   ```
+2. Xác nhận disk: `CHECKLIST_UC.md` có dòng `Đã xong` và header module (vd. `## HRM (x/187)`) khớp tiến độ mới.
+3. Không sửa tay hàng loạt trong MD; nguồn sự thật là `uc_progress.json` → script sinh `CHECKLIST_UC.md`.
+
+Áp dụng mỗi khi user nói “làm tiếp UC”, “update checklist”, hoặc khi kết thúc một slice Cap-N.

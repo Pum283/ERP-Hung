@@ -1,0 +1,90 @@
+/**
+ * Pum's ERP — Brand Kit
+ * ═══════════════════════════════════════════════════════════
+ * FILE CẤU HÌNH GIAO DIỆN DUY NHẤT (living).
+ * Layout tham khảo Digione CRM FE (sidebar trắng · canvas sáng · header sticky),
+ * palette riêng: xanh trời (sky) + nền trắng.
+ * ═══════════════════════════════════════════════════════════
+ */
+
+:root {
+  /* ── Brand — xanh dương trời ──────────────────────────── */
+  --brand: #0ea5e9;                 /* sky-500 */
+  --brand-hover: #0284c7;           /* sky-600 */
+  --brand-foreground: #ffffff;
+  --brand-muted: rgba(14, 165, 233, 0.12);
+  --brand-strong: #0369a1;          /* sky-700 — chữ nhấn */
+
+  --secondary: #f1f5f9;             /* phụ 1 — slate-100 */
+  --secondary-foreground: #0f172a;
+
+  --accent: #38bdf8;                /* phụ 2 — sky-400 */
+  --accent-foreground: #0c4a6e;
+  --accent-muted: rgba(56, 189, 248, 0.18);
+
+  /* ── Surfaces (Digione-style light) ───────────────────── */
+  --background: #f8fafc;            /* canvas */
+  --foreground: #0f172a;
+  --surface: #ffffff;               /* sidebar / card / header */
+  --surface-elevated: #ffffff;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+  --input: #ffffff;
+  --ring: #0ea5e9;
+
+  --destructive: #e11d48;
+  --destructive-foreground: #ffffff;
+  --success: #16a34a;
+  --warning: #d97706;
+
+  /* ── Sidebar (trắng như Digione CrmSidebar) ───────────── */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #334155;
+  --sidebar-muted: #94a3b8;
+  --sidebar-border: #e2e8f0;
+  --sidebar-active-bg: var(--brand-muted);
+  --sidebar-active-fg: var(--brand-strong);
+  --sidebar-hover: #f8fafc;
+
+  /* ── Header ───────────────────────────────────────────── */
+  --header: rgba(255, 255, 255, 0.92);
+  --header-border: rgba(226, 232, 240, 0.9);
+
+  /* ── Login brand panel ────────────────────────────────── */
+  --login-panel: #0c4a6e;           /* sky-900 */
+  --login-panel-fg: #f0f9ff;
+  --login-panel-muted: #7dd3fc;
+
+  /* ── Type scale ───────────────────────────────────────── */
+  --type-display: 2rem;
+  --type-title: 1.25rem;
+  --type-body: 0.8125rem;           /* ~13px — gần Digione text-[12px]/13px */
+  --type-lead: 0.9375rem;
+  --type-meta: 0.75rem;
+  --type-micro: 0.625rem;
+
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --tracking-brand: 0.04em;
+
+  /* ── Fonts ────────────────────────────────────────────── */
+  --font-sans: var(--font-brand-sans), "Segoe UI", sans-serif;
+  --font-display: var(--font-brand-display), var(--font-sans);
+  --font-mono: var(--font-brand-mono), ui-monospace, monospace;
+
+  /* ── Shape ────────────────────────────────────────────── */
+  --radius-sm: 0.375rem;
+  --radius: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  --shadow-sm: 0 1px 2px rgb(15 23 42 / 0.05);
+  --shadow: 0 8px 24px rgb(15 23 42 / 0.08);
+
+  --sidebar-width: 240px;
+  --header-height: 56px;
+  --content-max: 72rem;
+}

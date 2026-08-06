@@ -1,0 +1,249 @@
+{
+  "$schema_note": "Nguồn sự thật máy cho bán SKU / cắt source. Docs: MODULES.md",
+  "version": 1,
+  "platform": {
+    "code": "PLATFORM",
+    "always_keep": ["SYS", "MOD"],
+    "notes": "SYS = nền tảng (auth/RBAC/org/menu/license/msg). MOD = Day-1 kit stubs (masters/docs) — không bán riêng."
+  },
+  "modules": [
+    {
+      "code": "SYS",
+      "name": "Hệ thống",
+      "required": true,
+      "depends_on": [],
+      "maturity": "full",
+      "schema": "erp_sys",
+      "be": {
+        "controllers": ["Controllers/Sys", "Controllers/Auth"],
+        "entities": ["Entities/Sys"],
+        "services": ["Implementations/Services/Sys", "Implementations/Services/Auth"],
+        "di": "AddSysModule"
+      },
+      "fe": {
+        "routes": ["src/app/app/sys"],
+        "shared_ok": ["src/shared"]
+      },
+      "cut": { "allowed": false, "reason": "Nền tảng — mọi SKU đều giữ" }
+    },
+    {
+      "code": "MOD",
+      "name": "Day-1 module kit",
+      "required": true,
+      "depends_on": ["SYS"],
+      "maturity": "kit",
+      "schema": "erp_sys",
+      "be": {
+        "controllers": ["Controllers/Mod"],
+        "entities": ["Entities/Mod"],
+        "services": ["Implementations/Services/Mod"],
+        "di": "AddModKit"
+      },
+      "fe": {
+        "routes": ["src/app/app/[module]"],
+        "shared_ok": []
+      },
+      "cut": {
+        "allowed": false,
+        "reason": "Kit dùng chung cho stub CRM…PRT. Khi module thật thay stub, bỏ khỏi DEFAULT_TYPES của module đó."
+      }
+    },
+    {
+      "code": "HRM",
+      "name": "Nhân sự",
+      "required": false,
+      "depends_on": ["SYS", "WF"],
+      "maturity": "full",
+      "schema": "hrm",
+      "be": {
+        "controllers": ["Controllers/Hrm"],
+        "entities": ["Entities/Hrm"],
+        "services": ["Implementations/Services/Hrm"],
+        "di": "AddHrmModule",
+        "configs": ["Persistence/Configurations/Hrm"]
+      },
+      "fe": {
+        "routes": ["src/app/app/hrm"]
+      },
+      "cut": {
+        "allowed": true,
+        "manual_steps": [
+          "Xóa AddHrmModule() trong DependencyInjection",
+          "Gỡ DbSet HRM + configs khỏi AppDbContext (hoặc #if sau này)",
+          "Gỡ seed menu/perm/WF defs HRM trong DbSeeder",
+          "WF: bỏ bridge Leave/Recruit (hiện hard-wire — nợ kỹ thuật)",
+          "Xóa entry HRM trong FE MODULE_META"
+        ]
+      }
+    },
+    {
+      "code": "WF",
+      "name": "Phê duyệt & công việc",
+      "required": false,
+      "depends_on": ["SYS"],
+      "maturity": "full",
+      "schema": "wf",
+      "be": {
+        "controllers": ["Controllers/Wf"],
+        "entities": ["Entities/Wf"],
+        "services": ["Implementations/Services/Wf"],
+        "di": "AddWfModule"
+      },
+      "fe": {
+        "routes": ["src/app/app/wf"]
+      },
+      "cut": {
+        "allowed": true,
+        "manual_steps": [
+          "Không cắt WF nếu còn HRM (HRM depends_on WF)",
+          "Xóa AddWfModule()",
+          "Gỡ seed WF + hubs /hubs/wf",
+          "HRM leave/recruit không được gọi IWfRuntimeService trực tiếp (chuyển port/event)"
+        ]
+      }
+    },
+    {
+      "code": "LMS",
+      "name": "Đào tạo",
+      "required": false,
+      "depends_on": ["SYS"],
+      "maturity": "stub",
+      "schema": "lms",
+      "be": { "controllers": ["Controllers/Lms"], "entities": ["Entities/Lms"] },
+      "fe": { "day1_catch_all": true },
+      "cut": { "allowed": true, "auto": true }
+    },
+    {
+      "code": "CRM",
+      "name": "CRM & Bán hàng",
+      "required": false,
+      "depends_on": ["SYS"],
+      "maturity": "stub",
+      "schema": "crm",
+      "be": { "controllers": ["Controllers/Crm"], "entities": ["Entities/Crm"] },
+      "fe": { "day1_catch_all": true },
+      "cut": { "allowed": true, "auto": true }
+    },
+    {
+      "code": "POS",
+      "name": "POS bán lẻ",
+      "required": false,
+      "depends_on": ["SYS"],
+      "maturity": "stub",
+      "schema": "pos",
+      "be": { "controllers": ["Controllers/Pos"], "entities": ["Entities/Pos"] },
+      "fe": { "day1_catch_all": true },
+      "cut": { "allowed": true, "auto": true }
+    },
+    {
+      "code": "PUR",
+      "name": "Mua hàng",
+      "required": false,
+      "depends_on": ["SYS"],
+      "maturity": "stub",
+      "schema": "pur",
+      "be": { "controllers": ["Controllers/Pur"], "entities": ["Entities/Pur"] },
+      "fe": { "day1_catch_all": true },
+      "cut": { "allowed": true, "auto": true }
+    },
+    {
+      "code": "INV",
+      "name": "Kho & tồn kho",
+      "required": false,
+      "depends_on": ["SYS"],
+      "maturity": "stub",
+      "schema": "inv",
+      "be": { "controllers": ["Controllers/Inv"], "entities": ["Entities/Inv"] },
+      "fe": { "day1_catch_all": true },
+      "cut": { "allowed": true, "auto": true }
+    },
+    {
+      "code": "LOG",
+      "name": "Giao vận",
+      "required": false,
+      "depends_on": ["SYS"],
+      "maturity": "stub",
+      "schema": "log",
+      "be": { "controllers": ["Controllers/Log"], "entities": ["Entities/Log"] },
+      "fe": { "day1_catch_all": true },
+      "cut": { "allowed": true, "auto": true }
+    },
+    {
+      "code": "MFG",
+      "name": "Sản xuất",
+      "required": false,
+      "depends_on": ["SYS"],
+      "maturity": "stub",
+      "schema": "mfg",
+      "be": { "controllers": ["Controllers/Mfg"], "entities": ["Entities/Mfg"] },
+      "fe": { "day1_catch_all": true },
+      "cut": { "allowed": true, "auto": true }
+    },
+    {
+      "code": "FSM",
+      "name": "Dịch vụ kỹ thuật",
+      "required": false,
+      "depends_on": ["SYS"],
+      "maturity": "stub",
+      "schema": "fsm",
+      "be": { "controllers": ["Controllers/Fsm"], "entities": ["Entities/Fsm"] },
+      "fe": { "day1_catch_all": true },
+      "cut": { "allowed": true, "auto": true }
+    },
+    {
+      "code": "PJM",
+      "name": "Dự án",
+      "required": false,
+      "depends_on": ["SYS"],
+      "maturity": "stub",
+      "schema": "pjm",
+      "be": { "controllers": ["Controllers/Pjm"], "entities": ["Entities/Pjm"] },
+      "fe": { "day1_catch_all": true },
+      "cut": { "allowed": true, "auto": true }
+    },
+    {
+      "code": "FIN",
+      "name": "Tài chính",
+      "required": false,
+      "depends_on": ["SYS"],
+      "maturity": "stub",
+      "schema": "fin",
+      "be": { "controllers": ["Controllers/Fin"], "entities": ["Entities/Fin"] },
+      "fe": { "day1_catch_all": true },
+      "cut": { "allowed": true, "auto": true }
+    },
+    {
+      "code": "AST",
+      "name": "Tài sản",
+      "required": false,
+      "depends_on": ["SYS"],
+      "maturity": "stub",
+      "schema": "ast",
+      "be": { "controllers": ["Controllers/Ast"], "entities": ["Entities/Ast"] },
+      "fe": { "day1_catch_all": true },
+      "cut": { "allowed": true, "auto": true }
+    },
+    {
+      "code": "BI",
+      "name": "Báo cáo & BI",
+      "required": false,
+      "depends_on": ["SYS"],
+      "maturity": "stub",
+      "schema": "bi",
+      "be": { "controllers": ["Controllers/Bi"], "entities": ["Entities/Bi"] },
+      "fe": { "day1_catch_all": true },
+      "cut": { "allowed": true, "auto": true }
+    },
+    {
+      "code": "PRT",
+      "name": "Cổng khách hàng",
+      "required": false,
+      "depends_on": ["SYS"],
+      "maturity": "stub",
+      "schema": "prt",
+      "be": { "controllers": ["Controllers/Prt"], "entities": ["Entities/Prt"] },
+      "fe": { "day1_catch_all": true },
+      "cut": { "allowed": true, "auto": true }
+    }
+  ]
+}

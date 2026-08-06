@@ -1,0 +1,18 @@
+---
+description: Biên module — code mới phải dễ cắt khi bán SKU
+alwaysApply: true
+---
+
+# Module boundaries (bán / cắt source)
+
+Nguồn sự thật: `Làm/Source/MODULES.json` + `MODULES.md`.
+
+Khi thêm chức năng:
+
+1. Đặt code đúng folder `{Code}`: Controllers / Entities / Services / `app/app/{code}`.
+2. Chỉ phụ thuộc **SYS** (và WF qua interface/outbox — không đọc EF chéo module).
+3. Permission seed gắn `ModuleCode`; đăng ký DI trong `Add{Code}Module()` tương ứng.
+4. Cập nhật `MODULES.json` nếu module mới hoặc đổi `depends_on` / paths.
+5. Không nhét entity module A vào `Configurations` của module B.
+
+Cắt bán: `python Làm/Source/scripts/cut_modules.py --keep SYS,HRM,WF --dry-run`

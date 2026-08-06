@@ -1,0 +1,33 @@
+name: ci
+
+on:
+  push:
+    paths:
+      - "backend/**"
+      - "frontend/**"
+      - ".github/workflows/**"
+  pull_request:
+    paths:
+      - "backend/**"
+      - "frontend/**"
+  workflow_dispatch:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+      - name: Restore & build
+        run: dotnet build ErpModular.sln -c Release --nologo
+      - name: Unit tests
+        run: dotnet test ErpModular.sln -c Release --no-build --nologo
+
+  # Smoke E2E (leave/WF/outbox) cần SQL Server + seed — chạy local:
+  #   python scripts/smoke_m1_day1.py
+  #   python scripts/smoke_g4_soft_disable.py

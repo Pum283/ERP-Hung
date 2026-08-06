@@ -1,0 +1,37 @@
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vs/
+.idea/
+*.user
+*.suo
+
+# .NET
+**/bin/
+**/obj/
+**/TestResults/
+*.DotSettings.user
+
+# Node / Next
+**/node_modules/
+**/.next/
+**/out/
+**/dist/
+**/.turbo/
+*.tsbuildinfo
+next-env.d.ts
+
+# Env / secrets — KHÔNG đẩy connection/password lên git
+.env
+.env.local
+.env.*.local
+**/.env
+**/appsettings.*.local.json
+
+# Local file storage
+**/App_Data/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
