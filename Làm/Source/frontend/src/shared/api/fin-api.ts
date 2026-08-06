@@ -165,3 +165,49 @@ export async function fetchFinDetailLedger(params?: {
   const { data } = await api.get<Envelope<FinDetailLedgerRowDto[]>>("/api/fin/ledgers/detail", { params });
   return data.data;
 }
+
+export type FinTrialBalanceRowDto = {
+  accountId: string; accountCode: string; accountName: string; accountType: string;
+  openingDebit: number; openingCredit: number;
+  periodDebit: number; periodCredit: number;
+  closingDebit: number; closingCredit: number;
+};
+export type FinBalanceSheetRowDto = { accountCode: string; accountName: string; category: string; amount: number };
+export type FinProfitLossRowDto = { itemCode: string; itemName: string; currentPeriodAmount: number; previousPeriodAmount: number };
+export type FinCashFlowRowDto = { activityType: string; itemName: string; amount: number };
+export type FinArApReconciliationRowDto = { partnerCode: string; subledgerBalance: number; generalLedgerBalance: number; variance: number; isReconciled: boolean };
+export type FinDashboardSummaryDto = { totalRevenue: number; totalExpense: number; netProfit: number; totalCashBank: number; totalAR: number; totalAP: number };
+
+export async function fetchFinTrialBalance(periodId?: string) {
+  const { data } = await api.get<Envelope<FinTrialBalanceRowDto[]>>("/api/fin/reports/trial-balance", { params: { periodId } });
+  return data.data;
+}
+export async function fetchFinBalanceSheet(periodId?: string) {
+  const { data } = await api.get<Envelope<FinBalanceSheetRowDto[]>>("/api/fin/reports/balance-sheet", { params: { periodId } });
+  return data.data;
+}
+export async function fetchFinProfitLoss(periodId?: string) {
+  const { data } = await api.get<Envelope<FinProfitLossRowDto[]>>("/api/fin/reports/profit-loss", { params: { periodId } });
+  return data.data;
+}
+export async function fetchFinCashFlow(periodId?: string) {
+  const { data } = await api.get<Envelope<FinCashFlowRowDto[]>>("/api/fin/reports/cash-flow", { params: { periodId } });
+  return data.data;
+}
+export async function fetchFinDashboardSummary() {
+  const { data } = await api.get<Envelope<FinDashboardSummaryDto>>("/api/fin/reports/dashboard");
+  return data.data;
+}
+export async function runFinClosingTransfer(periodId: string, note?: string) {
+  const { data } = await api.post<Envelope<FinJournalDto>>("/api/fin/closing/transfer", { periodId, note });
+  return data.data;
+}
+export async function closeFinFiscalYear(fiscalYearId: string) {
+  const { data } = await api.post<Envelope<boolean>>("/api/fin/closing/fiscal-year", { fiscalYearId });
+  return data.data;
+}
+export async function fetchFinArApReconciliation(type: "AR" | "AP") {
+  const { data } = await api.get<Envelope<FinArApReconciliationRowDto[]>>("/api/fin/reconciliation", { params: { type } });
+  return data.data;
+}
+

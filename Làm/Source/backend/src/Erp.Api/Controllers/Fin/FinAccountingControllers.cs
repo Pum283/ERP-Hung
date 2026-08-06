@@ -233,3 +233,82 @@ public sealed class FinLedgerController : ControllerBase
         => Ok(ApiResponse<IReadOnlyList<FinDetailLedgerRowDto>>.Ok(
             await _svc.GetDetailLedgerAsync(TenantId, new FinLedgerQuery(accountId, partnerCode, costCenterId, periodId), ct)));
 }
+
+[ApiController]
+[Authorize]
+[Route("api/fin/reports")]
+public sealed class FinReportsController : ControllerBase
+{
+    private readonly IFinAccountingService _svc;
+    public FinReportsController(IFinAccountingService svc) => _svc = svc;
+    private Guid TenantId => Guid.Parse(User.FindFirstValue("tenant_id")!);
+
+    [HttpGet("trial-balance")]
+    [AuthorizePermission("fin.journal.read")]
+    public async Task<ActionResult<ApiResponse<IReadOnlyList<FinTrialBalanceRowDto>>>> TrialBalance(
+        [FromQuery] Guid? periodId, CancellationToken ct)
+        => Ok(ApiResponse<IReadOnlyList<FinTrialBalanceRowDto>>.Ok(await _svc.GetTrialBalanceAsync(TenantId, periodId, ct)));
+
+    [HttpGet("balance-sheet")]
+    [AuthorizePermission("fin.journal.read")]
+    public async Task<ActionResult<ApiResponse<IReadOnlyList<FinBalanceSheetRowDto>>>> BalanceSheet(
+        [FromQuery] Guid? periodId, CancellationToken ct)
+        => Ok(ApiResponse<IReadOnlyList<FinBalanceSheetRowDto>>.Ok(await _svc.GetBalanceSheetAsync(TenantId, periodId, ct)));
+
+    [HttpGet("profit-loss")]
+    [AuthorizePermission("fin.journal.read")]
+    public async Task<ActionResult<ApiResponse<IReadOnlyList<FinProfitLossRowDto>>>> ProfitLoss(
+        [FromQuery] Guid? periodId, CancellationToken ct)
+        => Ok(ApiResponse<IReadOnlyList<FinProfitLossRowDto>>.Ok(await _svc.GetProfitLossAsync(TenantId, periodId, ct)));
+
+    [HttpGet("cash-flow")]
+    [AuthorizePermission("fin.journal.read")]
+    public async Task<ActionResult<ApiResponse<IReadOnlyList<FinCashFlowRowDto>>>> CashFlow(
+        [FromQuery] Guid? periodId, CancellationToken ct)
+        => Ok(ApiResponse<IReadOnlyList<FinCashFlowRowDto>>.Ok(await _svc.GetCashFlowAsync(TenantId, periodId, ct)));
+
+    [HttpGet("dashboard")]
+    [AuthorizePermission("fin.journal.read")]
+    public async Task<ActionResult<ApiResponse<FinDashboardSummaryDto>>> Dashboard(CancellationToken ct)
+        => Ok(ApiResponse<FinDashboardSummaryDto>.Ok(await _svc.GetDashboardSummaryAsync(TenantId, ct)));
+}
+
+[ApiController]
+[Authorize]
+[Route("api/fin/closing")]
+public sealed class FinClosingController : ControllerBase
+{
+    private readonly IFinAccountingService _svc;
+    public FinClosingController(IFinAccountingService svc) => _svc = svc;
+    private Guid UserId => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? User.FindFirstValue("sub")!);
+    private Guid TenantId => Guid.Parse(User.FindFirstValue("tenant_id")!);
+
+    [HttpPost("transfer")]
+    [AuthorizePermission("fin.journal.manage")]
+    public async Task<ActionResult<ApiResponse<FinJournalDto>>> Transfer(
+        [FromBody] FinClosingTransferRequest req, CancellationToken ct)
+        => Ok(ApiResponse<FinJournalDto>.Ok(await _svc.RunClosingTransferAsync(TenantId, UserId, req, ct)));
+
+    [HttpPost("fiscal-year")]
+    [AuthorizePermission("fin.master.manage")]
+    public async Task<ActionResult<ApiResponse<bool>>> CloseFiscalYear(
+        [FromBody] FinYearEndClosingRequest req, CancellationToken ct)
+        => Ok(ApiResponse<bool>.Ok(await _svc.CloseFiscalYearAsync(TenantId, UserId, req, ct)));
+}
+
+[ApiController]
+[Authorize]
+[Route("api/fin/reconciliation")]
+public sealed class FinReconciliationController : ControllerBase
+{
+    private readonly IFinAccountingService _svc;
+    public FinReconciliationController(IFinAccountingService svc) => _svc = svc;
+    private Guid TenantId => Guid.Parse(User.FindFirstValue("tenant_id")!);
+
+    [HttpGet]
+    [AuthorizePermission("fin.journal.read")]
+    public async Task<ActionResult<ApiResponse<IReadOnlyList<FinArApReconciliationRowDto>>>> Reconcile(
+        [FromQuery] string type, CancellationToken ct)
+        => Ok(ApiResponse<IReadOnlyList<FinArApReconciliationRowDto>>.Ok(await _svc.ReconcileArApAsync(TenantId, type, ct)));
+}
+

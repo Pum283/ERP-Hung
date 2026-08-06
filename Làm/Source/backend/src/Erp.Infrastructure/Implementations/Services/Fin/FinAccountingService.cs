@@ -678,4 +678,275 @@ public sealed class FinAccountingService : IFinAccountingService
         var v = s?.Trim();
         return string.IsNullOrEmpty(v) ? null : v;
     }
+
+    public async Task<FinJournalDto> RunClosingTransferAsync(
+        Guid tenantId, Guid userId, FinClosingTransferRequest req, CancellationToken ct = default)
+    {
+        var period = await RequireAsync(_db.FinPeriods, tenantId, req.PeriodId, "kỳ KT", ct);
+        if (period.Status == "Locked") throw new AppException("Kỳ đã khóa sổ — không thể kết chuyển.");
+
+        // Gather posted journal lines in this period
+        var postedJournals = _db.FinJournals.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && x.PeriodId == req.PeriodId && x.Status == "Posted" && !x.IsDeleted);
+
+        var lines = await _db.FinJournalLines.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted && postedJournals.Select(j => j.Id).Contains(x.JournalId))
+            .ToListAsync(ct);
+
+        var accIds = lines.Select(x => x.AccountId).Distinct().ToList();
+        var accounts = await _db.FinAccounts.AsNoTracking()
+            .Where(x => accIds.Contains(x.Id)).ToDictionaryAsync(x => x.Id, ct);
+
+        // Find Account 911 (Xác định KQKĐ) or 421 (Lợi nhuận)
+        var tk911 = await _db.FinAccounts.FirstOrDefaultAsync(
+            x => x.TenantId == tenantId && !x.IsDeleted && (x.Code == "911" || x.Code.StartsWith("911")), ct);
+        if (tk911 == null)
+        {
+            tk911 = new FinAccount
+            {
+                TenantId = tenantId, Code = "911", Name = "Xác định kết quả kinh doanh",
+                AccountType = "Equity", IsPostable = true, Status = "Active", CreatedBy = userId
+            };
+            _db.FinAccounts.Add(tk911);
+            await _db.SaveChangesAsync(ct);
+        }
+
+        var closingLines = new List<FinJournalLineUpsertRequest>();
+        decimal totalRevenue = 0, totalExpense = 0;
+
+        foreach (var group in lines.GroupBy(x => x.AccountId))
+        {
+            if (!accounts.TryGetValue(group.Key, out var acc)) continue;
+            var netDebit = group.Sum(x => x.Debit) - group.Sum(x => x.Credit);
+            if (netDebit == 0) continue;
+
+            if (acc.AccountType == "Revenue" || acc.Code.StartsWith("5") || acc.Code.StartsWith("7"))
+            {
+                // Revenue: Transfer Credit balance to 911 (Debit Revenue Account, Credit 911)
+                var rev = -netDebit;
+                if (rev > 0)
+                {
+                    closingLines.Add(new FinJournalLineUpsertRequest(null, acc.Id, rev, 0, null, null, "Kết chuyển doanh thu sang 911"));
+                    totalRevenue += rev;
+                }
+            }
+            else if (acc.AccountType == "Expense" || acc.Code.StartsWith("6") || acc.Code.StartsWith("8"))
+            {
+                // Expense: Transfer Debit balance to 911 (Credit Expense Account, Debit 911)
+                if (netDebit > 0)
+                {
+                    closingLines.Add(new FinJournalLineUpsertRequest(null, acc.Id, 0, netDebit, null, null, "Kết chuyển chi phí sang 911"));
+                    totalExpense += netDebit;
+                }
+            }
+        }
+
+        if (totalRevenue > 0)
+            closingLines.Add(new FinJournalLineUpsertRequest(null, tk911.Id, 0, totalRevenue, null, null, "Ghi nhận tổng doanh thu vào 911"));
+        if (totalExpense > 0)
+            closingLines.Add(new FinJournalLineUpsertRequest(null, tk911.Id, totalExpense, 0, null, null, "Ghi nhận tổng chi phí vào 911"));
+
+        if (closingLines.Count == 0)
+            throw new AppException("Không có số dư doanh thu/chi phí cần kết chuyển trong kỳ.");
+
+        var upsertReq = new FinJournalUpsertRequest(
+            null, null, req.PeriodId, DateTimeOffset.UtcNow,
+            req.Note ?? $"Bút toán kết chuyển xác định KQKD kỳ {period.Code}",
+            null, null, "Auto", closingLines);
+
+        var je = await UpsertJournalCoreAsync(tenantId, userId, upsertReq, forceSource: "Auto", ct);
+        return await PostJournalAsync(tenantId, userId, je.Id, ct);
+    }
+
+    public async Task<bool> CloseFiscalYearAsync(
+        Guid tenantId, Guid userId, FinYearEndClosingRequest req, CancellationToken ct = default)
+    {
+        var fy = await RequireAsync(_db.FinFiscalYears, tenantId, req.FiscalYearId, "năm tài chính", ct);
+        var periods = await _db.FinPeriods
+            .Where(x => x.TenantId == tenantId && x.FiscalYearId == fy.Id && !x.IsDeleted).ToListAsync(ct);
+
+        foreach (var p in periods)
+        {
+            p.Status = "Locked";
+            p.LockedAt = DateTimeOffset.UtcNow;
+            p.UpdatedBy = userId;
+        }
+
+        fy.IsActive = false;
+        fy.UpdatedBy = userId;
+        await _db.SaveChangesAsync(ct);
+        return true;
+    }
+
+    public async Task<IReadOnlyList<FinArApReconciliationRowDto>> ReconcileArApAsync(
+        Guid tenantId, string type, CancellationToken ct = default)
+    {
+        var isAr = type.Equals("AR", StringComparison.OrdinalIgnoreCase);
+        var targetAccountPrefix = isAr ? "131" : "331";
+
+        // Subledger totals
+        Dictionary<string, decimal> subledgerBalances;
+        if (isAr)
+        {
+            var invoices = await _db.FinArInvoices.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && !x.IsDeleted)
+                .GroupBy(x => x.CustomerId)
+                .Select(g => new { Code = g.Key.ToString().Substring(0, 8), Bal = g.Sum(x => x.TotalAmount - x.ReceivedAmount) })
+                .ToListAsync(ct);
+            subledgerBalances = invoices.ToDictionary(x => x.Code, x => x.Bal);
+        }
+        else
+        {
+            var invoices = await _db.FinApInvoices.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && !x.IsDeleted)
+                .GroupBy(x => x.VendorId)
+                .Select(g => new { Code = g.Key.ToString().Substring(0, 8), Bal = g.Sum(x => x.TotalAmount - x.PaidAmount) })
+                .ToListAsync(ct);
+            subledgerBalances = invoices.ToDictionary(x => x.Code, x => x.Bal);
+        }
+
+        // General Ledger lines on 131 / 331 by PartnerCode
+        var postedJournals = _db.FinJournals.AsNoTracking()
+            .Where(j => j.TenantId == tenantId && !j.IsDeleted && j.Status == "Posted");
+
+        var glLines = await (
+            from l in _db.FinJournalLines.AsNoTracking()
+            join a in _db.FinAccounts.AsNoTracking() on l.AccountId equals a.Id
+            where l.TenantId == tenantId && !l.IsDeleted && postedJournals.Select(j => j.Id).Contains(l.JournalId)
+                  && a.Code.StartsWith(targetAccountPrefix) && l.PartnerCode != null
+            group l by l.PartnerCode into g
+            select new { PartnerCode = g.Key!, Bal = isAr ? g.Sum(x => x.Debit - x.Credit) : g.Sum(x => x.Credit - x.Debit) }
+        ).ToListAsync(ct);
+
+        var glBalances = glLines.ToDictionary(x => x.PartnerCode, x => x.Bal);
+        var allPartners = subledgerBalances.Keys.Union(glBalances.Keys).Distinct().OrderBy(x => x).ToList();
+
+        var result = new List<FinArApReconciliationRowDto>();
+        foreach (var p in allPartners)
+        {
+            var sub = subledgerBalances.GetValueOrDefault(p);
+            var gl = glBalances.GetValueOrDefault(p);
+            var varAmount = sub - gl;
+            result.Add(new FinArApReconciliationRowDto(p, sub, gl, varAmount, varAmount == 0));
+        }
+
+        return result;
+    }
+
+    public async Task<IReadOnlyList<FinTrialBalanceRowDto>> GetTrialBalanceAsync(
+        Guid tenantId, Guid? periodId, CancellationToken ct = default)
+    {
+        var accounts = await _db.FinAccounts.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.IsPostable)
+            .OrderBy(x => x.Code).ToListAsync(ct);
+
+        var postedJournals = _db.FinJournals.AsNoTracking()
+            .Where(j => j.TenantId == tenantId && !j.IsDeleted && j.Status == "Posted");
+        if (periodId is Guid pid)
+            postedJournals = postedJournals.Where(j => j.PeriodId == pid);
+
+        var lines = await _db.FinJournalLines.AsNoTracking()
+            .Where(l => l.TenantId == tenantId && !l.IsDeleted && postedJournals.Select(j => j.Id).Contains(l.JournalId))
+            .GroupBy(l => l.AccountId)
+            .Select(g => new { AccountId = g.Key, Debit = g.Sum(x => x.Debit), Credit = g.Sum(x => x.Credit) })
+            .ToDictionaryAsync(x => x.AccountId, ct);
+
+        var result = new List<FinTrialBalanceRowDto>();
+        foreach (var a in accounts)
+        {
+            var l = lines.GetValueOrDefault(a.Id);
+            var pDebit = l?.Debit ?? 0;
+            var pCredit = l?.Credit ?? 0;
+            var cNet = pDebit - pCredit;
+            var cDebit = cNet > 0 ? cNet : 0;
+            var cCredit = cNet < 0 ? -cNet : 0;
+            result.Add(new FinTrialBalanceRowDto(
+                a.Id, a.Code, a.Name, a.AccountType, 0, 0, pDebit, pCredit, cDebit, cCredit));
+        }
+        return result;
+    }
+
+    public async Task<IReadOnlyList<FinBalanceSheetRowDto>> GetBalanceSheetAsync(
+        Guid tenantId, Guid? periodId, CancellationToken ct = default)
+    {
+        var tb = await GetTrialBalanceAsync(tenantId, periodId, ct);
+        var list = new List<FinBalanceSheetRowDto>();
+
+        foreach (var r in tb)
+        {
+            string cat;
+            if (r.AccountCode.StartsWith("1") || r.AccountCode.StartsWith("2") || r.AccountType == "Asset") cat = "Tài sản";
+            else if (r.AccountCode.StartsWith("3") || r.AccountType == "Liability") cat = "Nợ phải trả";
+            else if (r.AccountCode.StartsWith("4") || r.AccountType == "Equity") cat = "Vốn chủ sở hữu";
+            else continue;
+
+            var amt = r.AccountType == "Asset" || r.AccountCode.StartsWith("1") || r.AccountCode.StartsWith("2")
+                ? (r.ClosingDebit - r.ClosingCredit)
+                : (r.ClosingCredit - r.ClosingDebit);
+
+            list.Add(new FinBalanceSheetRowDto(r.AccountCode, r.AccountName, cat, amt));
+        }
+        return list;
+    }
+
+    public async Task<IReadOnlyList<FinProfitLossRowDto>> GetProfitLossAsync(
+        Guid tenantId, Guid? periodId, CancellationToken ct = default)
+    {
+        var tb = await GetTrialBalanceAsync(tenantId, periodId, ct);
+        var result = new List<FinProfitLossRowDto>();
+
+        var revTotal = tb.Where(x => x.AccountCode.StartsWith("5") || x.AccountType == "Revenue")
+            .Sum(x => x.PeriodCredit - x.PeriodDebit);
+
+        var expTotal = tb.Where(x => x.AccountCode.StartsWith("6") || x.AccountType == "Expense")
+            .Sum(x => x.PeriodDebit - x.PeriodCredit);
+
+        result.Add(new FinProfitLossRowDto("5xx", "Doanh thu bán hàng và dịch vụ", revTotal, 0));
+        result.Add(new FinProfitLossRowDto("6xx", "Tổng chi phí hoạt động & giá vốn", expTotal, 0));
+        result.Add(new FinProfitLossRowDto("NET", "Lợi nhuận ròng", revTotal - expTotal, 0));
+
+        return result;
+    }
+
+    public async Task<IReadOnlyList<FinCashFlowRowDto>> GetCashFlowAsync(
+        Guid tenantId, Guid? periodId, CancellationToken ct = default)
+    {
+        var cashFunds = await _db.FinCashFunds.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted).SumAsync(x => x.OpeningBalance, ct);
+        var bankAccounts = await _db.FinBankAccounts.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted).SumAsync(x => x.OpeningBalance, ct);
+
+        return new List<FinCashFlowRowDto>
+        {
+            new("Operating", "Dòng tiền từ hoạt động kinh doanh", cashFunds + bankAccounts),
+            new("Investing", "Dòng tiền từ hoạt động đầu tư", 0),
+            new("Financing", "Dòng tiền từ hoạt động tài chính", 0)
+        };
+    }
+
+    public async Task<FinDashboardSummaryDto> GetDashboardSummaryAsync(
+        Guid tenantId, CancellationToken ct = default)
+    {
+        var pl = await GetProfitLossAsync(tenantId, null, ct);
+        var rev = pl.FirstOrDefault(x => x.ItemCode == "5xx")?.CurrentPeriodAmount ?? 0;
+        var exp = pl.FirstOrDefault(x => x.ItemCode == "6xx")?.CurrentPeriodAmount ?? 0;
+        var net = pl.FirstOrDefault(x => x.ItemCode == "NET")?.CurrentPeriodAmount ?? 0;
+
+        var cash = await _db.FinCashFunds.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted).SumAsync(x => x.OpeningBalance, ct);
+        var bank = await _db.FinBankAccounts.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted).SumAsync(x => x.OpeningBalance, ct);
+
+        var ar = await _db.FinArInvoices.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Status != "Paid")
+            .SumAsync(x => x.TotalAmount - x.ReceivedAmount, ct);
+
+        var ap = await _db.FinApInvoices.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Status != "Paid")
+            .SumAsync(x => x.TotalAmount - x.PaidAmount, ct);
+
+        return new FinDashboardSummaryDto(rev, exp, net, cash + bank, ar, ap);
+    }
+
 }
+

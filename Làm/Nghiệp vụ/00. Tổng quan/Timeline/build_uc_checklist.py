@@ -167,6 +167,26 @@ def save_progress(progress: dict) -> None:
     )
 
 
+TESTED_UC_MAP = {
+    "FIN": 53,
+    "HRM": 170,
+    "LMS": 43,
+    "CRM": 66,
+    "INV": 51,
+    "SYS": 91,
+    "POS": 40,
+    "PUR": 27,
+    "LOG": 26,
+    "AST": 21,
+    "MFG": 25,
+    "FSM": 28,
+    "PJM": 29,
+    "BI": 14,
+    "WF": 22,
+    "PRT": 11,
+}
+
+
 def render(catalog: list[dict], progress: dict) -> str:
     today = date.today().strftime("%d/%m/%Y")
     total = len(catalog)
@@ -203,18 +223,34 @@ def render(catalog: list[dict], progress: dict) -> str:
     lines.append("")
     lines.append("## A. Tổng hợp theo module")
     lines.append("")
-    lines.append("| Module | Tổng UC | Xong | % | Must còn |")
-    lines.append("| --- | ---: | ---: | ---: | ---: |")
+    lines.append("| Module | Tổng UC | Xong | % Xong | Số UC đã Test | % UC đã Test | Must còn |")
+    lines.append("| --- | ---: | ---: | ---: | ---: | ---: | ---: |")
+
+    tot_all = 0
+    tot_done = 0
+    tot_tested = 0
+    tot_must = 0
 
     for mod, rows in by_mod.items():
         d = sum(1 for r in rows if progress.get(r["id"], {}).get("done"))
         p = round(100 * d / len(rows), 1) if rows else 0
+        tested = TESTED_UC_MAP.get(mod, 0)
+        p_test = round(100 * tested / d, 1) if d > 0 else 0
         must_left = sum(
             1
             for r in rows
             if r["prio"] == "Must" and not progress.get(r["id"], {}).get("done")
         )
-        lines.append(f"| {mod} | {len(rows)} | {d} | {p} | {must_left} |")
+        lines.append(f"| {mod} | {len(rows)} | {d} | {p}% | {tested} | {p_test}% | {must_left} |")
+        tot_all += len(rows)
+        tot_done += d
+        tot_tested += tested
+        tot_must += must_left
+
+    tot_p_done = round(100 * tot_done / tot_all, 1) if tot_all else 0
+    tot_p_test = round(100 * tot_tested / tot_done, 1) if tot_done else 0
+    formatted_tot_all = "{:,}".format(tot_all).replace(",", ".")
+    lines.append(f"| **TỔNG** | **{formatted_tot_all}** | **{tot_done}** | **{tot_p_done}%** | **{tot_tested}** | **{tot_p_test}%** | **{tot_must}** |")
 
     lines.append("")
     lines.append("---")
@@ -280,7 +316,7 @@ def main() -> None:
     )
     done_n = sum(1 for r in catalog if progress.get(r["id"], {}).get("done"))
     print(f"Wrote {OUT_PATH.name}: {len(catalog)} UC, {done_n} done")
-    print(f"Stub: {LEGACY_OUT_PATH.name} → {OUT_PATH.name}")
+    print(f"Stub: {LEGACY_OUT_PATH.name} -> {OUT_PATH.name}")
     print(f"Progress: {PROGRESS_PATH.name}")
 
 

@@ -64,3 +64,31 @@ public sealed record FinDetailLedgerRowDto(
     string? PartnerCode, Guid? CostCenterId, string? CostCenterName);
 
 public sealed record FinLedgerQuery(Guid? AccountId, string? PartnerCode, Guid? CostCenterId, Guid? PeriodId);
+
+// Financial Statements & Reports DTOs
+public sealed record FinTrialBalanceRowDto(
+    Guid AccountId, string AccountCode, string AccountName, string AccountType,
+    decimal OpeningDebit, decimal OpeningCredit,
+    decimal PeriodDebit, decimal PeriodCredit,
+    decimal ClosingDebit, decimal ClosingCredit);
+
+public sealed record FinBalanceSheetRowDto(
+    string AccountCode, string AccountName, string Category,
+    decimal Amount);
+
+public sealed record FinProfitLossRowDto(
+    string ItemCode, string ItemName, decimal CurrentPeriodAmount, decimal PreviousPeriodAmount);
+
+public sealed record FinCashFlowRowDto(
+    string ActivityType, string ItemName, decimal Amount);
+
+public sealed record FinArApReconciliationRowDto(
+    string PartnerCode, decimal SubledgerBalance, decimal GeneralLedgerBalance, decimal Variance, bool IsReconciled);
+
+public sealed record FinDashboardSummaryDto(
+    decimal TotalRevenue, decimal TotalExpense, decimal NetProfit,
+    decimal TotalCashBank, decimal TotalAR, decimal TotalAP);
+
+public sealed record FinClosingTransferRequest(Guid PeriodId, string? Note);
+public sealed record FinYearEndClosingRequest(Guid FiscalYearId);
+

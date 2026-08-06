@@ -33,4 +33,14 @@ public interface IFinAccountingService
 
     Task<IReadOnlyList<FinLedgerRowDto>> GetLedgerAsync(Guid tenantId, FinLedgerQuery query, CancellationToken ct = default);
     Task<IReadOnlyList<FinDetailLedgerRowDto>> GetDetailLedgerAsync(Guid tenantId, FinLedgerQuery query, CancellationToken ct = default);
+
+    Task<FinJournalDto> RunClosingTransferAsync(Guid tenantId, Guid userId, FinClosingTransferRequest req, CancellationToken ct = default);
+    Task<bool> CloseFiscalYearAsync(Guid tenantId, Guid userId, FinYearEndClosingRequest req, CancellationToken ct = default);
+    Task<IReadOnlyList<FinArApReconciliationRowDto>> ReconcileArApAsync(Guid tenantId, string type, CancellationToken ct = default);
+    Task<IReadOnlyList<FinTrialBalanceRowDto>> GetTrialBalanceAsync(Guid tenantId, Guid? periodId, CancellationToken ct = default);
+    Task<IReadOnlyList<FinBalanceSheetRowDto>> GetBalanceSheetAsync(Guid tenantId, Guid? periodId, CancellationToken ct = default);
+    Task<IReadOnlyList<FinProfitLossRowDto>> GetProfitLossAsync(Guid tenantId, Guid? periodId, CancellationToken ct = default);
+    Task<IReadOnlyList<FinCashFlowRowDto>> GetCashFlowAsync(Guid tenantId, Guid? periodId, CancellationToken ct = default);
+    Task<FinDashboardSummaryDto> GetDashboardSummaryAsync(Guid tenantId, CancellationToken ct = default);
 }
+
