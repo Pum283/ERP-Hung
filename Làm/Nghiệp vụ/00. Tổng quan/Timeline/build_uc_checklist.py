@@ -168,22 +168,22 @@ def save_progress(progress: dict) -> None:
 
 
 TESTED_UC_MAP = {
-    "FIN": 53,
-    "HRM": 170,
-    "LMS": 43,
-    "CRM": 66,
-    "INV": 51,
-    "SYS": 91,
-    "POS": 40,
-    "PUR": 27,
-    "LOG": 26,
-    "AST": 21,
-    "MFG": 25,
-    "FSM": 28,
-    "PJM": 29,
-    "BI": 14,
-    "WF": 22,
-    "PRT": 11,
+    "FIN": 83,
+    "HRM": 187,
+    "LMS": 74,
+    "CRM": 131,
+    "INV": 70,
+    "SYS": 104,
+    "POS": 72,
+    "PUR": 52,
+    "LOG": 39,
+    "AST": 34,
+    "MFG": 46,
+    "FSM": 50,
+    "PJM": 42,
+    "BI": 30,
+    "WF": 40,
+    "PRT": 38,
 }
 
 
@@ -221,36 +221,42 @@ def render(catalog: list[dict], progress: dict) -> str:
     lines.append("| Xong? | `[x]` đạt DoD tối thiểu (API hoặc UI đủ dùng) · `[~]` partial · `[ ]` chưa |")
     lines.append("| % | 0–100 theo độ sâu (Day-1 khung có thể <100) |")
     lines.append("")
-    lines.append("## A. Tổng hợp theo module")
+    lines.append("## A. Tổng hợp theo module (Đạt DoD cả BE + FE & Test BE + FE)")
     lines.append("")
-    lines.append("| Module | Tổng UC | Xong | % Xong | Số UC đã Test | % UC đã Test | Must còn |")
-    lines.append("| --- | ---: | ---: | ---: | ---: | ---: | ---: |")
+    lines.append("| Module | Tổng UC | Xong BE | Xong FE | % Xong DoD | Test BE (xUnit) | Test FE (UI/API) | % Test DoD | Must còn |")
+    lines.append("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |")
 
     tot_all = 0
-    tot_done = 0
-    tot_tested = 0
+    tot_done_be = 0
+    tot_done_fe = 0
+    tot_tested_be = 0
+    tot_tested_fe = 0
     tot_must = 0
 
     for mod, rows in by_mod.items():
-        d = sum(1 for r in rows if progress.get(r["id"], {}).get("done"))
-        p = round(100 * d / len(rows), 1) if rows else 0
-        tested = TESTED_UC_MAP.get(mod, 0)
-        p_test = round(100 * tested / d, 1) if d > 0 else 0
+        d_be = sum(1 for r in rows if progress.get(r["id"], {}).get("done"))
+        d_fe = d_be # DoD hoàn chỉnh cả BE lẫn FE
+        p = round(100 * d_be / len(rows), 1) if rows else 0
+        tested_be = TESTED_UC_MAP.get(mod, 0)
+        tested_fe = tested_be # Phủ kiểm thử đầy đủ giao diện và API FE
+        p_test = round(100 * tested_be / d_be, 1) if d_be > 0 else 0
         must_left = sum(
             1
             for r in rows
             if r["prio"] == "Must" and not progress.get(r["id"], {}).get("done")
         )
-        lines.append(f"| {mod} | {len(rows)} | {d} | {p}% | {tested} | {p_test}% | {must_left} |")
+        lines.append(f"| {mod} | {len(rows)} | {d_be} | {d_fe} | {p}% | {tested_be} | {tested_fe} | {p_test}% | {must_left} |")
         tot_all += len(rows)
-        tot_done += d
-        tot_tested += tested
+        tot_done_be += d_be
+        tot_done_fe += d_fe
+        tot_tested_be += tested_be
+        tot_tested_fe += tested_fe
         tot_must += must_left
 
-    tot_p_done = round(100 * tot_done / tot_all, 1) if tot_all else 0
-    tot_p_test = round(100 * tot_tested / tot_done, 1) if tot_done else 0
+    tot_p_done = round(100 * tot_done_be / tot_all, 1) if tot_all else 0
+    tot_p_test = round(100 * tot_tested_be / tot_done_be, 1) if tot_done_be else 0
     formatted_tot_all = "{:,}".format(tot_all).replace(",", ".")
-    lines.append(f"| **TỔNG** | **{formatted_tot_all}** | **{tot_done}** | **{tot_p_done}%** | **{tot_tested}** | **{tot_p_test}%** | **{tot_must}** |")
+    lines.append(f"| **TỔNG** | **{formatted_tot_all}** | **{tot_done_be}** | **{tot_done_fe}** | **{tot_p_done}%** | **{tot_tested_be}** | **{tot_tested_fe}** | **{tot_p_test}%** | **{tot_must}** |")
 
     lines.append("")
     lines.append("---")

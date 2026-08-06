@@ -1,14 +1,24 @@
 /** Class field chuẩn ERP (khớp Employees / Users). */
-export const field = {
+const baseInput =
+  "h-9 w-full rounded-md border border-border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-brand focus:ring-1 focus:ring-brand/30 disabled:opacity-60";
+
+type FieldStyle = string & {
+  label: string;
+  input: string;
+  select: string;
+  textarea: string;
+  check: string;
+};
+
+export const field = Object.assign(baseInput, {
   label: "mb-1 block text-meta font-medium text-muted-foreground",
-  input:
-    "h-9 w-full rounded-md border border-border bg-background px-3 text-body text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-brand focus:ring-1 focus:ring-brand/30 disabled:opacity-60",
+  input: baseInput,
   select:
     "h-9 w-full rounded-md border border-border bg-background px-2.5 text-body text-foreground outline-none transition-colors focus:border-brand focus:ring-1 focus:ring-brand/30 disabled:opacity-60",
   textarea:
     "min-h-[72px] w-full rounded-md border border-border bg-background px-3 py-2 text-body text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-brand focus:ring-1 focus:ring-brand/30 disabled:opacity-60",
   check: "h-4 w-4 rounded border-border text-brand focus:ring-brand/30",
-} as const;
+}) as FieldStyle;
 
 export const panel =
   "rounded-xl border border-border bg-surface p-4 shadow-sm" as const;
