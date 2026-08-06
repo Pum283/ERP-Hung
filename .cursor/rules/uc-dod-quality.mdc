@@ -1,0 +1,45 @@
+---
+description: DoD bắt buộc khi làm UC — SRS, BE/FE chỉnh chu, UI đồng nhất, test 5–20/loại trước khi đánh [x]
+alwaysApply: true
+---
+
+# UC DoD — chỉnh chu trước khi đánh hoàn thành
+
+Áp dụng mọi lần làm / đánh dấu UC (`uc_progress.json` → `[x]`). User **không cần nhắc lại**.
+
+## 1. Bám SRS / đặc tả
+
+- Đọc và bám sát yêu cầu UC + SRS liên quan (catalog / nghiệp vụ module).
+- Không bịa flow, không đánh xong khi mới có entity/shell/stub/`alert`/`(stub)`.
+- Thiếu wiring (DI, DbSet, API thật, FE gọi API) = **chưa xong**.
+
+## 2. Rà soát BE + FE thật kỹ
+
+- Làm xong một UC (hoặc slice) phải rà cả **backend và frontend**: happy path, validation, quyền, trạng thái, lỗi.
+- Không ship “Day-1 khung” / mock data / hard-code FE rồi ghi 100%.
+- Stub tạm thời → `[~]` hoặc `%` thấp + note rõ; **không** `[x]` pct 100.
+
+## 3. Phong cách code & UI đồng nhất
+
+- BE: đúng Clean Architecture / pattern module hiện có (Controller → Application → Infrastructure, DI `Add{Module}Module`, permission, migration).
+- FE: tái dùng shell, `field`/`btn`/`panel`/`tableWrap`, API client shared — **không** trang one-off lệch design (indigo card lạ, AppShell props sai, double shell).
+- Giao diện đồng nhất giữa các trang cùng module và với phần ERP đã có.
+
+## 4. Test trước khi đánh `[x]`
+
+Tối thiểu trước khi `done: true` / `[x]`:
+
+| Loại   | Yêu cầu                                                                                                                                     |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| **BE** | **5–20** test case thật (gọi service / API / DB in-memory hoặc WebApplicationFactory) — **không** tính assert chuỗi/`Assert.True` local giả |
+| **FE** | **5–20** test case (unit component / API client mock / E2E smoke) cho luồng UC                                                              |
+
+Ít hơn ngưỡng → chưa được đánh hoàn thành. Không bịa số test trên checklist.
+
+## 5. Cập nhật tiến độ trung thực
+
+1. Sửa `uc_progress.json` (note mô tả thật: API + FE + test).
+2. Chạy `python "Làm/Nghiệp vụ/00. Tổng quan/Timeline/build_uc_checklist.py"`.
+3. **Cấm** đánh dấu hàng loạt 100% toàn catalog.
+
+Tham chiếu rà soát: `Làm/Nghiệp vụ/00. Tổng quan/Timeline/Rà xoát UC.md`.

@@ -167,31 +167,83 @@ def save_progress(progress: dict) -> None:
     )
 
 
-TESTED_UC_MAP = {
-    "FIN": 83,
-    "HRM": 187,
-    "LMS": 74,
-    "CRM": 131,
-    "INV": 70,
-    "SYS": 104,
-    "POS": 72,
-    "PUR": 52,
-    "LOG": 39,
-    "AST": 34,
-    "MFG": 46,
-    "FSM": 50,
-    "PJM": 42,
-    "BI": 30,
-    "WF": 40,
-    "PRT": 38,
+# Số page.tsx thực tế dưới src/app/app/<module> (rà 06/08/2026) — không đồng nghĩa 1 page = đủ UC
+FE_PAGE_COUNT: dict[str, int] = {
+    "SYS": 10,
+    "HRM": 18,
+    "LMS": 8,
+    "CRM": 7,
+    "POS": 6,
+    "PUR": 5,
+    "INV": 6,
+    "LOG": 4,
+    "MFG": 3,
+    "FSM": 4,
+    "PJM": 3,
+    "FIN": 9,
+    "AST": 5,
+    "WF": 5,
+    "BI": 3,
+    "PRT": 3,
 }
+
+# Rủi ro chất lượng còn lại dù [x] DoD khung (xem Rà xoát UC.md)
+MODULE_RISK: dict[str, str] = {
+    "SYS": "Cao hơn Day-1; trusted-devices FE mock; OTP/2FA còn stub",
+    "HRM": "Cap-2 dày nhất; một phần Day-1 khung",
+    "LMS": "Cert/thanh toán còn mock",
+    "CRM": "Báo giá Email/PDF text thật + marketing Cap-2; còn Should omni",
+    "POS": "BOM→INV + stock alerts + đóng ca→FIN + sync catalog INV→POS + in HĐ/BC ca wired thật",
+    "PUR": "Đẩy INV/AP + xuất PO CSV wired thật; RFQ/hợp đồng còn thiếu",
+    "INV": "Cap-2 FEFO/hold/HSD có; một phần UC còn thiếu",
+    "LOG": "GPS/route entity mỏng",
+    "MFG": "Đẩy giá thành INV + JE WIP→TP thật; ca/báo cáo nâng cao còn thiếu",
+    "FSM": "Cap-2 parts/ticket; APP mobile Must ngoài scope",
+    "PJM": "Cap-2 progress/cost; FE mỏng (~3 trang)",
+    "FIN": "BT Auto (Source=Auto) wired thật; cash-flow còn đơn giản hóa",
+    "AST": "Đẩy BT KH → FIN JE thật (Posted cân Nợ/Có); IoT/thanh lý nâng cao còn thiếu",
+    "WF": "Cap-1/2 duyệt; mobile/WF nâng cao còn thiếu",
+    "BI": "ETL/KPI/widget/export stub",
+    "PRT": "Login/forgot stub; portal mỏng (~3 trang)",
+}
+
+
+def _avg_pct(rows: list[dict], progress: dict) -> float:
+    vals: list[float] = []
+    for r in rows:
+        st = progress.get(r["id"], {})
+        if st.get("done"):
+            vals.append(float(st.get("pct", 100)))
+        elif st.get("partial"):
+            vals.append(float(st.get("pct", 50)))
+    if not vals:
+        return 0.0
+    return round(sum(vals) / len(vals), 1)
 
 
 def render(catalog: list[dict], progress: dict) -> str:
     today = date.today().strftime("%d/%m/%Y")
     total = len(catalog)
     done_n = sum(1 for r in catalog if progress.get(r["id"], {}).get("done"))
+    partial_n = sum(
+        1
+        for r in catalog
+        if not progress.get(r["id"], {}).get("done")
+        and progress.get(r["id"], {}).get("partial")
+    )
+    todo_n = total - done_n - partial_n
     pct_all = round(100 * done_n / total, 1) if total else 0
+    must_left_all = sum(
+        1
+        for r in catalog
+        if r["prio"] == "Must" and not progress.get(r["id"], {}).get("done")
+    )
+    must_done_all = sum(
+        1
+        for r in catalog
+        if r["prio"] == "Must" and progress.get(r["id"], {}).get("done")
+    )
+    must_total = sum(1 for r in catalog if r["prio"] == "Must")
 
     by_mod: OrderedDict[str, list[dict]] = OrderedDict()
     for r in catalog:
@@ -207,56 +259,114 @@ def render(catalog: list[dict], progress: dict) -> str:
     lines.append("| Nguồn catalog | [`cay_chuc_nang_data.py`](../cay_chuc_nang_data.py) |")
     lines.append("| Tiến độ máy | [`uc_progress.json`](./uc_progress.json) |")
     lines.append("| Sinh lại | `python Timeline/build_uc_checklist.py` → `CHECKLIST_UC.md` |")
+    lines.append("| Rà soát chất lượng | [`Rà xoát UC.md`](./Rà%20xoát%20UC.md) |")
     lines.append("| Tổng UC | **{:,}** |".format(total).replace(",", "."))
-    lines.append(f"| Đã xong | **{done_n}** ({pct_all}%) |")
+    lines.append(
+        f"| Đã xong DoD khung `[x]` | **{done_n}** ({pct_all}%) — API/UI đủ dùng Cap-1/2, **không** = production chỉnh chu |"
+    )
+    lines.append(f"| Partial `[~]` | **{partial_n}** |")
+    lines.append(f"| Chưa `[ ]` | **{todo_n}** |")
+    lines.append(
+        f"| Must (DoD khung) | **{must_done_all}/{must_total}** `[x]` · còn **{must_left_all}** "
+        f"(một phần vẫn stub — xem cột Rủi ro / Rà xoát UC) |"
+    )
+    lines.append(
+        "| Test BE (xUnit chạy được) | **464+** pass — nhiều case Batch assert giả; slice Cap-2 mới = InMemory thật |"
+    )
+    lines.append(
+        "| Test FE | **~37** node:test (calc/helpers CRM+POS) — chưa Jest/Vitest/Playwright E2E |"
+    )
+    lines.append("| FE `page.tsx` (app) | **~99** (kể cả redirect / catch-all) |")
     lines.append("| Kế hoạch giai đoạn | [CHECKLIST_TIEN_DO_GIAI_DOAN.md](../CHECKLIST_TIEN_DO_GIAI_DOAN.md) |")
     lines.append("")
-    lines.append("> Living checklist — **mỗi UC một dòng**. Khi implement xong: cập nhật `uc_progress.json` (hoặc đánh dấu rồi sync) rồi chạy lại script. Không ghi đè tay hàng loạt.")
+    lines.append(
+        "> Living checklist — **mỗi UC một dòng**. Cập nhật `uc_progress.json` rồi chạy lại script. "
+        "**Không** ghi đè tay hàng loạt / không đánh 100% khi còn stub. "
+        "Cột `[x]` = DoD khung; xem cột **Rủi ro** và [`Rà xoát UC.md`](./Rà%20xoát%20UC.md)."
+    )
     lines.append("")
     lines.append("### Quy ước cột")
     lines.append("")
     lines.append("| Cột | Nghĩa |")
     lines.append("| --- | --- |")
     lines.append("| Ưu tiên | Must ← Bắt buộc · Should ← Cao · Could ← Trung bình · Won't ← Thấp |")
-    lines.append("| Xong? | `[x]` đạt DoD tối thiểu (API hoặc UI đủ dùng) · `[~]` partial · `[ ]` chưa |")
-    lines.append("| % | 0–100 theo độ sâu (Day-1 khung có thể <100) |")
+    lines.append("| Xong? | `[x]` DoD khung · `[~]` partial · `[ ]` chưa |")
+    lines.append("| % | 0–100 độ sâu (Day-1/stub thường <100) |")
+    lines.append("| `[x]` / `[~]` / `[ ]` (bảng A) | Đếm theo module từ `uc_progress.json` |")
+    lines.append("| Must [x] / Must còn | Must đã đánh xong vs còn lại |")
+    lines.append("| Should còn | Should chưa `[x]` |")
+    lines.append("| Khác còn | Could + Won't chưa `[x]` |")
+    lines.append("| Avg % | Trung bình `pct` của UC đã `[x]`/`[~]` trong module |")
+    lines.append("| FE pages | Số `page.tsx` thực tế (không = số UC) |")
+    lines.append("| Rủi ro | Ghi chú rà soát 06/08/2026 (stub / API chết / mỏng) |")
     lines.append("")
-    lines.append("## A. Tổng hợp theo module (Đạt DoD cả BE + FE & Test BE + FE)")
+    lines.append("## A. Tổng hợp theo module")
     lines.append("")
-    lines.append("| Module | Tổng UC | Xong BE | Xong FE | % Xong DoD | Test BE (xUnit) | Test FE (UI/API) | % Test DoD | Must còn |")
-    lines.append("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |")
+    lines.append(
+        "| Module | Tổng | [x] | [~] | [ ] | % | Must [x] | Must còn | Should còn | Khác còn | Avg % | FE pages | Rủi ro |"
+    )
+    lines.append("| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |")
 
-    tot_all = 0
-    tot_done_be = 0
-    tot_done_fe = 0
-    tot_tested_be = 0
-    tot_tested_fe = 0
-    tot_must = 0
+    tot_all = tot_x = tot_t = tot_z = 0
+    tot_must_x = tot_must_l = tot_should_l = tot_other_l = 0
+    tot_fe = 0
+    avg_acc: list[float] = []
 
     for mod, rows in by_mod.items():
-        d_be = sum(1 for r in rows if progress.get(r["id"], {}).get("done"))
-        d_fe = d_be # DoD hoàn chỉnh cả BE lẫn FE
-        p = round(100 * d_be / len(rows), 1) if rows else 0
-        tested_be = TESTED_UC_MAP.get(mod, 0)
-        tested_fe = tested_be # Phủ kiểm thử đầy đủ giao diện và API FE
-        p_test = round(100 * tested_be / d_be, 1) if d_be > 0 else 0
-        must_left = sum(
+        n = len(rows)
+        x = sum(1 for r in rows if progress.get(r["id"], {}).get("done"))
+        t = sum(
+            1
+            for r in rows
+            if not progress.get(r["id"], {}).get("done")
+            and progress.get(r["id"], {}).get("partial")
+        )
+        z = n - x - t
+        p = round(100 * x / n, 1) if n else 0
+        must_x = sum(
+            1 for r in rows if r["prio"] == "Must" and progress.get(r["id"], {}).get("done")
+        )
+        must_l = sum(
             1
             for r in rows
             if r["prio"] == "Must" and not progress.get(r["id"], {}).get("done")
         )
-        lines.append(f"| {mod} | {len(rows)} | {d_be} | {d_fe} | {p}% | {tested_be} | {tested_fe} | {p_test}% | {must_left} |")
-        tot_all += len(rows)
-        tot_done_be += d_be
-        tot_done_fe += d_fe
-        tot_tested_be += tested_be
-        tot_tested_fe += tested_fe
-        tot_must += must_left
+        should_l = sum(
+            1
+            for r in rows
+            if r["prio"] == "Should" and not progress.get(r["id"], {}).get("done")
+        )
+        other_l = sum(
+            1
+            for r in rows
+            if r["prio"] in ("Could", "Won't") and not progress.get(r["id"], {}).get("done")
+        )
+        avg = _avg_pct(rows, progress)
+        fe = FE_PAGE_COUNT.get(mod, 0)
+        risk = MODULE_RISK.get(mod, "")
+        lines.append(
+            f"| {mod} | {n} | {x} | {t} | {z} | {p}% | {must_x} | {must_l} | {should_l} | {other_l} | {avg} | {fe} | {risk} |"
+        )
+        tot_all += n
+        tot_x += x
+        tot_t += t
+        tot_z += z
+        tot_must_x += must_x
+        tot_must_l += must_l
+        tot_should_l += should_l
+        tot_other_l += other_l
+        tot_fe += fe
+        if avg:
+            avg_acc.append(avg)
 
-    tot_p_done = round(100 * tot_done_be / tot_all, 1) if tot_all else 0
-    tot_p_test = round(100 * tot_tested_be / tot_done_be, 1) if tot_done_be else 0
+    tot_p = round(100 * tot_x / tot_all, 1) if tot_all else 0
+    tot_avg = round(sum(avg_acc) / len(avg_acc), 1) if avg_acc else 0
     formatted_tot_all = "{:,}".format(tot_all).replace(",", ".")
-    lines.append(f"| **TỔNG** | **{formatted_tot_all}** | **{tot_done_be}** | **{tot_done_fe}** | **{tot_p_done}%** | **{tot_tested_be}** | **{tot_tested_fe}** | **{tot_p_test}%** | **{tot_must}** |")
+    lines.append(
+        f"| **TỔNG** | **{formatted_tot_all}** | **{tot_x}** | **{tot_t}** | **{tot_z}** | "
+        f"**{tot_p}%** | **{tot_must_x}** | **{tot_must_l}** | **{tot_should_l}** | **{tot_other_l}** | "
+        f"**{tot_avg}** | **{tot_fe}** | Xem [`Rà xoát UC.md`](./Rà%20xoát%20UC.md) |"
+    )
 
     lines.append("")
     lines.append("---")
@@ -286,11 +396,54 @@ def render(catalog: list[dict], progress: dict) -> str:
     lines.append("")
     lines.append("| Ngày | Thay đổi |")
     lines.append("| --- | --- |")
-    # Giữ nhật ký ổn định (không ghi đè mỗi lần regenerate)
     lines.append("| 04/08/2026 | Sinh checklist từ catalog (1092 UC); seed tiến độ M1 Day-1 SYS/HRM/WF |")
     lines.append(
-        f"| {today} | Cap-2 HRM gần đủ (tuyển→chấm công→lương→KT/KL→offboard→dashboard `182–187`, skip `174`) + WF `032`/`040` · "
-        f"**{done_n}/{total}** UC (xem `uc_progress.json` / PHAN_NHOM_UC_CAC_MODULE.md) |"
+        "| 05–06/08/2026 | Cap-2 lần lượt (INV FEFO/hold, PJM/FSM/LOG, HRM/WF…) · tiến độ máy trước claim 100% |"
+    )
+    lines.append(
+        f"| {today} | **Hiệu chỉnh sau rà soát:** khôi phục `uc_progress` (bỏ đánh dấu 1092/1092 giả); "
+        f"bảng A thêm cột `[x]`/`[~]`/`[ ]`/Must/Should/Avg%/FE pages/Rủi ro — "
+        f"xem [`Rà xoát UC.md`](./Rà%20xoát%20UC.md) |"
+    )
+    lines.append(
+        f"| {today} | Cap-2 CRM marketing/promo **wired**: `/crm/campaigns`+`/crm/promotions` · "
+        f"UC `016,019,023,026,029,031,032–035,037` (rewire thật) |"
+    )
+    lines.append(
+        f"| {today} | Cap-2 POS BOM+alerts **wired**: PaySale→INV Issue · stock-alerts · "
+        f"UC `054,055` (rewire thật) |"
+    )
+    lines.append(
+        f"| {today} | Cap-2 CRM sync POS + BC voucher + POS đóng ca→FIN: "
+        f"UC `036,038,059` · BE 15 InMemory + FE helpers node:test |"
+    )
+    lines.append(
+        f"| {today} | Cap-2 báo cáo POS: top SP · so sánh điểm bán · cost variance BOM vs INV: "
+        f"UC `065,066,067` · BE 11 InMemory + FE 14 node:test |"
+    )
+    lines.append(
+        f"| {today} | Cap-2 vận hành chuỗi POS: chain-live vs target + target DT store (migration): "
+        f"UC `069,072` · BE 4 InMemory + FE 7 node:test |"
+    )
+    lines.append(
+        f"| {today} | **Hoàn thiện UC dang dở PUR:** đẩy GRN→INV thật + HĐ→FIN AP thật (idempotent) + xuất PO CSV: "
+        f"UC `033,037,043` 75→90 · BE 10 InMemory + FE 16 node:test |"
+    )
+    lines.append(
+        f"| {today} | **Hoàn thiện UC dang dở CRM:** giữ tồn INV reservation thật (ATP) + đẩy đơn→LOG lệnh giao thật: "
+        f"UC `082,088` 75→90 · BE 10 InMemory + FE 14 node:test |"
+    )
+    lines.append(
+        f"| {today} | **Hoàn thiện UC dang dở POS:** sync catalog INV→POS thật + hóa đơn text + báo cáo ca thật: "
+        f"UC `015,037,048` 75→90 · BE 8 InMemory + FE 7 node:test |"
+    )
+    lines.append(
+        f"| {today} | **Hoàn thiện UC dang dở AST:** đẩy BT khấu hao → FIN JE thật (Posted cân Nợ/Có, auto-resolve TK/kỳ): "
+        f"UC `012` 80→90 · BE 8 InMemory + FE 8 node:test |"
+    )
+    lines.append(
+        f"| {today} | **Hoàn thiện UC dang dở MFG/FIN/CRM:** JE WIP→TP thật + BT Auto (filter Source) + báo giá text/Email: "
+        f"UC `MFG_031,FIN_015,CRM_074` →90 · BE 13 InMemory + FE 9 node:test · **{done_n}/{total}** ({pct_all}%) |"
     )
     lines.append("")
     return "\n".join(lines)

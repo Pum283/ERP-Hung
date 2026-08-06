@@ -1,6 +1,8 @@
 using Erp.Application.Common.Exceptions;
+using Erp.Application.DTOs.Inv;
 using Erp.Application.DTOs.Pos;
 using Erp.Application.Interfaces.Services.Fin;
+using Erp.Application.Interfaces.Services.Inv;
 using Erp.Application.Interfaces.Services.Pos;
 using Erp.Domain.Base;
 using Erp.Domain.Entities.Pos;
@@ -16,10 +18,12 @@ public sealed class PosSalesService : IPosSalesService
 
     private readonly AppDbContext _db;
     private readonly IFinRevenueService _rev;
-    public PosSalesService(AppDbContext db, IFinRevenueService rev)
+    private readonly IInvStockService _stock;
+    public PosSalesService(AppDbContext db, IFinRevenueService rev, IInvStockService stock)
     {
         _db = db;
         _rev = rev;
+        _stock = stock;
     }
 
     public async Task<IReadOnlyList<PosShiftDto>> ListShiftsAsync(
@@ -108,8 +112,62 @@ public sealed class PosSalesService : IPosSalesService
         if (!string.IsNullOrWhiteSpace(req.Note)) shift.Note = Opt(req.Note, 1000);
         shift.UpdatedBy = userId;
         await _db.SaveChangesAsync(ct);
+
+        // UC_POS_059 — bắt kịp DT FIN (idempotent; PaySale thường đã ghi nhận).
+        var sync = await SyncShiftRevenueToFinAsync(tenantId, userId, shiftId, ct);
+        var tag = FormatFinSyncTag(sync);
+        var combined = string.IsNullOrWhiteSpace(shift.Note) ? tag : $"{shift.Note.Trim()} | {tag}";
+        if (combined.Length > 1000) combined = combined[..1000];
+        shift.Note = combined;
+        shift.UpdatedBy = userId;
+        await _db.SaveChangesAsync(ct);
+
         return (await MapShiftsAsync(tenantId, [shift], ct))[0];
     }
+
+    public async Task<PosShiftFinSyncResult> SyncShiftRevenueToFinAsync(
+        Guid tenantId, Guid userId, Guid shiftId, CancellationToken ct = default)
+    {
+        _ = await RequireAsync(_db.PosShifts, tenantId, shiftId, "ca bán", ct);
+        var paidIds = await _db.PosSales.AsNoTracking()
+            .Where(s => s.TenantId == tenantId && s.ShiftId == shiftId && !s.IsDeleted && s.Status == "Paid")
+            .Select(s => s.Id).ToListAsync(ct);
+
+        var existingIds = await _db.FinRevenueDocuments.AsNoTracking()
+            .Where(d => d.TenantId == tenantId && !d.IsDeleted && d.SourceModule == "POS"
+                        && d.Status != "Void" && d.SourceId != null && paidIds.Contains(d.SourceId.Value))
+            .Select(d => d.SourceId!.Value)
+            .ToListAsync(ct);
+        var had = existingIds.ToHashSet();
+
+        var synced = 0;
+        var failed = 0;
+        var already = 0;
+        foreach (var saleId in paidIds)
+        {
+            if (had.Contains(saleId))
+            {
+                already++;
+                continue;
+            }
+            try
+            {
+                await _rev.RecognizeFromPosAsync(tenantId, userId, saleId, null, ct);
+                synced++;
+            }
+            catch
+            {
+                failed++;
+            }
+        }
+
+        return new PosShiftFinSyncResult(
+            shiftId, paidIds.Count, synced, already, failed,
+            $"FIN ca: {synced} mới, {already} đã có, {failed} lỗi / {paidIds.Count} đơn Paid.");
+    }
+
+    public static string FormatFinSyncTag(PosShiftFinSyncResult sync)
+        => $"FIN:{sync.SyncedCount}+{sync.AlreadyHadCount}/{sync.PaidSaleCount} fail={sync.FailedCount}";
 
     public async Task<PosShiftDto> PrintShiftReportAsync(
         Guid tenantId, Guid userId, Guid shiftId, CancellationToken ct = default)
@@ -119,6 +177,56 @@ public sealed class PosSalesService : IPosSalesService
         shift.UpdatedBy = userId;
         await _db.SaveChangesAsync(ct);
         return (await MapShiftsAsync(tenantId, [shift], ct))[0];
+    }
+
+    public async Task<(string FileName, string Content)> BuildShiftReportTextAsync(
+        Guid tenantId, Guid userId, Guid shiftId, CancellationToken ct = default)
+    {
+        var shift = await RequireAsync(_db.PosShifts, tenantId, shiftId, "ca bán", ct);
+        var store = await _db.PosStores.AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == shift.StoreId && x.TenantId == tenantId, ct);
+        var cashier = await _db.Users.AsNoTracking()
+            .Where(x => x.Id == shift.CashierUserId)
+            .Select(x => x.DisplayName ?? x.Username).FirstOrDefaultAsync(ct);
+
+        var sales = await _db.PosSales.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && x.ShiftId == shiftId && !x.IsDeleted)
+            .ToListAsync(ct);
+        var saleIds = sales.Select(x => x.Id).ToList();
+        var payByMethod = await _db.PosSalePayments.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && saleIds.Contains(x.SaleId) && !x.IsDeleted)
+            .GroupBy(x => x.Method)
+            .Select(g => new { Method = g.Key, Total = g.Sum(x => x.Amount), Count = g.Count() })
+            .ToListAsync(ct);
+
+        var paid = sales.Where(x => x.Status is "Paid" or "Returned").ToList();
+        var revenue = paid.Sum(x => x.TotalAmount);
+        var returned = sales.Sum(x => x.ReturnedAmount);
+
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine($"BÁO CÁO CA {shift.Code}");
+        sb.AppendLine($"Điểm bán : {store?.Name ?? "—"}");
+        sb.AppendLine($"Thu ngân : {cashier ?? "—"}");
+        sb.AppendLine($"Mở ca    : {shift.OpenedAt.ToLocalTime():dd/MM/yyyy HH:mm}");
+        sb.AppendLine($"Đóng ca  : {(shift.ClosedAt?.ToLocalTime().ToString("dd/MM/yyyy HH:mm") ?? "(đang mở)")}");
+        sb.AppendLine(new string('-', 42));
+        sb.AppendLine($"Đơn đã thanh toán : {paid.Count}/{sales.Count}");
+        sb.AppendLine($"Doanh thu         : {revenue:N0}");
+        if (returned > 0) sb.AppendLine($"Hoàn trả          : {returned:N0}");
+        foreach (var p in payByMethod.OrderByDescending(x => x.Total))
+            sb.AppendLine($"  {p.Method,-10}: {p.Total,14:N0} ({p.Count} lượt)");
+        sb.AppendLine(new string('-', 42));
+        sb.AppendLine($"Tiền đầu ca       : {shift.OpeningCash:N0}");
+        sb.AppendLine($"Tiền mặt dự kiến  : {(shift.ExpectedCash?.ToString("N0") ?? "—")}");
+        sb.AppendLine($"Tiền mặt kiểm đếm : {(shift.ClosingCashCounted?.ToString("N0") ?? "—")}");
+        sb.AppendLine($"Chênh lệch        : {(shift.Variance?.ToString("N0") ?? "—")}");
+        sb.AppendLine(new string('-', 42));
+        sb.AppendLine($"In lúc {DateTimeOffset.UtcNow.ToLocalTime():dd/MM/yyyy HH:mm}");
+
+        shift.ReportPrintedAt = DateTimeOffset.UtcNow;
+        shift.UpdatedBy = userId;
+        await _db.SaveChangesAsync(ct);
+        return ($"{shift.Code}-baocao-ca.txt", sb.ToString());
     }
 
     public async Task<IReadOnlyList<PosSaleDto>> ListSalesAsync(
@@ -296,6 +404,10 @@ public sealed class PosSalesService : IPosSalesService
         var remain = sale.TotalAmount - sale.PaidAmount;
         if (req.Amount > remain + 0.01m) throw new AppException($"Vượt còn lại ({remain:N0}).");
 
+        var willBePaid = sale.PaidAmount + req.Amount + 0.01m >= sale.TotalAmount;
+        if (willBePaid)
+            await DeductBomStockForSaleAsync(tenantId, userId, sale, ct);
+
         var pay = new PosSalePayment
         {
             TenantId = tenantId, SaleId = saleId,
@@ -305,7 +417,7 @@ public sealed class PosSalesService : IPosSalesService
         };
         _db.PosSalePayments.Add(pay);
         sale.PaidAmount = Math.Round(sale.PaidAmount + req.Amount, 2);
-        if (sale.PaidAmount + 0.01m >= sale.TotalAmount)
+        if (willBePaid)
         {
             sale.Status = "Paid";
             sale.PaidAt = DateTimeOffset.UtcNow;
@@ -332,6 +444,122 @@ public sealed class PosSalesService : IPosSalesService
         return MapPay(pay);
     }
 
+    public async Task<IReadOnlyList<PosStockAlertDto>> ListStockAlertsAsync(
+        Guid tenantId, Guid? storeId = null, CancellationToken ct = default)
+    {
+        Guid? whFilter = null;
+        if (storeId is Guid sid)
+        {
+            var store = await RequireAsync(_db.PosStores, tenantId, sid, "điểm bán", ct);
+            whFilter = store.WarehouseId;
+        }
+
+        var warehouses = await _db.InvWarehouses.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Status == "Active"
+                        && (whFilter == null || x.Id == whFilter))
+            .ToDictionaryAsync(x => x.Id, x => x.Name, ct);
+        if (warehouses.Count == 0) return Array.Empty<PosStockAlertDto>();
+
+        var whIds = warehouses.Keys.ToList();
+        var balances = await _db.InvStockBalances.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted && whIds.Contains(x.WarehouseId))
+            .GroupBy(x => new { x.WarehouseId, x.SkuId })
+            .Select(g => new { g.Key.WarehouseId, g.Key.SkuId, Qty = g.Sum(x => x.QtyOnHand) })
+            .ToListAsync(ct);
+        var skuIds = balances.Select(b => b.SkuId).Distinct().ToList();
+        var skus = await _db.InvSkus.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted && skuIds.Contains(x.Id))
+            .ToDictionaryAsync(x => x.Id, ct);
+
+        var rows = new List<PosStockAlertDto>();
+        foreach (var b in balances)
+        {
+            if (!skus.TryGetValue(b.SkuId, out var sku)) continue;
+            string? alert = null;
+            if (sku.MinQty is decimal min && b.Qty <= min) alert = "BelowMin";
+            else if (sku.ReorderQty is decimal reo && b.Qty <= reo) alert = "NearReorder";
+            else if (b.Qty <= 0) alert = "OutOfStock";
+            if (alert is null) continue;
+            rows.Add(new PosStockAlertDto(
+                b.WarehouseId, warehouses.GetValueOrDefault(b.WarehouseId),
+                sku.Id, sku.Code, sku.Name, b.Qty, sku.MinQty, sku.ReorderQty, alert));
+        }
+        return rows.OrderBy(x => x.AlertType).ThenBy(x => x.SkuCode).Take(100).ToList();
+    }
+
+    /// <summary>UC_POS_054 — trừ tồn INV theo BOM khi đơn Paid (idempotent theo Ref POS).</summary>
+    private async Task DeductBomStockForSaleAsync(
+        Guid tenantId, Guid userId, PosSale sale, CancellationToken ct)
+    {
+        var already = await _db.InvStockDocs.AsNoTracking().AnyAsync(
+            x => x.TenantId == tenantId && !x.IsDeleted
+                 && x.RefModule == "POS" && x.RefId == sale.Id
+                 && x.DocType == "Issue" && x.Status == "Posted", ct);
+        if (already) return;
+
+        var shift = await RequireAsync(_db.PosShifts, tenantId, sale.ShiftId, "ca bán", ct);
+        var store = await RequireAsync(_db.PosStores, tenantId, shift.StoreId, "điểm bán", ct);
+        var whId = store.WarehouseId ?? await _db.InvWarehouses.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && x.Status == "Active" && !x.IsDeleted)
+            .OrderBy(x => x.Code).Select(x => (Guid?)x.Id).FirstOrDefaultAsync(ct);
+        if (whId is null || whId == Guid.Empty)
+            throw new AppException("Chưa gắn kho INV cho điểm bán / chưa có kho Active — không trừ tồn BOM.");
+
+        var saleLines = await _db.PosSaleLines.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && x.SaleId == sale.Id && !x.IsDeleted && x.Status == "Active")
+            .ToListAsync(ct);
+        var productIds = saleLines.Where(x => x.ProductId is not null).Select(x => x.ProductId!.Value).Distinct().ToList();
+        if (productIds.Count == 0) return;
+
+        var bom = await _db.PosBomLines.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted && productIds.Contains(x.ProductId))
+            .ToListAsync(ct);
+        if (bom.Count == 0) return;
+
+        var need = new Dictionary<string, decimal>(StringComparer.OrdinalIgnoreCase);
+        foreach (var line in saleLines)
+        {
+            if (line.ProductId is not Guid pid) continue;
+            foreach (var b in bom.Where(x => x.ProductId == pid))
+            {
+                var code = b.MaterialCode.Trim().ToUpperInvariant();
+                if (code.Length == 0 || b.Qty <= 0) continue;
+                need[code] = need.GetValueOrDefault(code) + Math.Round(b.Qty * line.Quantity, 3);
+            }
+        }
+        if (need.Count == 0) return;
+
+        var codes = need.Keys.ToList();
+        var skus = await _db.InvSkus.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted && codes.Contains(x.Code))
+            .ToListAsync(ct);
+        var byCode = skus.ToDictionary(x => x.Code, x => x, StringComparer.OrdinalIgnoreCase);
+        var missing = need.Keys.Where(k => !byCode.ContainsKey(k)).ToList();
+        if (missing.Count > 0)
+            throw new AppException($"BOM thiếu SKU INV: {string.Join(", ", missing)}.");
+
+        var docDto = await _stock.CreateDocAsync(
+            tenantId, userId,
+            new InvStockDocCreateRequest("Issue", "Sales", whId.Value, $"POS sale {sale.Code}"),
+            ct);
+        var doc = await _db.InvStockDocs.FirstAsync(x => x.Id == docDto.Id && x.TenantId == tenantId, ct);
+        doc.RefModule = "POS";
+        doc.RefId = sale.Id;
+        doc.RefCode = sale.Code;
+        doc.UpdatedBy = userId;
+        await _db.SaveChangesAsync(ct);
+
+        foreach (var (code, qty) in need)
+        {
+            var sku = byCode[code];
+            await _stock.UpsertDocLineAsync(
+                tenantId, userId, doc.Id,
+                new InvStockDocLineRequest(null, sku.Id, qty, null, null, null),
+                ct);
+        }
+        await _stock.PostDocAsync(tenantId, userId, doc.Id, ct);
+    }
+
     public async Task<PosSaleDto> PrintReceiptAsync(
         Guid tenantId, Guid userId, Guid saleId, CancellationToken ct = default)
     {
@@ -342,6 +570,64 @@ public sealed class PosSalesService : IPosSalesService
         sale.UpdatedBy = userId;
         await _db.SaveChangesAsync(ct);
         return (await MapSalesAsync(tenantId, [sale], ct))[0];
+    }
+
+    public async Task<(string FileName, string Content)> BuildReceiptTextAsync(
+        Guid tenantId, Guid userId, Guid saleId, CancellationToken ct = default)
+    {
+        var sale = await RequireAsync(_db.PosSales, tenantId, saleId, "đơn bán", ct);
+        if (sale.Status is not ("Paid" or "Returned"))
+            throw new AppException("Chỉ in hóa đơn đơn đã thanh toán.");
+
+        var store = await _db.PosStores.AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == sale.StoreId && x.TenantId == tenantId, ct);
+        var lines = await _db.PosSaleLines.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && x.SaleId == saleId && !x.IsDeleted && x.Status == "Active")
+            .OrderBy(x => x.LineNo).ToListAsync(ct);
+        var pays = await _db.PosSalePayments.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && x.SaleId == saleId && !x.IsDeleted)
+            .OrderBy(x => x.PaidAt).ToListAsync(ct);
+
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine(store?.Name ?? "ĐIỂM BÁN");
+        if (!string.IsNullOrWhiteSpace(store?.Address)) sb.AppendLine(store!.Address);
+        sb.AppendLine(new string('=', 42));
+        sb.AppendLine("HÓA ĐƠN BÁN LẺ");
+        sb.AppendLine($"Số: {sale.Code}");
+        sb.AppendLine($"Ngày: {(sale.PaidAt ?? sale.CreatedAt).ToLocalTime():dd/MM/yyyy HH:mm}");
+        if (!string.IsNullOrWhiteSpace(sale.AreaName)) sb.AppendLine($"Khu vực: {sale.AreaName}");
+        sb.AppendLine(new string('-', 42));
+        foreach (var l in lines)
+        {
+            sb.AppendLine(l.ProductName);
+            sb.AppendLine($"  {l.Quantity:0.##} x {l.UnitPrice:N0} = {l.LineAmount,14:N0}");
+        }
+        sb.AppendLine(new string('-', 42));
+        sb.AppendLine($"Tạm tính  : {sale.SubTotal,14:N0}");
+        if (sale.DiscountAmount > 0)
+        {
+            var src = sale.DiscountSource switch
+            {
+                "Voucher" => $" (voucher {sale.AppliedVoucherCode})",
+                "Promotion" => " (CTKM)",
+                "Manual" => " (giảm tay)",
+                _ => "",
+            };
+            sb.AppendLine($"Giảm giá  : {sale.DiscountAmount,14:N0}{src}");
+        }
+        if (sale.TaxAmount > 0) sb.AppendLine($"Thuế      : {sale.TaxAmount,14:N0}");
+        sb.AppendLine($"TỔNG CỘNG : {sale.TotalAmount,14:N0}");
+        foreach (var p in pays)
+            sb.AppendLine($"  {p.Method,-8}: {p.Amount,14:N0}");
+        if (sale.ReturnedAmount > 0)
+            sb.AppendLine($"Đã hoàn   : {sale.ReturnedAmount,14:N0}");
+        sb.AppendLine(new string('=', 42));
+        sb.AppendLine("Cảm ơn quý khách!");
+
+        sale.ReceiptPrintedAt = DateTimeOffset.UtcNow;
+        sale.UpdatedBy = userId;
+        await _db.SaveChangesAsync(ct);
+        return ($"{sale.Code}-hoadon.txt", sb.ToString());
     }
 
     public async Task<IReadOnlyList<PosReturnDto>> ListReturnsAsync(

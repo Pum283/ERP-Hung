@@ -6,7 +6,9 @@
     "dev": "next dev -H 0.0.0.0 -p 3000",
     "build": "next build",
     "start": "next start -p 3000",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "node --experimental-strip-types --test src/shared/api/crm-marketing-calc.node-test.mts src/shared/api/crm-promo-sync-helpers.node-test.mts src/shared/api/pos-stock-helpers.node-test.mts src/shared/api/pos-shift-fin-helpers.node-test.mts src/shared/api/pos-report-helpers.node-test.mts src/shared/api/pur-push-helpers.node-test.mts src/shared/api/crm-order-sync-helpers.node-test.mts src/shared/api/pos-doc-helpers.node-test.mts src/shared/api/ast-fin-helpers.node-test.mts src/shared/api/mfg-fin-crm-helpers.node-test.mts",
+    "test:pos": "node --experimental-strip-types --test src/shared/api/pos-stock-helpers.node-test.mts src/shared/api/pos-shift-fin-helpers.node-test.mts src/shared/api/pos-report-helpers.node-test.mts"
   },
   "dependencies": {
     "@microsoft/signalr": "^10.0.0",

@@ -1,5 +1,7 @@
 using Erp.Application.Common.Exceptions;
+using Erp.Application.DTOs.Fin;
 using Erp.Application.DTOs.Pur;
+using Erp.Application.Interfaces.Services.Fin;
 using Erp.Application.Interfaces.Services.Inv;
 using Erp.Application.Interfaces.Services.Pur;
 using Erp.Domain.Base;
@@ -13,10 +15,12 @@ public sealed class PurReceivingService : IPurReceivingService
 {
     private readonly AppDbContext _db;
     private readonly IInvStockService _inv;
-    public PurReceivingService(AppDbContext db, IInvStockService inv)
+    private readonly IFinApService _finAp;
+    public PurReceivingService(AppDbContext db, IInvStockService inv, IFinApService finAp)
     {
         _db = db;
         _inv = inv;
+        _finAp = finAp;
     }
 
     public async Task<IReadOnlyList<PurGrnDto>> ListGrnsAsync(
@@ -149,9 +153,13 @@ public sealed class PurReceivingService : IPurReceivingService
             await _inv.PostPurchaseReceiptFromGrnAsync(tenantId, userId, grn.Id, null, ct);
             grn.InventoryPushStatus = "Pushed";
         }
-        catch
+        catch (Exception ex)
         {
             grn.InventoryPushStatus = "Failed";
+            var reason = $"INV lỗi: {ex.Message}";
+            grn.Note = string.IsNullOrWhiteSpace(grn.Note)
+                ? reason
+                : $"{grn.Note} · {reason}"[..Math.Min(1000, grn.Note.Length + reason.Length + 3)];
         }
         grn.UpdatedBy = userId;
         await _db.SaveChangesAsync(ct);
@@ -338,12 +346,38 @@ public sealed class PurReceivingService : IPurReceivingService
         return (await MapInvoicesAsync(tenantId, [inv], ct))[0];
     }
 
+    /// <summary>UC_PUR_043 — tạo + ghi sổ FinApInvoice thật từ HĐ mua đã khớp 3 chiều (idempotent).</summary>
     public async Task<PurInvoiceDto> PushInvoiceToApAsync(
         Guid tenantId, Guid userId, Guid invoiceId, CancellationToken ct = default)
     {
         var inv = await RequireAsync(_db.PurVendorInvoices, tenantId, invoiceId, "hóa đơn", ct);
         if (inv.MatchStatus != "Matched")
             throw new AppException("Chỉ đẩy AP khi đã khớp 3 chiều.");
+        if (inv.TotalAmount <= 0)
+            throw new AppException("Tổng HĐ phải > 0 mới đẩy AP.");
+
+        var existing = (await _finAp.ListInvoicesAsync(tenantId, inv.VendorId, null, ct))
+            .FirstOrDefault(x => x.PurVendorInvoiceId == inv.Id);
+        if (existing is null)
+        {
+            try
+            {
+                var ap = await _finAp.UpsertInvoiceAsync(tenantId, userId, new FinApInvoiceUpsertRequest(
+                    null, null, inv.VendorId, inv.InvoiceNumber, inv.Id,
+                    inv.InvoiceDate, inv.InvoiceDate.AddDays(30),
+                    inv.SubTotal, inv.TaxAmount, null, null, null,
+                    $"Từ HĐ mua {inv.Code} (PO {inv.PoId?.ToString("N")[..8] ?? "—"})"), ct);
+                await _finAp.PostInvoiceAsync(tenantId, userId, ap.Id, ct);
+            }
+            catch (AppException ex)
+            {
+                inv.ApPushStatus = "Failed";
+                inv.UpdatedBy = userId;
+                await _db.SaveChangesAsync(ct);
+                throw new AppException($"Đẩy AP thất bại: {ex.Message}");
+            }
+        }
+
         inv.ApPushStatus = "Pushed";
         inv.Status = "Posted";
         inv.UpdatedBy = userId;

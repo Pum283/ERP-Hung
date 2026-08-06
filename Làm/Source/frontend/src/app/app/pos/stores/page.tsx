@@ -11,6 +11,7 @@ import {
   type PosStoreDetailDto,
   type PosStoreDto,
 } from "@/shared/api/pos-api";
+import { fetchInvWarehouses, type InvWarehouseDto } from "@/shared/api/inv-api";
 import { fetchMsgDirectory, type MsgDirectoryUserDto } from "@/shared/api/msg-api";
 import { usePermissions } from "@/shared/hooks/use-permissions";
 import { btn } from "@/shared/ui/btn";
@@ -22,6 +23,7 @@ export default function PosStoresPage() {
   const canManage = can("pos.store.manage");
 
   const [stores, setStores] = useState<PosStoreDto[]>([]);
+  const [warehouses, setWarehouses] = useState<InvWarehouseDto[]>([]);
   const [users, setUsers] = useState<MsgDirectoryUserDto[]>([]);
   const [selectedId, setSelectedId] = useState("");
   const [detail, setDetail] = useState<PosStoreDetailDto | null>(null);
@@ -32,6 +34,8 @@ export default function PosStoresPage() {
   const [code, setCode] = useState("CH-001");
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
+  const [warehouseId, setWarehouseId] = useState("");
+  const [revenueTarget, setRevenueTarget] = useState("");
 
   const [termCode, setTermCode] = useState("Q01");
   const [termName, setTermName] = useState("");
@@ -41,17 +45,21 @@ export default function PosStoresPage() {
   const [printConn, setPrintConn] = useState("");
   const [cashierUserId, setCashierUserId] = useState("");
   const [cashierRole, setCashierRole] = useState("Cashier");
+  const [detailTarget, setDetailTarget] = useState("");
 
   const load = useCallback(async () => {
-    const [s, u] = await Promise.all([
+    const [s, u, wh] = await Promise.all([
       fetchPosStores(),
       fetchMsgDirectory().catch(() => [] as MsgDirectoryUserDto[]),
+      fetchInvWarehouses().catch(() => [] as InvWarehouseDto[]),
     ]);
     setStores(s);
     setUsers(u);
+    setWarehouses(wh.filter((w) => w.status === "Active"));
     if (!selectedId && s[0]) setSelectedId(s[0].id);
     if (!cashierUserId && u[0]) setCashierUserId(u[0].id);
-  }, [selectedId, cashierUserId]);
+    if (!warehouseId && wh[0]) setWarehouseId(wh.find((w) => w.status === "Active")?.id ?? "");
+  }, [selectedId, cashierUserId, warehouseId]);
 
   useEffect(() => {
     if (!canRead) {
@@ -80,12 +88,16 @@ export default function PosStoresPage() {
   async function onSaveStore(e: FormEvent) {
     e.preventDefault();
     try {
-      const saved = await upsertPosStore({ code, name, address });
+      const saved = await upsertPosStore({
+        code, name, address, warehouseId: warehouseId || null,
+        monthlyRevenueTarget: revenueTarget === "" ? null : Number(revenueTarget),
+      });
       setName("");
       setAddress("");
+      setRevenueTarget("");
       await load();
       setSelectedId(saved.id);
-      flash("Đã lưu điểm bán.");
+      flash("Đã lưu điểm bán (kèm kho INV / target nếu nhập).");
     } catch (err) {
       setError((err as Error).message);
     }
@@ -129,6 +141,24 @@ export default function PosStoresPage() {
     }
   }
 
+  async function onSetTarget(e: FormEvent) {
+    e.preventDefault();
+    if (!detail) return;
+    try {
+      const s = detail.store;
+      await upsertPosStore({
+        id: s.id, code: s.code, name: s.name,
+        address: s.address ?? undefined, status: s.status,
+        warehouseId: s.warehouseId ?? null,
+        monthlyRevenueTarget: detailTarget === "" ? 0 : Number(detailTarget),
+      });
+      await refreshDetail();
+      flash("Đã cập nhật target doanh thu tháng.");
+    } catch (err) {
+      setError((err as Error).message);
+    }
+  }
+
   async function onAddCashier(e: FormEvent) {
     e.preventDefault();
     if (!selectedId || !cashierUserId) return;
@@ -150,7 +180,7 @@ export default function PosStoresPage() {
       <div>
         <h1 className="text-xl font-semibold tracking-tight">Điểm bán POS</h1>
         <p className="mt-1 text-sm text-[var(--muted)]">
-          Điểm bán · quầy · máy in hóa đơn · phân quyền thu ngân (UC_POS_001–003, 007)
+          Điểm bán · gắn kho INV · quầy · máy in · thu ngân · target DT tháng (UC_POS_001–003, 007 · 054 · 072)
         </p>
       </div>
 
@@ -167,6 +197,8 @@ export default function PosStoresPage() {
                 <tr>
                   <th className={th}>Mã</th>
                   <th className={th}>Tên</th>
+                  <th className={th}>Kho INV</th>
+                  <th className={th}>Target/tháng</th>
                   <th className={th}>Quầy</th>
                   <th className={th}>In</th>
                   <th className={th}>TN</th>
@@ -184,6 +216,8 @@ export default function PosStoresPage() {
                       <div>{s.name}</div>
                       <span className={statusPill(s.status === "Active" ? "success" : "muted")}>{s.status}</span>
                     </td>
+                    <td className={td}>{s.warehouseName ?? "—"}</td>
+                    <td className={td}>{s.monthlyRevenueTarget > 0 ? s.monthlyRevenueTarget.toLocaleString("vi-VN") : "—"}</td>
                     <td className={td}>{s.terminalCount}</td>
                     <td className={td}>{s.printerCount}</td>
                     <td className={td}>{s.cashierCount}</td>
@@ -202,6 +236,18 @@ export default function PosStoresPage() {
                 <input className={field} placeholder="Mã" value={code} onChange={(e) => setCode(e.target.value)} required />
                 <input className={field} placeholder="Tên" value={name} onChange={(e) => setName(e.target.value)} required />
                 <input className={`${field} sm:col-span-2`} placeholder="Địa chỉ" value={address} onChange={(e) => setAddress(e.target.value)} />
+                <label className="sm:col-span-2 block text-xs text-[var(--muted)]">Kho INV (trừ tồn BOM khi bán)
+                  <select className={field} value={warehouseId} onChange={(e) => setWarehouseId(e.target.value)}>
+                    <option value="">— không gắn —</option>
+                    {warehouses.map((w) => (
+                      <option key={w.id} value={w.id}>{w.code} · {w.name}</option>
+                    ))}
+                  </select>
+                </label>
+                <label className="sm:col-span-2 block text-xs text-[var(--muted)]">Target doanh thu tháng (UC_POS_072)
+                  <input className={field} type="number" min={0} step={1000} placeholder="VD 100000000"
+                    value={revenueTarget} onChange={(e) => setRevenueTarget(e.target.value)} />
+                </label>
                 <button type="submit" className={`${btn.primary} sm:col-span-2`}>Lưu điểm bán</button>
               </form>
             </section>
@@ -212,7 +258,21 @@ export default function PosStoresPage() {
               <h2 className="mb-1 text-sm font-semibold">{detail.store.name}</h2>
               <p className="mb-4 text-xs text-[var(--muted)]">
                 {detail.store.code} · {detail.store.address || "Chưa có địa chỉ"}
+                {" · "}Target tháng: {detail.store.monthlyRevenueTarget > 0
+                  ? detail.store.monthlyRevenueTarget.toLocaleString("vi-VN")
+                  : "chưa đặt"}
               </p>
+
+              {canManage && (
+                <form onSubmit={onSetTarget} className="mb-4 flex flex-wrap items-end gap-2">
+                  <label className="block text-xs text-[var(--muted)]">Target DT tháng
+                    <input className={field} type="number" min={0} step={1000}
+                      placeholder={String(detail.store.monthlyRevenueTarget || "")}
+                      value={detailTarget} onChange={(e) => setDetailTarget(e.target.value)} />
+                  </label>
+                  <button type="submit" className={btn.ghost}>Cập nhật target</button>
+                </form>
+              )}
 
               <div className="mb-4 grid gap-4 md:grid-cols-3">
                 <div>

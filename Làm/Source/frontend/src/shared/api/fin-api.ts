@@ -121,8 +121,10 @@ export async function upsertFinTax(body: {
   const { data } = await api.post<Envelope<FinTaxDto>>("/api/fin/taxes", body);
   return data.data;
 }
-export async function fetchFinJournals(q?: string) {
-  const { data } = await api.get<Envelope<FinJournalDto[]>>("/api/fin/journals", { params: { q } });
+export async function fetchFinJournals(q?: string, source?: string) {
+  const { data } = await api.get<Envelope<FinJournalDto[]>>("/api/fin/journals", {
+    params: { q: q || undefined, source: source || undefined },
+  });
   return data.data;
 }
 export async function fetchFinJournalDetail(id: string) {
@@ -137,14 +139,17 @@ export async function upsertFinJournal(body: {
   const { data } = await api.post<Envelope<FinJournalDto>>("/api/fin/journals", body);
   return data.data;
 }
-export async function createFinAutoJournalStub(body: {
+/** UC_FIN_015 — tạo BT tự động (Source=Auto). */
+export async function createFinAutoJournal(body: {
   periodId: string; entryDate: string; description: string;
   partnerCode?: string | null; costCenterId?: string | null;
   lines?: { accountId: string; debit: number; credit: number }[];
 }) {
-  const { data } = await api.post<Envelope<FinJournalDto>>("/api/fin/journals/auto-stub", body);
+  const { data } = await api.post<Envelope<FinJournalDto>>("/api/fin/journals/auto", body);
   return data.data;
 }
+/** @deprecated dùng createFinAutoJournal */
+export const createFinAutoJournalStub = createFinAutoJournal;
 export async function postFinJournal(id: string) {
   const { data } = await api.post<Envelope<FinJournalDto>>(`/api/fin/journals/${id}/post`);
   return data.data;

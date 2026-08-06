@@ -117,7 +117,7 @@ public sealed class FinArService : IFinArService
                 new(null, arId, inv.TotalAmount, 0, customer.Code, null, "Phải thu KH"),
                 new(null, revId, 0, inv.TotalAmount, customer.Code, null, "Doanh thu AR"),
             };
-            var je = await _fin.CreateAutoJournalStubAsync(tenantId, userId, new FinJournalUpsertRequest(
+            var je = await _fin.CreateAutoJournalAsync(tenantId, userId, new FinJournalUpsertRequest(
                 null, null, periodId, inv.InvoiceDate, $"AR {inv.Code}: {inv.CustomerInvoiceNo ?? inv.Code}",
                 customer.Code, null, "Auto", lines), ct);
             je = await _fin.PostJournalAsync(tenantId, userId, je.Id, ct);

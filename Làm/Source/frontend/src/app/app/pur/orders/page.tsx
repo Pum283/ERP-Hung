@@ -14,6 +14,7 @@ import {
   returnPurPr,
   cancelPurPo,
   closePurPo,
+  downloadPurPoCsv,
   printPurPo,
   revisePurPo,
   sendPurPo,
@@ -29,6 +30,7 @@ import {
   type PurPurchaseRequestDto,
   type PurVendorDto,
 } from "@/shared/api/pur-api";
+import { buildPoCsvFilename, canExportPo } from "@/shared/api/pur-push-helpers";
 import { usePermissions } from "@/shared/hooks/use-permissions";
 import { btn } from "@/shared/ui/btn";
 import { field, panel, statusPill, tableWrap, td, th } from "@/shared/ui/field";
@@ -152,7 +154,7 @@ export default function PurOrdersPage() {
       <div>
         <h1 className="text-xl font-semibold tracking-tight">PR / PO</h1>
         <p className="mt-1 text-sm text-[var(--muted)]">
-          Tạo PR · duyệt/từ chối/trả · tạo PO từ PR · duyệt hạn mức · gửi NCC (UC_PUR_014, 017–019, 026–028)
+          Tạo PR · duyệt/từ chối/trả · tạo PO từ PR · duyệt hạn mức · gửi NCC · in/xuất PO CSV (UC_PUR_014, 017–019, 026–028, 033)
         </p>
       </div>
 
@@ -486,10 +488,21 @@ export default function PurOrdersPage() {
                       Sửa phiên bản
                     </button>
                   )}
-                  {canPoManage && poDetail.header.status !== "Draft" && poDetail.header.status !== "Cancelled" && (
-                    <button type="button" className={btn.ghost} onClick={async () => { try { await printPurPo(poId); await refreshPo(); flash("Đã in/xuất PO (stub)."); } catch (err) { setError((err as Error).message); } }}>
-                      In PO
-                    </button>
+                  {canPoManage && canExportPo(poDetail.header.status) && (
+                    <>
+                      <button type="button" className={btn.ghost} onClick={async () => { try { await printPurPo(poId); await refreshPo(); flash("Đã đóng dấu in PO."); } catch (err) { setError((err as Error).message); } }}>
+                        In PO
+                      </button>
+                      <button type="button" className={btn.ghost} onClick={async () => {
+                        try {
+                          await downloadPurPoCsv(poId, buildPoCsvFilename(poDetail.header.code, poDetail.header.version));
+                          await refreshPo();
+                          flash("Đã tải PO CSV (header NCC + dòng + tổng).");
+                        } catch (err) { setError((err as Error).message); }
+                      }}>
+                        Xuất CSV
+                      </button>
+                    </>
                   )}
                   {canPoManage && (poDetail.header.status === "Sent" || poDetail.header.status === "Approved") && (
                     <button type="button" className={btn.ghost} onClick={async () => { try { await closePurPo(poId); await refreshPo(); flash("Đã đóng PO."); } catch (err) { setError((err as Error).message); } }}>

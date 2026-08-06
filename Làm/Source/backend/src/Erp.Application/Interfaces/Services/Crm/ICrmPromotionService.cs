@@ -2,7 +2,7 @@ using Erp.Application.DTOs.Crm;
 
 namespace Erp.Application.Interfaces.Services.Crm;
 
-/// <summary>Khuyến mại, voucher & chat history (UC_CRM_032–037, 047).</summary>
+/// <summary>Khuyến mại, voucher & chat history (UC_CRM_032–038, 047).</summary>
 public interface ICrmPromotionService
 {
     // ── Promotion CRUD (UC_CRM_032, 033) ──
@@ -17,6 +17,14 @@ public interface ICrmPromotionService
 
     // ── Apply promotion on quote (UC_CRM_037) ──
     Task<CrmApplyPromotionResult> ApplyOnQuoteAsync(Guid tenantId, Guid userId, CrmApplyPromotionRequest req, CancellationToken ct = default);
+
+    // ── Sync CRM → POS (UC_CRM_036) ──
+    Task<CrmSyncPromoToPosResult> SyncToPosAsync(Guid tenantId, Guid userId, Guid promotionId, CancellationToken ct = default);
+
+    // ── Voucher usage report (UC_CRM_038) ──
+    Task<IReadOnlyList<CrmVoucherUsageReportRowDto>> GetVoucherUsageReportAsync(
+        Guid tenantId, Guid? promotionId = null, DateTimeOffset? from = null, DateTimeOffset? to = null,
+        CancellationToken ct = default);
 
     // ── Chat history (UC_CRM_047) ──
     Task<CrmChatHistoryDto> SaveChatAsync(Guid tenantId, Guid userId, CrmChatHistoryRequest req, CancellationToken ct = default);

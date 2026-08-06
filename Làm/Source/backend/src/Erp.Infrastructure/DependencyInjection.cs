@@ -166,6 +166,8 @@ public static class DependencyInjection
         services.AddScoped<ICrmCustomerService, CrmCustomerService>();
         services.AddScoped<ICrmSalesService, CrmSalesService>();
         services.AddScoped<ICrmLeadService, CrmLeadService>();
+        services.AddScoped<ICrmCampaignService, CrmCampaignService>();
+        services.AddScoped<ICrmPromotionService, CrmPromotionService>();
         return services;
     }
 

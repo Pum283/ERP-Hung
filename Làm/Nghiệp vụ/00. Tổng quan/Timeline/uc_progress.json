@@ -41,8 +41,8 @@
   },
   "UC_AST_012": {
     "done": true,
-    "note": "L2 · đẩy FIN stub (JE Auto hoặc mark Pushed)",
-    "pct": 80
+    "note": "L2 · đẩy BT KH → FIN JE thật (Posted cân Nợ/Có, auto-resolve TK 642*/214* + kỳ Open, chặn kỳ khóa/đẩy trùng)",
+    "pct": 90
   },
   "UC_AST_014": {
     "done": true,
@@ -236,18 +236,18 @@
   },
   "UC_CRM_016": {
     "done": true,
-    "note": "Batch1 Must · CrmCampaign CRUD + Entity/DTO/Controller",
-    "pct": 80
+    "pct": 90,
+    "note": "L2 · CrmCampaignService Upsert + FE /crm/campaigns · 12 BE + 10 FE tests"
   },
   "UC_CRM_019": {
     "done": true,
-    "note": "Batch1 Must · CrmCampaignExpense ghi nhận chi phí",
-    "pct": 80
+    "pct": 90,
+    "note": "L2 · Campaign expense + SpentAmount sync · FE tab Chi phí"
   },
   "UC_CRM_023": {
     "done": true,
-    "note": "Batch1 Must · Close campaign + snapshot metrics",
-    "pct": 80
+    "pct": 90,
+    "note": "L2 · Close campaign snapshot metrics · FE đóng"
   },
   "UC_CRM_024": {
     "done": true,
@@ -256,43 +256,53 @@
   },
   "UC_CRM_026": {
     "done": true,
-    "note": "Batch1 Must · CrmWebLead sync UTM + form data",
-    "pct": 80
+    "pct": 90,
+    "note": "L2 · SyncWebLead → CrmLead + UTM · FE tab Web lead"
   },
   "UC_CRM_029": {
     "done": true,
-    "note": "Batch1 Must · CPL/CAC/ROAS/ROI marketing metrics",
-    "pct": 80
+    "pct": 90,
+    "note": "L2 · CPL/CAC/ROAS/ROI GetMetrics · FE dashboard"
   },
   "UC_CRM_031": {
     "done": true,
-    "note": "Batch1 Must · Marketing dashboard aggregate",
-    "pct": 80
+    "pct": 90,
+    "note": "L2 · Marketing dashboard aggregate · FE dashboard"
   },
   "UC_CRM_032": {
     "done": true,
-    "note": "Batch1 Must · CrmPromotion CRUD + conditions",
-    "pct": 80
+    "pct": 90,
+    "note": "L2 · CrmPromotionService Upsert + FE /crm/promotions"
   },
   "UC_CRM_033": {
     "done": true,
-    "note": "Batch1 Must · CrmPromotionCondition config rules",
-    "pct": 80
+    "pct": 90,
+    "note": "L2 · PromotionCondition replace-on-upsert · FE điều kiện"
   },
   "UC_CRM_034": {
     "done": true,
-    "note": "Batch1 Must · CrmVoucher batch generate + prefix",
-    "pct": 80
+    "pct": 90,
+    "note": "L2 · GenerateVouchers batch unique codes · FE sinh mã"
   },
   "UC_CRM_035": {
     "done": true,
-    "note": "Batch1 Must · Voucher usage limit + per customer",
-    "pct": 80
+    "pct": 90,
+    "note": "L2 · MaxUsageTotal/PerCustomer + voucher MaxUsage · redeem guard"
+  },
+  "UC_CRM_036": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · SyncToPos PosPromotion/Voucher · FE nút sync · 8 BE + helpers FE"
   },
   "UC_CRM_037": {
     "done": true,
-    "note": "Batch1 Must · Apply promotion on CrmQuote",
-    "pct": 80
+    "pct": 90,
+    "note": "L2 · ApplyOnQuote DiscountAmount/Total · FE áp báo giá"
+  },
+  "UC_CRM_038": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · GET voucher-usage-report · FE BC sử dụng · filter promo/ngày"
   },
   "UC_CRM_047": {
     "done": true,
@@ -401,8 +411,8 @@
   },
   "UC_CRM_074": {
     "done": true,
-    "note": "L2 · gửi báo giá Email/PDF stub",
-    "pct": 80
+    "note": "L2 · xuất báo giá text thật + gửi Email (queue notification + nhật ký) / Pdf download",
+    "pct": 90
   },
   "UC_CRM_077": {
     "done": true,
@@ -421,8 +431,8 @@
   },
   "UC_CRM_082": {
     "done": true,
-    "note": "L2 · giữ tồn stub (StockHoldStatus)",
-    "pct": 75
+    "note": "L2 · giữ tồn INV reservation thật (Active+ATP, release khi hủy/đẩy kho, idempotent)",
+    "pct": 90
   },
   "UC_CRM_084": {
     "done": true,
@@ -436,8 +446,8 @@
   },
   "UC_CRM_088": {
     "done": true,
-    "note": "L2 · đẩy kho/LOG stub",
-    "pct": 75
+    "note": "L2 · tạo lệnh giao LOG thật Draft→Confirmed từ đơn (idempotent, Failed khi lỗi) + nhả giữ tồn",
+    "pct": 90
   },
   "UC_CRM_099": {
     "done": true,
@@ -561,8 +571,8 @@
   },
   "UC_FIN_015": {
     "done": true,
-    "note": "L2 · BT tự động stub (Source=Auto)",
-    "pct": 80
+    "note": "L2 · BT tự động thật CreateAutoJournal (Source=Auto) + filter list + API /journals/auto · FE lọc nguồn",
+    "pct": 90
   },
   "UC_FIN_016": {
     "done": true,
@@ -2461,7 +2471,7 @@
   },
   "UC_MFG_031": {
     "done": true,
-    "note": "L2 · đẩy StandardCost INV + JE WIP→TP stub",
+    "note": "L2 · đẩy StandardCost INV + JE WIP→TP thật (auto-resolve TK 154*/155* + kỳ Open, Post Source=Auto)",
     "pct": 90
   },
   "UC_MFG_041": {
@@ -2676,8 +2686,8 @@
   },
   "UC_POS_015": {
     "done": true,
-    "note": "L2 · sync stamp back-office (stub)",
-    "pct": 75
+    "note": "L2 · sync catalog thật INV SKU→POS (tạo/đổi tên/suspend + đếm) · FE flash chi tiết",
+    "pct": 90
   },
   "UC_POS_016": {
     "done": true,
@@ -2736,8 +2746,8 @@
   },
   "UC_POS_037": {
     "done": true,
-    "note": "L2 · in hóa đơn stub",
-    "pct": 75
+    "note": "L2 · hóa đơn bán lẻ text 42 cột thật (line/giảm giá/thuế/thanh toán) + tải file",
+    "pct": 90
   },
   "UC_POS_038": {
     "done": true,
@@ -2781,23 +2791,23 @@
   },
   "UC_POS_048": {
     "done": true,
-    "note": "L2 · in báo cáo ca stub",
-    "pct": 75
+    "note": "L2 · báo cáo ca text thật (DT + PT thanh toán + tiền mặt/chênh lệch) + tải file",
+    "pct": 90
   },
   "UC_POS_054": {
     "done": true,
-    "note": "Batch 2 · Verified CRM Sales Admin, POS BOM/Shift & PUR/LOG PO/COD APIs and tests",
-    "pct": 100
+    "pct": 90,
+    "note": "L2 · PaySale trừ tồn INV Issue theo BOM · Ref POS · 8 BE + 6 FE tests"
   },
   "UC_POS_055": {
     "done": true,
-    "note": "Batch 2 · Verified CRM Sales Admin, POS BOM/Shift & PUR/LOG PO/COD APIs and tests",
-    "pct": 100
+    "pct": 90,
+    "note": "L2 · GET /api/pos/stock-alerts BelowMin/NearReorder/OutOfStock · FE banner sell"
   },
   "UC_POS_059": {
     "done": true,
-    "note": "Batch 2 · Verified CRM Sales Admin, POS BOM/Shift & PUR/LOG PO/COD APIs and tests",
-    "pct": 100
+    "pct": 90,
+    "note": "L2 · CloseShift + SyncShiftRevenueToFin RecognizeFromPos · FE sync-fin · 7 BE + helpers FE"
   },
   "UC_POS_061": {
     "done": true,
@@ -2819,10 +2829,30 @@
     "note": "L2 · tỷ lệ hủy / giảm giá",
     "pct": 90
   },
+  "UC_POS_065": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · cost-variance BOM×StdCost vs INV Issue POS · FE tab + CSV"
+  },
+  "UC_POS_066": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · top-products qty|revenue top N · FE tab + CSV"
+  },
+  "UC_POS_067": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · store-compare DT/share/avg ticket · FE tab + CSV"
+  },
   "UC_POS_068": {
     "done": true,
     "note": "L2 · xuất CSV báo cáo POS",
     "pct": 90
+  },
+  "UC_POS_069": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · chain-live DT hôm nay/tháng vs target + ca mở · FE tab poll 30s"
   },
   "UC_POS_070": {
     "done": true,
@@ -2833,6 +2863,11 @@
     "done": true,
     "note": "Batch 2 · Verified CRM Sales Admin, POS BOM/Shift & PUR/LOG PO/COD APIs and tests",
     "pct": 100
+  },
+  "UC_POS_072": {
+    "done": true,
+    "pct": 90,
+    "note": "L2 · MonthlyRevenueTarget trên store + migration · FE set target + attainment"
   },
   "UC_PRT_001": {
     "done": true,
@@ -2976,8 +3011,8 @@
   },
   "UC_PUR_033": {
     "done": true,
-    "note": "L2 · in/xuất PO stub",
-    "pct": 75
+    "note": "L2 · xuất PO CSV thật (header NCC + dòng + tổng) + đóng dấu in · FE tải file",
+    "pct": 90
   },
   "UC_PUR_034": {
     "done": true,
@@ -2991,8 +3026,8 @@
   },
   "UC_PUR_037": {
     "done": true,
-    "note": "L2 · đẩy INV stub",
-    "pct": 75
+    "note": "L2 · GRN→INV Receipt Purchase thật (idempotent) · Failed + lý do lỗi trong note · retry FE",
+    "pct": 90
   },
   "UC_PUR_040": {
     "done": true,
@@ -3006,8 +3041,8 @@
   },
   "UC_PUR_043": {
     "done": true,
-    "note": "L2 · đẩy AP stub",
-    "pct": 75
+    "note": "L2 · tạo + ghi sổ FinApInvoice thật từ HĐ matched (idempotent, Failed khi lỗi)",
+    "pct": 90
   },
   "UC_PUR_048": {
     "done": true,

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Erp.Api.Controllers.Crm;
 
-/// <summary>Khuyến mại, voucher & chat (UC_CRM_032–037, 047).</summary>
+/// <summary>Khuyến mại, voucher & chat (UC_CRM_032–038, 047).</summary>
 [ApiController]
 [Authorize]
 [Route("api/crm/promotions")]
@@ -41,7 +41,11 @@ public sealed class CrmPromotionController : ControllerBase
     [AuthorizePermission("crm.promotion.manage")]
     public async Task<ActionResult<ApiResponse<IReadOnlyList<CrmVoucherDto>>>> GenerateVouchers(
         Guid id, [FromBody] CrmVoucherGenerateRequest req, CancellationToken ct)
-        => Ok(ApiResponse<IReadOnlyList<CrmVoucherDto>>.Ok(await _svc.GenerateVouchersAsync(TenantId, UserId, req, ct)));
+    {
+        var body = req with { PromotionId = id };
+        return Ok(ApiResponse<IReadOnlyList<CrmVoucherDto>>.Ok(
+            await _svc.GenerateVouchersAsync(TenantId, UserId, body, ct)));
+    }
 
     [HttpGet("{id:guid}/vouchers")]
     [AuthorizePermission("crm.promotion.read")]
@@ -60,6 +64,21 @@ public sealed class CrmPromotionController : ControllerBase
     public async Task<ActionResult<ApiResponse<CrmApplyPromotionResult>>> ApplyOnQuote(
         [FromBody] CrmApplyPromotionRequest req, CancellationToken ct)
         => Ok(ApiResponse<CrmApplyPromotionResult>.Ok(await _svc.ApplyOnQuoteAsync(TenantId, UserId, req, ct)));
+
+    // ── Sync CRM → POS (UC_CRM_036) ──
+    [HttpPost("{id:guid}/sync-pos")]
+    [AuthorizePermission("crm.promotion.manage")]
+    public async Task<ActionResult<ApiResponse<CrmSyncPromoToPosResult>>> SyncToPos(Guid id, CancellationToken ct)
+        => Ok(ApiResponse<CrmSyncPromoToPosResult>.Ok(await _svc.SyncToPosAsync(TenantId, UserId, id, ct)));
+
+    // ── Voucher usage report (UC_CRM_038) ──
+    [HttpGet("voucher-usage-report")]
+    [AuthorizePermission("crm.promotion.read")]
+    public async Task<ActionResult<ApiResponse<IReadOnlyList<CrmVoucherUsageReportRowDto>>>> VoucherUsageReport(
+        [FromQuery] Guid? promotionId, [FromQuery] DateTimeOffset? from, [FromQuery] DateTimeOffset? to,
+        CancellationToken ct)
+        => Ok(ApiResponse<IReadOnlyList<CrmVoucherUsageReportRowDto>>.Ok(
+            await _svc.GetVoucherUsageReportAsync(TenantId, promotionId, from, to, ct)));
 
     // ── Chat history (UC_CRM_047) ──
     [HttpPost("~/api/crm/chat")]

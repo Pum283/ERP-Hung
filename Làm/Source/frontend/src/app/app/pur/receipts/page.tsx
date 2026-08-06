@@ -12,6 +12,7 @@ import {
   type PurGrnDetailDto,
   type PurGrnDto,
 } from "@/shared/api/pur-receiving-api";
+import { parseInvPushError, pushStatusTone } from "@/shared/api/pur-push-helpers";
 import { usePermissions } from "@/shared/hooks/use-permissions";
 import { btn } from "@/shared/ui/btn";
 import { field, panel, statusPill, tableWrap, td, th } from "@/shared/ui/field";
@@ -73,7 +74,7 @@ export default function PurReceiptsPage() {
       <div>
         <h1 className="text-xl font-semibold tracking-tight">Nhận hàng (GRN)</h1>
         <p className="mt-1 text-sm text-[var(--muted)]">
-          Tạo theo PO · lệch SL/CL · post · đẩy INV stub (UC_PUR_034–035, 037)
+          Tạo theo PO · lệch SL/CL · post · đẩy phiếu nhập INV thật (UC_PUR_034–035, 037)
         </p>
       </div>
       {error && <div className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>}
@@ -132,9 +133,17 @@ export default function PurReceiptsPage() {
               <div>
                 <b>{detail.header.code}</b> · {detail.header.vendorName}
                 <div className="text-xs text-[var(--muted)]">
-                  INV push: {detail.header.inventoryPushStatus}
+                  INV push:{" "}
+                  <span className={statusPill(pushStatusTone(detail.header.inventoryPushStatus))}>
+                    {detail.header.inventoryPushStatus}
+                  </span>
                   {detail.header.qualityNote ? ` · ${detail.header.qualityNote}` : ""}
                 </div>
+                {parseInvPushError(detail.header.note) && (
+                  <div className="mt-1 text-xs text-red-600">
+                    Lỗi đẩy INV: {parseInvPushError(detail.header.note)}
+                  </div>
+                )}
               </div>
               <div className={tableWrap}>
                 <table className="w-full text-sm">
@@ -179,7 +188,7 @@ export default function PurReceiptsPage() {
               )}
               {canManage && detail.header.status === "Posted" && (
                 <button type="button" className={btn.ghost} onClick={() => void run(
-                  () => pushPurGrnInventory(detail.header.id), "Đã đẩy INV (stub)",
+                  () => pushPurGrnInventory(detail.header.id), "Đã đẩy phiếu nhập INV (Receipt Purchase).",
                 )}>Đẩy INV lại</button>
               )}
             </div>

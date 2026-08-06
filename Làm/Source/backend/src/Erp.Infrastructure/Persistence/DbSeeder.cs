@@ -290,6 +290,12 @@ public static partial class DbSeeder
             ("CRM", "crm.quote.manage", "quote", "Manage", "Quản trị báo giá / chiết khấu / gửi"),
             ("CRM", "crm.order.read", "order", "Read", "Xem đơn hàng bán CRM"),
             ("CRM", "crm.order.manage", "order", "Manage", "Quản trị đơn / thanh toán / giữ tồn"),
+            ("CRM", "crm.campaign.read", "campaign", "Read", "Xem campaign / chi phí / dashboard marketing"),
+            ("CRM", "crm.campaign.manage", "campaign", "Manage", "Quản trị campaign / web-lead / đóng chiến dịch"),
+            ("CRM", "crm.promotion.read", "promotion", "Read", "Xem CTKM / voucher"),
+            ("CRM", "crm.promotion.manage", "promotion", "Manage", "Quản trị CTKM / sinh voucher / áp báo giá"),
+            ("CRM", "crm.chat.read", "chat", "Read", "Xem lịch sử chat omnichannel"),
+            ("CRM", "crm.chat.manage", "chat", "Manage", "Ghi lịch sử chat omnichannel"),
             ("POS", "pos.store.read", "store", "Read", "Xem điểm bán POS"),
             ("POS", "pos.store.manage", "store", "Manage", "Quản trị điểm bán POS"),
             ("POS", "pos.shift.read", "shift", "Read", "Xem ca thu ngân POS"),
@@ -461,6 +467,9 @@ public static partial class DbSeeder
                 "crm.opportunity.read", "crm.opportunity.manage",
                 "crm.quote.read", "crm.quote.manage",
                 "crm.order.read", "crm.order.manage",
+                "crm.campaign.read", "crm.campaign.manage",
+                "crm.promotion.read", "crm.promotion.manage",
+                "crm.chat.read", "crm.chat.manage",
                 "pos.store.read", "pos.store.manage",
                 "pos.shift.read", "pos.shift.manage",
                 "pos.sale.read", "pos.sale.manage",
@@ -516,6 +525,9 @@ public static partial class DbSeeder
                 "crm.opportunity.read", "crm.opportunity.manage",
                 "crm.quote.read", "crm.quote.manage",
                 "crm.order.read", "crm.order.manage",
+                "crm.campaign.read", "crm.campaign.manage",
+                "crm.promotion.read", "crm.promotion.manage",
+                "crm.chat.read", "crm.chat.manage",
                 "pos.store.read", "pos.catalog.read",
                 "pos.shift.read", "pos.shift.manage",
                 "pos.sale.read", "pos.sale.manage",
@@ -831,6 +843,24 @@ public static partial class DbSeeder
             {
                 TenantId = TenantId, Code = "CRM_ORDERS", ModuleCode = "CRM", Title = "Đơn hàng",
                 RoutePath = "/app/crm/orders", PermissionCode = "crm.order.read", Icon = "shopping-cart", SortOrder = 54
+            });
+        }
+
+        if (!await db.MenuItems.AnyAsync(x => x.Code == "CRM_CAMPAIGNS", ct))
+        {
+            db.MenuItems.Add(new MenuItem
+            {
+                TenantId = TenantId, Code = "CRM_CAMPAIGNS", ModuleCode = "CRM", Title = "Campaign",
+                RoutePath = "/app/crm/campaigns", PermissionCode = "crm.campaign.read", Icon = "megaphone", SortOrder = 55
+            });
+        }
+
+        if (!await db.MenuItems.AnyAsync(x => x.Code == "CRM_PROMOTIONS", ct))
+        {
+            db.MenuItems.Add(new MenuItem
+            {
+                TenantId = TenantId, Code = "CRM_PROMOTIONS", ModuleCode = "CRM", Title = "Khuyến mại",
+                RoutePath = "/app/crm/promotions", PermissionCode = "crm.promotion.read", Icon = "ticket", SortOrder = 56
             });
         }
 

@@ -336,3 +336,14 @@ export async function printPurPo(id: string) {
   const { data } = await api.post<Envelope<PurPurchaseOrderDto>>(`/api/pur/pos/${id}/print`, {});
   return data.data;
 }
+
+/** UC_PUR_033 — tải PO CSV thật (kèm đóng dấu PrintedAt phía BE). */
+export async function downloadPurPoCsv(id: string, filename: string) {
+  const { data } = await api.get<Blob>(`/api/pur/pos/${id}/export.csv`, { responseType: "blob" });
+  const url = URL.createObjectURL(data);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}

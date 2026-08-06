@@ -127,5 +127,5 @@ public sealed class AstDepreciationRunController : ControllerBase
     [AuthorizePermission("ast.asset.manage")]
     public async Task<ActionResult<ApiResponse<AstDepreciationRunDto>>> PushFin(
         Guid id, [FromBody] AstPushFinRequest req, CancellationToken ct)
-        => Ok(ApiResponse<AstDepreciationRunDto>.Ok(await _svc.PushToFinStubAsync(TenantId, UserId, id, req, ct)));
+        => Ok(ApiResponse<AstDepreciationRunDto>.Ok(await _svc.PushToFinAsync(TenantId, UserId, id, req, ct)));
 }

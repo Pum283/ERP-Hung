@@ -11,6 +11,10 @@ public sealed record PosShiftCloseRequest(decimal ClosingCashCounted, string? No
 public sealed record PosShiftDetailDto(
     PosShiftDto Shift, IReadOnlyList<PosSaleDto> Sales);
 
+/// <summary>UC_POS_059 — đồng bộ doanh thu ca → FIN khi đóng ca / sync lại.</summary>
+public sealed record PosShiftFinSyncResult(
+    Guid ShiftId, int PaidSaleCount, int SyncedCount, int AlreadyHadCount, int FailedCount, string Message);
+
 public sealed record PosSaleDto(
     Guid Id, string Code, Guid ShiftId, Guid StoreId, string? StoreName, Guid? TerminalId,
     string Status, string? AreaName, decimal SubTotal, decimal TaxAmount, decimal DiscountAmount,
@@ -31,6 +35,12 @@ public sealed record PosSaleLineUpsertRequest(
     Guid? Id, Guid? ProductId, string? ProductCode, string? ProductName,
     decimal Quantity, decimal? UnitPrice, decimal? TaxRatePct);
 public sealed record PosSalePayRequest(string Method, decimal Amount, string? Note);
+
+/// <summary>Cảnh báo tồn cho POS (UC_POS_055).</summary>
+public sealed record PosStockAlertDto(
+    Guid WarehouseId, string? WarehouseName,
+    Guid SkuId, string SkuCode, string SkuName,
+    decimal QtyOnHand, decimal? MinQty, decimal? ReorderQty, string AlertType);
 public sealed record PosSaleHoldRequest(string? Note);
 
 public sealed record PosReturnDto(

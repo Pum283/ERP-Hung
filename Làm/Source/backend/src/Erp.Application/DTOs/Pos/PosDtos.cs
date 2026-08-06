@@ -2,10 +2,13 @@ namespace Erp.Application.DTOs.Pos;
 
 public sealed record PosStoreDto(
     Guid Id, string Code, string Name, string? Address, string Status,
-    int TerminalCount, int PrinterCount, int CashierCount);
+    Guid? WarehouseId, string? WarehouseName,
+    int TerminalCount, int PrinterCount, int CashierCount,
+    decimal MonthlyRevenueTarget);
 
 public sealed record PosStoreUpsertRequest(
-    Guid? Id, string Code, string Name, string? Address, string? Status);
+    Guid? Id, string Code, string Name, string? Address, string? Status, Guid? WarehouseId,
+    decimal? MonthlyRevenueTarget = null);
 
 public sealed record PosTerminalDto(
     Guid Id, Guid StoreId, string Code, string Name, string Status);
@@ -69,4 +72,6 @@ public sealed record PosPriceItemDto(
 public sealed record PosPriceItemUpsertRequest(
     Guid? Id, Guid ProductId, decimal Price, Guid? TaxRateId);
 
-public sealed record PosSyncResult(int ProductCount, DateTimeOffset SyncedAt);
+/// <summary>UC_POS_015 — kết quả đồng bộ catalog từ back-office (INV SKU).</summary>
+public sealed record PosSyncResult(
+    int ProductCount, int CreatedCount, int UpdatedCount, int SuspendedCount, DateTimeOffset SyncedAt);

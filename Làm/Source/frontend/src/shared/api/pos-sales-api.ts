@@ -70,9 +70,31 @@ export async function closePosShift(id: string, closingCashCounted: number, note
   });
   return data.data;
 }
+
+export type PosShiftFinSyncResult = {
+  shiftId: string; paidSaleCount: number; syncedCount: number;
+  alreadyHadCount: number; failedCount: number; message: string;
+};
+
+export async function syncPosShiftFin(id: string) {
+  const { data } = await api.post<Envelope<PosShiftFinSyncResult>>(`/api/pos/shifts/${id}/sync-fin`);
+  return data.data;
+}
+
 export async function printPosShiftReport(id: string) {
   const { data } = await api.post<Envelope<PosShiftDto>>(`/api/pos/shifts/${id}/print-report`);
   return data.data;
+}
+
+/** UC_POS_048 — tải báo cáo ca thật (text, BE đóng dấu ReportPrintedAt). */
+export async function downloadPosShiftReport(id: string, filename: string) {
+  const { data } = await api.get<Blob>(`/api/pos/shifts/${id}/report.txt`, { responseType: "blob" });
+  const url = URL.createObjectURL(data);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 export async function fetchPosSales(params?: { shiftId?: string; status?: string }) {
@@ -118,6 +140,30 @@ export async function payPosSale(saleId: string, method: string, amount: number,
 }
 export async function printPosReceipt(saleId: string) {
   const { data } = await api.post<Envelope<PosSaleDto>>(`/api/pos/sales/${saleId}/print-receipt`);
+  return data.data;
+}
+
+/** UC_POS_037 — tải hóa đơn bán lẻ thật (text 42 cột, BE đóng dấu ReceiptPrintedAt). */
+export async function downloadPosReceipt(saleId: string, filename: string) {
+  const { data } = await api.get<Blob>(`/api/pos/sales/${saleId}/receipt.txt`, { responseType: "blob" });
+  const url = URL.createObjectURL(data);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+export type PosStockAlertDto = {
+  warehouseId: string; warehouseName?: string | null;
+  skuId: string; skuCode: string; skuName: string;
+  qtyOnHand: number; minQty?: number | null; reorderQty?: number | null; alertType: string;
+};
+
+export async function fetchPosStockAlerts(storeId?: string) {
+  const { data } = await api.get<Envelope<PosStockAlertDto[]>>("/api/pos/stock-alerts", {
+    params: storeId ? { storeId } : undefined,
+  });
   return data.data;
 }
 

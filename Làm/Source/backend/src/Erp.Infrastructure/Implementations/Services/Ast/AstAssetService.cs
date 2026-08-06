@@ -317,7 +317,7 @@ public sealed class AstAssetService : IAstAssetService
         return MapRun(run);
     }
 
-    public async Task<AstDepreciationRunDto> PushToFinStubAsync(
+    public async Task<AstDepreciationRunDto> PushToFinAsync(
         Guid tenantId, Guid userId, Guid runId, AstPushFinRequest req, CancellationToken ct = default)
     {
         var run = await RequireAsync(_db.AstDepreciationRuns, tenantId, runId, "kỳ KH", ct);
@@ -326,21 +326,13 @@ public sealed class AstAssetService : IAstAssetService
         if (run.LineCount == 0 || run.TotalAmount <= 0)
             throw new AppException("Kỳ KH trống — không đẩy FIN.");
 
-        FinAccount? expense = null;
-        FinAccount? accum = null;
-        if (req.ExpenseAccountId is Guid eid)
-            expense = await RequireAsync(_db.FinAccounts, tenantId, eid, "TK chi phí KH", ct);
-        if (req.AccumAccountId is Guid aid)
-            accum = await RequireAsync(_db.FinAccounts, tenantId, aid, "TK KH lũy kế", ct);
-
-        // Stub: nếu chưa chọn TK thì chỉ đánh dấu Pushed (không tạo JE)
-        if (expense is null || accum is null)
-        {
-            run.Status = "Pushed";
-            run.UpdatedBy = userId;
-            await _db.SaveChangesAsync(ct);
-            return MapRun(run);
-        }
+        // UC_AST_012: luôn tạo JE thật — TK không truyền thì tự resolve theo COA (642*/627* và 214*).
+        var expense = req.ExpenseAccountId is Guid eid
+            ? await RequireAsync(_db.FinAccounts, tenantId, eid, "TK chi phí KH", ct)
+            : await ResolveAccountAsync(tenantId, ["642", "627"], "TK chi phí KH (642*/627*)", ct);
+        var accum = req.AccumAccountId is Guid aid
+            ? await RequireAsync(_db.FinAccounts, tenantId, aid, "TK KH lũy kế", ct)
+            : await ResolveAccountAsync(tenantId, ["214"], "TK khấu hao lũy kế (214*)", ct);
 
         FinPeriod period;
         if (req.PeriodId is Guid pid)
@@ -373,13 +365,13 @@ public sealed class AstAssetService : IAstAssetService
         {
             TenantId = tenantId, JournalId = je.Id, AccountId = expense.Id,
             Debit = run.TotalAmount, Credit = 0, LineNo = 1, CreatedBy = userId,
-            Note = "Chi phí KH (AST→FIN stub)"
+            Note = $"Chi phí KH TSCĐ {run.Month:D2}/{run.Year} (AST {run.Code})"
         });
         _db.FinJournalLines.Add(new FinJournalLine
         {
             TenantId = tenantId, JournalId = je.Id, AccountId = accum.Id,
             Debit = 0, Credit = run.TotalAmount, LineNo = 2, CreatedBy = userId,
-            Note = "KH lũy kế (AST→FIN stub)"
+            Note = $"KH lũy kế {run.Month:D2}/{run.Year} (AST {run.Code})"
         });
 
         run.Status = "Pushed";
@@ -387,6 +379,21 @@ public sealed class AstAssetService : IAstAssetService
         run.UpdatedBy = userId;
         await _db.SaveChangesAsync(ct);
         return MapRun(run);
+    }
+
+    private async Task<FinAccount> ResolveAccountAsync(
+        Guid tenantId, string[] codePrefixes, string label, CancellationToken ct)
+    {
+        foreach (var prefix in codePrefixes)
+        {
+            var acc = await _db.FinAccounts.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Status == "Active"
+                            && x.IsPostable && x.Code.StartsWith(prefix))
+                .OrderBy(x => x.Code)
+                .FirstOrDefaultAsync(ct);
+            if (acc is not null) return acc;
+        }
+        throw new AppException($"Không tìm thấy {label} trong hệ thống TK — chọn TK thủ công.");
     }
 
     private static decimal CalcMonthly(AstAsset a, string methodType)

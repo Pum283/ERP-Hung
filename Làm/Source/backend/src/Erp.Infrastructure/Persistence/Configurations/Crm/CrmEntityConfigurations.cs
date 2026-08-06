@@ -254,3 +254,127 @@ public sealed class CrmOrderPaymentConfig : IEntityTypeConfiguration<CrmOrderPay
         b.Property(x => x.Note).HasMaxLength(1000);
     }
 }
+
+public sealed class CrmCampaignConfig : IEntityTypeConfiguration<CrmCampaign>
+{
+    public void Configure(EntityTypeBuilder<CrmCampaign> b)
+    {
+        b.ToTable("campaign", "crm");
+        b.HasKey(x => x.Id);
+        b.HasIndex(x => new { x.TenantId, x.Code }).IsUnique();
+        b.Property(x => x.Code).HasMaxLength(40).IsRequired();
+        b.Property(x => x.Name).HasMaxLength(200).IsRequired();
+        b.Property(x => x.Description).HasMaxLength(2000);
+        b.Property(x => x.Channel).HasMaxLength(30).IsRequired();
+        b.Property(x => x.Status).HasMaxLength(30).IsRequired();
+        b.Property(x => x.BudgetAmount).HasPrecision(18, 2);
+        b.Property(x => x.SpentAmount).HasPrecision(18, 2);
+        b.Property(x => x.RevenueGenerated).HasPrecision(18, 2);
+        b.Property(x => x.ClosedReason).HasMaxLength(500);
+    }
+}
+
+public sealed class CrmCampaignExpenseConfig : IEntityTypeConfiguration<CrmCampaignExpense>
+{
+    public void Configure(EntityTypeBuilder<CrmCampaignExpense> b)
+    {
+        b.ToTable("campaign_expense", "crm");
+        b.HasKey(x => x.Id);
+        b.HasIndex(x => new { x.TenantId, x.CampaignId, x.ExpenseDate });
+        b.Property(x => x.ExpenseType).HasMaxLength(40).IsRequired();
+        b.Property(x => x.Description).HasMaxLength(1000);
+        b.Property(x => x.Amount).HasPrecision(18, 2);
+        b.Property(x => x.InvoiceRef).HasMaxLength(100);
+    }
+}
+
+public sealed class CrmWebLeadConfig : IEntityTypeConfiguration<CrmWebLead>
+{
+    public void Configure(EntityTypeBuilder<CrmWebLead> b)
+    {
+        b.ToTable("web_lead", "crm");
+        b.HasKey(x => x.Id);
+        b.HasIndex(x => new { x.TenantId, x.SyncStatus });
+        b.Property(x => x.SourceUrl).HasMaxLength(500);
+        b.Property(x => x.LandingPage).HasMaxLength(500);
+        b.Property(x => x.UtmSource).HasMaxLength(100);
+        b.Property(x => x.UtmMedium).HasMaxLength(100);
+        b.Property(x => x.UtmCampaign).HasMaxLength(100);
+        b.Property(x => x.FormName).HasMaxLength(100);
+        b.Property(x => x.ContactName).HasMaxLength(200).IsRequired();
+        b.Property(x => x.Phone).HasMaxLength(40);
+        b.Property(x => x.Email).HasMaxLength(200);
+        b.Property(x => x.Message).HasMaxLength(2000);
+        b.Property(x => x.SyncStatus).HasMaxLength(30).IsRequired();
+    }
+}
+
+public sealed class CrmPromotionConfig : IEntityTypeConfiguration<CrmPromotion>
+{
+    public void Configure(EntityTypeBuilder<CrmPromotion> b)
+    {
+        b.ToTable("promotion", "crm");
+        b.HasKey(x => x.Id);
+        b.HasIndex(x => new { x.TenantId, x.Code }).IsUnique();
+        b.Property(x => x.Code).HasMaxLength(40).IsRequired();
+        b.Property(x => x.Name).HasMaxLength(200).IsRequired();
+        b.Property(x => x.Description).HasMaxLength(2000);
+        b.Property(x => x.DiscountType).HasMaxLength(30).IsRequired();
+        b.Property(x => x.Status).HasMaxLength(30).IsRequired();
+        b.Property(x => x.DiscountValue).HasPrecision(18, 2);
+        b.Property(x => x.MaxDiscountAmount).HasPrecision(18, 2);
+        b.Property(x => x.MinOrderValue).HasPrecision(18, 2);
+    }
+}
+
+public sealed class CrmPromotionConditionConfig : IEntityTypeConfiguration<CrmPromotionCondition>
+{
+    public void Configure(EntityTypeBuilder<CrmPromotionCondition> b)
+    {
+        b.ToTable("promotion_condition", "crm");
+        b.HasKey(x => x.Id);
+        b.HasIndex(x => new { x.TenantId, x.PromotionId });
+        b.Property(x => x.ConditionType).HasMaxLength(40).IsRequired();
+        b.Property(x => x.ConditionValue).HasMaxLength(200).IsRequired();
+        b.Property(x => x.Operator).HasMaxLength(30).IsRequired();
+    }
+}
+
+public sealed class CrmVoucherConfig : IEntityTypeConfiguration<CrmVoucher>
+{
+    public void Configure(EntityTypeBuilder<CrmVoucher> b)
+    {
+        b.ToTable("voucher", "crm");
+        b.HasKey(x => x.Id);
+        b.HasIndex(x => new { x.TenantId, x.VoucherCode }).IsUnique();
+        b.HasIndex(x => new { x.TenantId, x.PromotionId });
+        b.Property(x => x.VoucherCode).HasMaxLength(60).IsRequired();
+        b.Property(x => x.Status).HasMaxLength(30).IsRequired();
+    }
+}
+
+public sealed class CrmVoucherUsageConfig : IEntityTypeConfiguration<CrmVoucherUsage>
+{
+    public void Configure(EntityTypeBuilder<CrmVoucherUsage> b)
+    {
+        b.ToTable("voucher_usage", "crm");
+        b.HasKey(x => x.Id);
+        b.HasIndex(x => new { x.TenantId, x.VoucherId, x.UsedAt });
+        b.Property(x => x.DiscountApplied).HasPrecision(18, 2);
+    }
+}
+
+public sealed class CrmChatHistoryConfig : IEntityTypeConfiguration<CrmChatHistory>
+{
+    public void Configure(EntityTypeBuilder<CrmChatHistory> b)
+    {
+        b.ToTable("chat_history", "crm");
+        b.HasKey(x => x.Id);
+        b.HasIndex(x => new { x.TenantId, x.CustomerId, x.SentAt });
+        b.Property(x => x.Channel).HasMaxLength(30).IsRequired();
+        b.Property(x => x.ExternalConversationId).HasMaxLength(100);
+        b.Property(x => x.Direction).HasMaxLength(20).IsRequired();
+        b.Property(x => x.MessageText).HasMaxLength(4000).IsRequired();
+        b.Property(x => x.AttachmentUrl).HasMaxLength(500);
+    }
+}

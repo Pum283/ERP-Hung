@@ -172,7 +172,7 @@ public sealed class FinCashService : IFinCashService
                     new(null, cashId, 0, v.Amount, v.PartnerCode, null, "Chi quỹ"),
                 };
 
-            var je = await _fin.CreateAutoJournalStubAsync(tenantId, userId, new FinJournalUpsertRequest(
+            var je = await _fin.CreateAutoJournalAsync(tenantId, userId, new FinJournalUpsertRequest(
                 null, null, periodId, v.DocDate, $"{v.VoucherType} {v.Code}: {v.Description}",
                 v.PartnerCode, null, "Auto", lines), ct);
             je = await _fin.PostJournalAsync(tenantId, userId, je.Id, ct);

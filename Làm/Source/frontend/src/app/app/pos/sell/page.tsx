@@ -11,16 +11,20 @@ import {
   fetchPosSaleDetail,
   fetchPosSales,
   fetchPosShifts,
+  downloadPosReceipt,
   holdPosSale,
   openPosSale,
   payPosSale,
-  printPosReceipt,
   resumePosSale,
   upsertPosSaleLine,
+  fetchPosStockAlerts,
   type PosSaleDetailDto,
   type PosSaleDto,
   type PosShiftDto,
+  type PosStockAlertDto,
 } from "@/shared/api/pos-sales-api";
+import { buildReceiptFilename, canPrintReceipt } from "@/shared/api/pos-doc-helpers";
+import { summarizePosStockAlerts } from "@/shared/api/pos-stock-helpers";
 import {
   applyPosPromotion,
   applyPosVoucher,
@@ -60,6 +64,7 @@ export default function PosSellPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [ok, setOk] = useState<string | null>(null);
+  const [stockAlerts, setStockAlerts] = useState<PosStockAlertDto[]>([]);
 
   const load = useCallback(async () => {
     const [sh, pr, sales, pm] = await Promise.all([
@@ -76,6 +81,9 @@ export default function PosSellPage() {
     if (!productId && pr[0]) setProductId(pr.find((p) => p.status === "Active")?.id ?? "");
     if (!selectedId && sales[0]) setSelectedId(sales[0].id);
     if (!promoId && pm[0]) setPromoId(pm.find((p) => p.status === "Active")?.id ?? "");
+    const storeId = (shiftId ? sh.find((x) => x.id === shiftId)?.storeId : sh[0]?.storeId) ?? undefined;
+    const alerts = await fetchPosStockAlerts(storeId).catch(() => [] as PosStockAlertDto[]);
+    setStockAlerts(alerts);
   }, [shiftId, selectedId, productId, promoId]);
 
   useEffect(() => {
@@ -125,12 +133,49 @@ export default function PosSellPage() {
       <div>
         <h1 className="text-xl font-semibold tracking-tight">Bán hàng POS</h1>
         <p className="mt-1 text-sm text-[var(--muted)]">
-          Mở đơn · SP · giữ đơn · TT Cash/CK/Thẻ/Ví · in HĐ · hủy · trả hàng (UC_POS_026–027, 032–035, 037–040)
+          Mở đơn · SP · TT · trừ tồn BOM khi Paid (054) · cảnh báo tồn (055) · trả hàng
         </p>
       </div>
       {error && <div className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>}
       {ok && <div className="rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{ok}</div>}
       {loading && <div className="text-sm text-[var(--muted)]">Đang tải…</div>}
+
+      {stockAlerts.length > 0 && (() => {
+        const s = summarizePosStockAlerts(stockAlerts);
+        return (
+          <div className={`${panel} border-amber-200 bg-amber-50/60`}>
+            <div className="mb-2 text-sm font-semibold text-amber-900">
+              Cảnh báo tồn (UC_POS_055) — hết {s.outOfStock} · dưới min {s.belowMin} · gần reorder {s.nearReorder}
+            </div>
+            <div className={tableWrap}>
+              <table className="w-full text-sm">
+                <thead>
+                  <tr>
+                    <th className={th}>SKU</th>
+                    <th className={th}>Kho</th>
+                    <th className={th}>Tồn</th>
+                    <th className={th}>Loại</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {stockAlerts.slice(0, 8).map((a) => (
+                    <tr key={`${a.warehouseId}-${a.skuId}-${a.alertType}`}>
+                      <td className={td}>{a.skuCode} · {a.skuName}</td>
+                      <td className={td}>{a.warehouseName ?? "—"}</td>
+                      <td className={td}>{a.qtyOnHand}</td>
+                      <td className={td}>
+                        <span className={statusPill(a.alertType === "OutOfStock" || a.alertType === "BelowMin" ? "danger" : "warning")}>
+                          {a.alertType}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+      })()}
 
       {!shifts.length && (
         <div className="rounded-md bg-amber-50 px-3 py-2 text-sm text-amber-800">
@@ -371,10 +416,11 @@ export default function PosSellPage() {
                       () => resumePosSale(detail.sale.id), "Đã mở lại đơn",
                     )}>Mở lại</button>
                   )}
-                  {(detail.sale.status === "Paid" || detail.sale.status === "Returned") && (
+                  {canPrintReceipt(detail.sale.status) && (
                     <>
                       <button type="button" className={btn.ghost} onClick={() => void run(
-                        () => printPosReceipt(detail.sale.id), "Đã in HĐ (stub)",
+                        () => downloadPosReceipt(detail.sale.id, buildReceiptFilename(detail.sale.code)),
+                        "Đã tải hóa đơn bán lẻ (text 42 cột).",
                       )}>In hóa đơn</button>
                       <button type="button" className={btn.ghost} onClick={() => void run(async () => {
                         const r = await createPosReturn(detail.sale.id, "Khách trả");

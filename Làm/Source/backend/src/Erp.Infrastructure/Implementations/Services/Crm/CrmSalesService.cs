@@ -1,7 +1,11 @@
 using Erp.Application.Common.Exceptions;
 using Erp.Application.DTOs.Crm;
+using Erp.Application.DTOs.Inv;
+using Erp.Application.DTOs.Log;
 using Erp.Application.Interfaces.Services.Crm;
 using Erp.Application.Interfaces.Services.Fin;
+using Erp.Application.Interfaces.Services.Inv;
+using Erp.Application.Interfaces.Services.Log;
 using Erp.Domain.Base;
 using Erp.Domain.Entities.Crm;
 using Erp.Infrastructure.Persistence;
@@ -24,10 +28,14 @@ public sealed class CrmSalesService : ICrmSalesService
 
     private readonly AppDbContext _db;
     private readonly IFinRevenueService _rev;
-    public CrmSalesService(AppDbContext db, IFinRevenueService rev)
+    private readonly IInvStockService _inv;
+    private readonly ILogLogisticsService _log;
+    public CrmSalesService(AppDbContext db, IFinRevenueService rev, IInvStockService inv, ILogLogisticsService log)
     {
         _db = db;
         _rev = rev;
+        _inv = inv;
+        _log = log;
     }
 
     public async Task<IReadOnlyList<CrmPriceListDto>> ListPriceListsAsync(Guid tenantId, CancellationToken ct = default)
@@ -346,6 +354,37 @@ public sealed class CrmSalesService : ICrmSalesService
             x => x.TenantId == tenantId && x.QuoteId == quoteId && !x.IsDeleted, ct);
         if (lineCount == 0 && quote.TotalAmount <= 0)
             throw new AppException("Báo giá chưa có dòng / giá trị.");
+
+        var (fileName, content) = await BuildQuoteDocumentAsync(tenantId, quote, ct);
+
+        if (channel.Equals("Email", StringComparison.OrdinalIgnoreCase))
+        {
+            string? email = null;
+            if (quote.CustomerId is Guid cid)
+            {
+                email = await _db.CrmCustomers.AsNoTracking()
+                    .Where(x => x.Id == cid && x.TenantId == tenantId && !x.IsDeleted)
+                    .Select(x => x.Email).FirstOrDefaultAsync(ct);
+            }
+            if (string.IsNullOrWhiteSpace(email))
+                throw new AppException("Khách hàng chưa có email — không gửi được.");
+
+            // Ghi outbox nội bộ (AppNotification cho người gửi) + nhật ký trên báo giá.
+            _db.AppNotifications.Add(new Domain.Entities.Sys.AppNotification
+            {
+                TenantId = tenantId, UserId = userId,
+                Title = $"Đã xếp hàng gửi BG {quote.Code}",
+                Body = $"Tới {email} · {fileName} · {content.Length} ký tự",
+                EventType = "CrmQuoteEmail", Link = $"/app/crm/quotes?id={quote.Id}",
+                CreatedBy = userId,
+            });
+            quote.Note = AppendNote(quote.Note, $"EMAIL→{email} @ {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm}Z · {fileName}");
+        }
+        else
+        {
+            quote.Note = AppendNote(quote.Note, $"PDF/TEXT {fileName} @ {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm}Z · {content.Length} ký tự");
+        }
+
         quote.SentChannel = channel;
         quote.SentAt = DateTimeOffset.UtcNow;
         quote.Status = "Sent";
@@ -353,6 +392,77 @@ public sealed class CrmSalesService : ICrmSalesService
         quote.UpdatedBy = userId;
         await _db.SaveChangesAsync(ct);
         return (await MapQuotesAsync(tenantId, [quote], ct))[0];
+    }
+
+    public async Task<(string FileName, string Content)> BuildQuoteTextAsync(
+        Guid tenantId, Guid userId, Guid quoteId, bool stampSent = false, CancellationToken ct = default)
+    {
+        var quote = await RequireAsync(_db.CrmQuotes, tenantId, quoteId, "báo giá", ct);
+        if (quote.Status is "Converted" or "Rejected" or "Expired")
+            throw new AppException("Báo giá không thể xuất.");
+        var lineCount = await _db.CrmQuoteLines.CountAsync(
+            x => x.TenantId == tenantId && x.QuoteId == quoteId && !x.IsDeleted, ct);
+        if (lineCount == 0 && quote.TotalAmount <= 0)
+            throw new AppException("Báo giá chưa có dòng / giá trị.");
+
+        var result = await BuildQuoteDocumentAsync(tenantId, quote, ct);
+        if (stampSent)
+        {
+            quote.SentChannel = "Pdf";
+            quote.SentAt = DateTimeOffset.UtcNow;
+            if (quote.Status is "Draft" or "PendingDiscount") quote.Status = "Sent";
+            quote.Note = AppendNote(quote.Note, $"PDF/TEXT {result.FileName} @ {DateTimeOffset.UtcNow:yyyy-MM-dd HH:mm}Z");
+            quote.UpdatedBy = userId;
+            await _db.SaveChangesAsync(ct);
+        }
+        return result;
+    }
+
+    private async Task<(string FileName, string Content)> BuildQuoteDocumentAsync(
+        Guid tenantId, CrmQuote quote, CancellationToken ct)
+    {
+        string? customerName = null, customerEmail = null, customerPhone = null;
+        if (quote.CustomerId is Guid cid)
+        {
+            var cust = await _db.CrmCustomers.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == cid && x.TenantId == tenantId && !x.IsDeleted, ct);
+            customerName = cust?.DisplayName;
+            customerEmail = cust?.Email;
+            customerPhone = cust?.Phone;
+        }
+
+        var lines = await _db.CrmQuoteLines.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && x.QuoteId == quote.Id && !x.IsDeleted)
+            .OrderBy(x => x.LineNo).ToListAsync(ct);
+
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine("BÁO GIÁ / QUOTATION");
+        sb.AppendLine(new string('=', 48));
+        sb.AppendLine($"Số       : {quote.Code}  (v{quote.Version})");
+        sb.AppendLine($"Ngày     : {quote.QuoteDate.ToLocalTime():dd/MM/yyyy}");
+        if (quote.ValidUntil is DateTimeOffset vu)
+            sb.AppendLine($"Hiệu lực : đến {vu.ToLocalTime():dd/MM/yyyy}");
+        sb.AppendLine($"Khách hàng: {customerName ?? "—"}");
+        if (!string.IsNullOrWhiteSpace(customerPhone)) sb.AppendLine($"Điện thoại: {customerPhone}");
+        if (!string.IsNullOrWhiteSpace(customerEmail)) sb.AppendLine($"Email     : {customerEmail}");
+        sb.AppendLine(new string('-', 48));
+        sb.AppendLine($"{"SP/DV",-24}{"SL",8}{"Đơn giá",12}{"Thành tiền",12}");
+        foreach (var l in lines)
+        {
+            var name = (l.ItemName.Length > 24 ? l.ItemName[..24] : l.ItemName).PadRight(24);
+            sb.AppendLine($"{name}{l.Quantity,8:0.##}{l.UnitPrice,12:N0}{l.LineAmount,12:N0}");
+        }
+        sb.AppendLine(new string('-', 48));
+        sb.AppendLine($"Tạm tính     : {quote.SubTotal,14:N0}");
+        if (quote.DiscountAmount > 0 || quote.DiscountPercent > 0)
+            sb.AppendLine($"Chiết khấu   : {quote.DiscountAmount,14:N0} ({quote.DiscountPercent:0.##}%)");
+        sb.AppendLine($"TỔNG CỘNG    : {quote.TotalAmount,14:N0}");
+        sb.AppendLine(new string('=', 48));
+        if (!string.IsNullOrWhiteSpace(quote.Note) && !quote.Note.Contains("EMAIL→") && !quote.Note.Contains("PDF/TEXT"))
+            sb.AppendLine($"Ghi chú: {quote.Note}");
+        sb.AppendLine("Trân trọng cảm ơn.");
+
+        return ($"{quote.Code}-baogia.txt", sb.ToString());
     }
 
     public async Task<CrmSalesOrderDto> ConvertQuoteToOrderAsync(
@@ -490,17 +600,77 @@ public sealed class CrmSalesService : ICrmSalesService
         return (await MapOrdersAsync(tenantId, [order], ct))[0];
     }
 
+    /// <summary>UC_CRM_082 — giữ tồn thật qua INV reservation (Active → tăng QtyReserved), idempotent.</summary>
     public async Task<CrmSalesOrderDto> HoldStockAsync(
         Guid tenantId, Guid userId, Guid orderId, CancellationToken ct = default)
     {
         var order = await RequireAsync(_db.CrmSalesOrders, tenantId, orderId, "đơn hàng", ct);
         if (order.Status is "Cancelled" or "Delivered")
             throw new AppException("Không giữ tồn trên đơn này.");
+
+        var hasActive = await _db.InvStockReservations.AsNoTracking().AnyAsync(
+            x => x.TenantId == tenantId && !x.IsDeleted
+                 && x.RefModule == "CRM" && x.RefId == order.Id && x.Status == "Active", ct);
+        if (!hasActive)
+        {
+            var whId = await _db.InvWarehouses.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && x.Status == "Active" && !x.IsDeleted)
+                .OrderBy(x => x.Code).Select(x => x.Id).FirstOrDefaultAsync(ct);
+            if (whId == Guid.Empty) throw new AppException("Chưa có kho Active để giữ tồn.");
+
+            var lines = await _db.CrmSalesOrderLines.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && x.OrderId == order.Id && !x.IsDeleted && x.Quantity > 0)
+                .ToListAsync(ct);
+            if (lines.Count == 0) throw new AppException("Đơn chưa có dòng hàng.");
+
+            var codes = lines.Select(x => x.ItemCode.ToUpperInvariant()).Distinct().ToList();
+            var skus = await _db.InvSkus.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && !x.IsDeleted && codes.Contains(x.Code))
+                .ToDictionaryAsync(x => x.Code, ct);
+            var reserveLines = lines
+                .Where(l => skus.ContainsKey(l.ItemCode.ToUpperInvariant()))
+                .Select(l => new InvReservationLineRequest(
+                    skus[l.ItemCode.ToUpperInvariant()].Id, l.Quantity, null, null))
+                .ToList();
+            if (reserveLines.Count == 0)
+                throw new AppException("Không có SP nào khớp SKU kho — đồng bộ catalog INV trước khi giữ tồn.");
+
+            try
+            {
+                var rv = await _inv.CreateReservationAsync(tenantId, userId, new InvReservationCreateRequest(
+                    whId, "CRM", order.Id, order.Code, $"Giữ tồn đơn {order.Code}", Activate: true, reserveLines), ct);
+                order.Note = AppendNote(order.Note, $"Giữ tồn {rv.Header.Code} ({reserveLines.Count}/{lines.Count} dòng)");
+            }
+            catch (AppException ex)
+            {
+                throw new AppException($"Giữ tồn thất bại: {ex.Message}");
+            }
+        }
+
         order.StockHoldStatus = "Held";
         order.Status = "Holding";
         order.UpdatedBy = userId;
         await _db.SaveChangesAsync(ct);
         return (await MapOrdersAsync(tenantId, [order], ct))[0];
+    }
+
+    private async Task ReleaseCrmReservationAsync(Guid tenantId, Guid userId, Guid orderId, CancellationToken ct)
+    {
+        var active = await _db.InvStockReservations.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted
+                        && x.RefModule == "CRM" && x.RefId == orderId && x.Status == "Active")
+            .Select(x => x.Id).ToListAsync(ct);
+        foreach (var id in active)
+        {
+            try { await _inv.ReleaseReservationAsync(tenantId, userId, id, ct); }
+            catch (AppException) { /* đã release song song — bỏ qua */ }
+        }
+    }
+
+    private static string? AppendNote(string? note, string extra)
+    {
+        var joined = string.IsNullOrWhiteSpace(note) ? extra : $"{note} · {extra}";
+        return joined.Length <= 1000 ? joined : joined[..1000];
     }
 
     public async Task<CrmSalesOrderDto> CancelOrderAsync(
@@ -511,7 +681,11 @@ public sealed class CrmSalesService : ICrmSalesService
         if (order.Status == "Cancelled") throw new AppException("Đơn đã hủy.");
         order.Status = "Cancelled";
         order.CancelReason = Req(req.Reason, 500, "Lý do hủy");
-        if (order.StockHoldStatus == "Held") order.StockHoldStatus = "Released";
+        if (order.StockHoldStatus == "Held")
+        {
+            await ReleaseCrmReservationAsync(tenantId, userId, order.Id, ct);
+            order.StockHoldStatus = "Released";
+        }
         order.UpdatedBy = userId;
         await _db.SaveChangesAsync(ct);
         return (await MapOrdersAsync(tenantId, [order], ct))[0];
@@ -542,13 +716,51 @@ public sealed class CrmSalesService : ICrmSalesService
         return MapPayment(pay);
     }
 
+    /// <summary>UC_CRM_088 — tạo lệnh giao LOG thật (Draft→Confirmed) từ đơn, idempotent theo SourceOrderCode.</summary>
     public async Task<CrmSalesOrderDto> PushToWarehouseAsync(
         Guid tenantId, Guid userId, Guid orderId, CancellationToken ct = default)
     {
         var order = await RequireAsync(_db.CrmSalesOrders, tenantId, orderId, "đơn hàng", ct);
         if (order.Status is "Cancelled") throw new AppException("Đơn đã hủy.");
         if (order.Status is "Draft") throw new AppException("Cần xác nhận đơn trước khi đẩy kho.");
-        // Stub tích hợp INV/LOG Cap-2
+
+        var existing = await _db.LogDeliveryOrders.AsNoTracking().FirstOrDefaultAsync(
+            x => x.TenantId == tenantId && !x.IsDeleted
+                 && x.SourceOrderCode == order.Code.ToUpper(), ct);
+        if (existing is null)
+        {
+            var lines = await _db.CrmSalesOrderLines.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && x.OrderId == order.Id && !x.IsDeleted && x.Quantity > 0)
+                .OrderBy(x => x.LineNo).ToListAsync(ct);
+            if (lines.Count == 0) throw new AppException("Đơn chưa có dòng hàng — không thể đẩy kho.");
+
+            var customer = order.CustomerId is Guid cid
+                ? await _db.CrmCustomers.AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Id == cid && x.TenantId == tenantId && !x.IsDeleted, ct)
+                : null;
+
+            try
+            {
+                var delivery = await _log.UpsertDeliveryAsync(tenantId, userId, new LogDeliveryUpsertRequest(
+                    null, null, order.Code, customer?.DisplayName ?? "Khách lẻ",
+                    customer?.Address, customer?.Phone, $"Từ đơn CRM {order.Code}", null), ct);
+                foreach (var l in lines)
+                    await _log.UpsertLineAsync(tenantId, userId, delivery.Id, new LogDeliveryLineUpsertRequest(
+                        null, l.ItemCode, l.ItemName, l.Quantity, null, null), ct);
+                await _log.ConfirmAsync(tenantId, userId, delivery.Id, ct);
+                order.Note = AppendNote(order.Note, $"LOG {delivery.Code}");
+            }
+            catch (AppException ex)
+            {
+                order.WarehousePushStatus = "Failed";
+                order.UpdatedBy = userId;
+                await _db.SaveChangesAsync(ct);
+                throw new AppException($"Đẩy kho/LOG thất bại: {ex.Message}");
+            }
+        }
+
+        if (order.StockHoldStatus == "Held")
+            await ReleaseCrmReservationAsync(tenantId, userId, order.Id, ct);
         order.WarehousePushStatus = "Pushed";
         if (order.Status is "Confirmed" or "Holding") order.Status = "Released";
         if (order.StockHoldStatus == "Held") order.StockHoldStatus = "Released";

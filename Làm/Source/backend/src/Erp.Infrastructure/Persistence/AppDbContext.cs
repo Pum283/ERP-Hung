@@ -144,6 +144,14 @@ public sealed class AppDbContext : DbContext
     public DbSet<CrmSalesOrder> CrmSalesOrders => Set<CrmSalesOrder>();
     public DbSet<CrmSalesOrderLine> CrmSalesOrderLines => Set<CrmSalesOrderLine>();
     public DbSet<CrmOrderPayment> CrmOrderPayments => Set<CrmOrderPayment>();
+    public DbSet<CrmCampaign> CrmCampaigns => Set<CrmCampaign>();
+    public DbSet<CrmCampaignExpense> CrmCampaignExpenses => Set<CrmCampaignExpense>();
+    public DbSet<CrmWebLead> CrmWebLeads => Set<CrmWebLead>();
+    public DbSet<CrmPromotion> CrmPromotions => Set<CrmPromotion>();
+    public DbSet<CrmPromotionCondition> CrmPromotionConditions => Set<CrmPromotionCondition>();
+    public DbSet<CrmVoucher> CrmVouchers => Set<CrmVoucher>();
+    public DbSet<CrmVoucherUsage> CrmVoucherUsages => Set<CrmVoucherUsage>();
+    public DbSet<CrmChatHistory> CrmChatHistories => Set<CrmChatHistory>();
 
     public DbSet<PosStore> PosStores => Set<PosStore>();
     public DbSet<PosTerminal> PosTerminals => Set<PosTerminal>();

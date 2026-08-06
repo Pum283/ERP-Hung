@@ -18,6 +18,8 @@ public interface ICrmSalesService
     Task<CrmQuoteDto> RequestDiscountAsync(Guid tenantId, Guid userId, Guid quoteId, CrmQuoteDiscountRequest req, CancellationToken ct = default);
     Task<CrmQuoteDto> DecideDiscountAsync(Guid tenantId, Guid userId, Guid quoteId, CrmQuoteDiscountDecisionRequest req, CancellationToken ct = default);
     Task<CrmQuoteDto> SendQuoteAsync(Guid tenantId, Guid userId, Guid quoteId, CrmQuoteSendRequest req, CancellationToken ct = default);
+    /// <summary>UC_CRM_074 — sinh nội dung báo giá text thật (đóng dấu SentChannel=Pdf nếu stamp=true).</summary>
+    Task<(string FileName, string Content)> BuildQuoteTextAsync(Guid tenantId, Guid userId, Guid quoteId, bool stampSent = false, CancellationToken ct = default);
     Task<CrmSalesOrderDto> ConvertQuoteToOrderAsync(Guid tenantId, Guid userId, Guid quoteId, CancellationToken ct = default);
 
     Task<IReadOnlyList<CrmSalesOrderDto>> ListOrdersAsync(Guid tenantId, string? status = null, CancellationToken ct = default);

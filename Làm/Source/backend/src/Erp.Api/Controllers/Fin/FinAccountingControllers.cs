@@ -177,8 +177,8 @@ public sealed class FinJournalController : ControllerBase
     [HttpGet]
     [AuthorizePermission("fin.journal.read")]
     public async Task<ActionResult<ApiResponse<IReadOnlyList<FinJournalDto>>>> List(
-        [FromQuery] string? q, CancellationToken ct)
-        => Ok(ApiResponse<IReadOnlyList<FinJournalDto>>.Ok(await _svc.ListJournalsAsync(TenantId, q, ct)));
+        [FromQuery] string? q, [FromQuery] string? source, CancellationToken ct)
+        => Ok(ApiResponse<IReadOnlyList<FinJournalDto>>.Ok(await _svc.ListJournalsAsync(TenantId, q, source, ct)));
 
     [HttpGet("{id:guid}")]
     [AuthorizePermission("fin.journal.read")]
@@ -191,11 +191,19 @@ public sealed class FinJournalController : ControllerBase
         [FromBody] FinJournalUpsertRequest req, CancellationToken ct)
         => Ok(ApiResponse<FinJournalDto>.Ok(await _svc.UpsertJournalAsync(TenantId, UserId, req, ct)));
 
+    /// <summary>UC_FIN_015 — tạo BT tự động (Source=Auto).</summary>
+    [HttpPost("auto")]
+    [AuthorizePermission("fin.journal.manage")]
+    public async Task<ActionResult<ApiResponse<FinJournalDto>>> CreateAuto(
+        [FromBody] FinJournalUpsertRequest req, CancellationToken ct)
+        => Ok(ApiResponse<FinJournalDto>.Ok(await _svc.CreateAutoJournalAsync(TenantId, UserId, req, ct)));
+
+    [Obsolete("Dùng POST /api/fin/journals/auto")]
     [HttpPost("auto-stub")]
     [AuthorizePermission("fin.journal.manage")]
     public async Task<ActionResult<ApiResponse<FinJournalDto>>> AutoStub(
         [FromBody] FinJournalUpsertRequest req, CancellationToken ct)
-        => Ok(ApiResponse<FinJournalDto>.Ok(await _svc.CreateAutoJournalStubAsync(TenantId, UserId, req, ct)));
+        => Ok(ApiResponse<FinJournalDto>.Ok(await _svc.CreateAutoJournalAsync(TenantId, UserId, req, ct)));
 
     [HttpPost("{id:guid}/post")]
     [AuthorizePermission("fin.journal.manage")]

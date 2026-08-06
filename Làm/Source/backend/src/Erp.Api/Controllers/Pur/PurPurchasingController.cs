@@ -183,4 +183,12 @@ public sealed class PurPoController : ControllerBase
     [AuthorizePermission("pur.po.manage")]
     public async Task<ActionResult<ApiResponse<PurPurchaseOrderDto>>> Print(Guid id, CancellationToken ct)
         => Ok(ApiResponse<PurPurchaseOrderDto>.Ok(await _svc.PrintPoAsync(TenantId, UserId, id, ct)));
+
+    [HttpGet("{id:guid}/export.csv")]
+    [AuthorizePermission("pur.po.read")]
+    public async Task<IActionResult> ExportCsv(Guid id, CancellationToken ct)
+    {
+        var (fileName, csv) = await _svc.ExportPoCsvAsync(TenantId, UserId, id, ct);
+        return File(System.Text.Encoding.UTF8.GetBytes(csv), "text/csv", fileName);
+    }
 }

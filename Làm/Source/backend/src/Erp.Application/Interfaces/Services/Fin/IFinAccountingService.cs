@@ -24,12 +24,13 @@ public interface IFinAccountingService
     Task<IReadOnlyList<FinTaxDto>> ListTaxesAsync(Guid tenantId, CancellationToken ct = default);
     Task<FinTaxDto> UpsertTaxAsync(Guid tenantId, Guid userId, FinTaxUpsertRequest req, CancellationToken ct = default);
 
-    Task<IReadOnlyList<FinJournalDto>> ListJournalsAsync(Guid tenantId, string? q, CancellationToken ct = default);
+    Task<IReadOnlyList<FinJournalDto>> ListJournalsAsync(Guid tenantId, string? q, string? source = null, CancellationToken ct = default);
     Task<FinJournalDetailDto> GetJournalDetailAsync(Guid tenantId, Guid journalId, CancellationToken ct = default);
     Task<FinJournalDto> UpsertJournalAsync(Guid tenantId, Guid userId, FinJournalUpsertRequest req, CancellationToken ct = default);
     Task<FinJournalDto> PostJournalAsync(Guid tenantId, Guid userId, Guid journalId, CancellationToken ct = default);
     Task<FinJournalDto> ReverseJournalAsync(Guid tenantId, Guid userId, Guid journalId, CancellationToken ct = default);
-    Task<FinJournalDto> CreateAutoJournalStubAsync(Guid tenantId, Guid userId, FinJournalUpsertRequest req, CancellationToken ct = default);
+    /// <summary>UC_FIN_015 — tạo bút toán tự động (Source=Auto) từ phân hệ khác.</summary>
+    Task<FinJournalDto> CreateAutoJournalAsync(Guid tenantId, Guid userId, FinJournalUpsertRequest req, CancellationToken ct = default);
 
     Task<IReadOnlyList<FinLedgerRowDto>> GetLedgerAsync(Guid tenantId, FinLedgerQuery query, CancellationToken ct = default);
     Task<IReadOnlyList<FinDetailLedgerRowDto>> GetDetailLedgerAsync(Guid tenantId, FinLedgerQuery query, CancellationToken ct = default);

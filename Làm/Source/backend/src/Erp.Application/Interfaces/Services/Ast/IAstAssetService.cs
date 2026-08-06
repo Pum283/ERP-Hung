@@ -19,5 +19,7 @@ public interface IAstAssetService
     Task<IReadOnlyList<AstDepreciationRunDto>> ListRunsAsync(Guid tenantId, CancellationToken ct = default);
     Task<AstDepreciationRunDetailDto> GetRunDetailAsync(Guid tenantId, Guid runId, CancellationToken ct = default);
     Task<AstDepreciationRunDto> CalculatePeriodAsync(Guid tenantId, Guid userId, AstDepreciationCalcRequest req, CancellationToken ct = default);
-    Task<AstDepreciationRunDto> PushToFinStubAsync(Guid tenantId, Guid userId, Guid runId, AstPushFinRequest req, CancellationToken ct = default);
+    /// <summary>UC_AST_012 — đẩy bút toán khấu hao sang FIN: tạo JE Posted cân Nợ/Có thật
+    /// (tự resolve TK 642*/214* + kỳ FIN Open nếu không truyền).</summary>
+    Task<AstDepreciationRunDto> PushToFinAsync(Guid tenantId, Guid userId, Guid runId, AstPushFinRequest req, CancellationToken ct = default);
 }

@@ -114,7 +114,7 @@ public sealed class FinApService : IFinApService
                 new(null, exId, inv.TotalAmount, 0, vendor.Code, null, "Chi phí/Hàng mua AP"),
                 new(null, apId, 0, inv.TotalAmount, vendor.Code, null, "Phải trả NCC"),
             };
-            var je = await _fin.CreateAutoJournalStubAsync(tenantId, userId, new FinJournalUpsertRequest(
+            var je = await _fin.CreateAutoJournalAsync(tenantId, userId, new FinJournalUpsertRequest(
                 null, null, periodId, inv.InvoiceDate, $"AP {inv.Code}: {inv.VendorInvoiceNo ?? inv.Code}",
                 vendor.Code, null, "Auto", lines), ct);
             je = await _fin.PostJournalAsync(tenantId, userId, je.Id, ct);

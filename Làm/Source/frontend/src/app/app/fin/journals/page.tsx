@@ -2,7 +2,7 @@
 
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import {
-  createFinAutoJournalStub,
+  createFinAutoJournal,
   fetchFinAccounts,
   fetchFinCostCenters,
   fetchFinDetailLedger,
@@ -21,6 +21,7 @@ import {
   type FinLedgerRowDto,
   type FinPeriodDto,
 } from "@/shared/api/fin-api";
+import { isAutoSource } from "@/shared/api/fin-journal-helpers";
 import { usePermissions } from "@/shared/hooks/use-permissions";
 import { btn } from "@/shared/ui/btn";
 import { field, panel, statusPill, tableWrap, td, th } from "@/shared/ui/field";
@@ -41,6 +42,7 @@ export default function FinJournalsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [ok, setOk] = useState<string | null>(null);
+  const [sourceFilter, setSourceFilter] = useState<"" | "Manual" | "Auto">("");
 
   const [periodId, setPeriodId] = useState("");
   const [desc, setDesc] = useState("");
@@ -53,7 +55,7 @@ export default function FinJournalsPage() {
 
   const load = useCallback(async () => {
     const [j, a, p, c] = await Promise.all([
-      fetchFinJournals(),
+      fetchFinJournals(undefined, sourceFilter || undefined),
       fetchFinAccounts().catch(() => [] as FinAccountDto[]),
       fetchFinPeriods().catch(() => [] as FinPeriodDto[]),
       fetchFinCostCenters().catch(() => [] as FinCostCenterDto[]),
@@ -67,7 +69,7 @@ export default function FinJournalsPage() {
     if (!accDebit && a[0]) setAccDebit(a[0].id);
     if (!accCredit && a[1]) setAccCredit(a[1].id);
     else if (!accCredit && a[0]) setAccCredit(a[0].id);
-  }, [selectedId, periodId, accDebit, accCredit]);
+  }, [selectedId, periodId, accDebit, accCredit, sourceFilter]);
 
   useEffect(() => {
     if (!canRead) { setLoading(false); return; }
@@ -119,7 +121,7 @@ export default function FinJournalsPage() {
       <div>
         <h1 className="text-xl font-semibold tracking-tight">Bút toán / sổ cái</h1>
         <p className="mt-1 text-sm text-[var(--muted)]">
-          BT thủ công · ghi sổ · đảo · sổ cái / CT theo ĐT · BT tự động stub (UC_FIN_010, 012–015)
+          BT thủ công · ghi sổ · đảo · sổ cái / CT theo ĐT · BT tự động Source=Auto (UC_FIN_010, 012–015)
         </p>
       </div>
       {error && <div className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>}
@@ -128,7 +130,19 @@ export default function FinJournalsPage() {
 
       <div className="grid gap-4 xl:grid-cols-2">
         <section className={panel}>
-          <h2 className="mb-3 text-sm font-semibold">Danh sách bút toán</h2>
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <h2 className="text-sm font-semibold">Danh sách bút toán</h2>
+            <select
+              className={field}
+              style={{ width: 140 }}
+              value={sourceFilter}
+              onChange={(e) => setSourceFilter(e.target.value as "" | "Manual" | "Auto")}
+            >
+              <option value="">Tất cả nguồn</option>
+              <option value="Manual">Manual</option>
+              <option value="Auto">Auto</option>
+            </select>
+          </div>
           <div className={tableWrap}>
             <table className="w-full text-sm">
               <thead>
@@ -146,7 +160,7 @@ export default function FinJournalsPage() {
                     <td className={td}>{j.totalDebit.toLocaleString()}</td>
                     <td className={td}>
                       <span className={statusPill(j.status === "Posted" ? "success" : j.status === "Draft" ? "warning" : "muted")}>{j.status}</span>
-                      {j.source === "Auto" && <span className="ml-1 text-xs text-[var(--muted)]">Auto</span>}
+                      {isAutoSource(j.source) && <span className="ml-1 text-xs text-[var(--muted)]">Auto</span>}
                     </td>
                   </tr>
                 ))}
@@ -244,19 +258,19 @@ export default function FinJournalsPage() {
                     setError("Chọn kỳ, 2 TK và số tiền > 0.");
                     return;
                   }
-                  void run(() => createFinAutoJournalStub({
+                  void run(() => createFinAutoJournal({
                     periodId,
                     entryDate: new Date().toISOString(),
-                    description: desc || "BT tự động (stub)",
+                    description: desc || "BT tự động",
                     partnerCode: partner || null,
                     costCenterId: ccId || null,
                     lines: [
                       { accountId: accDebit, debit: amt, credit: 0 },
                       { accountId: accCredit, debit: 0, credit: amt },
                     ],
-                  }), "Đã tạo BT Auto stub");
+                  }), "Đã tạo BT tự động (Source=Auto).");
                 }}>
-                  BT tự động stub
+                  Tạo BT tự động
                 </button>
               </div>
             </form>

@@ -50,6 +50,35 @@ public sealed class PosReportController : ControllerBase
         => Ok(ApiResponse<PosCancelDiscountReportDto>.Ok(
             await _svc.CancelDiscountRatesAsync(TenantId, from, to, storeId, ct)));
 
+    [HttpGet("top-products")]
+    [AuthorizePermission("pos.sale.read")]
+    public async Task<ActionResult<ApiResponse<IReadOnlyList<PosTopProductRowDto>>>> TopProducts(
+        [FromQuery] DateTimeOffset from, [FromQuery] DateTimeOffset to,
+        [FromQuery] int top = 10, [FromQuery] string by = "qty",
+        [FromQuery] Guid? storeId = null, CancellationToken ct = default)
+        => Ok(ApiResponse<IReadOnlyList<PosTopProductRowDto>>.Ok(
+            await _svc.TopProductsAsync(TenantId, from, to, top, by, storeId, ct)));
+
+    [HttpGet("store-compare")]
+    [AuthorizePermission("pos.sale.read")]
+    public async Task<ActionResult<ApiResponse<IReadOnlyList<PosStoreCompareRowDto>>>> StoreCompare(
+        [FromQuery] DateTimeOffset from, [FromQuery] DateTimeOffset to, CancellationToken ct = default)
+        => Ok(ApiResponse<IReadOnlyList<PosStoreCompareRowDto>>.Ok(
+            await _svc.CompareStoresAsync(TenantId, from, to, ct)));
+
+    [HttpGet("chain-live")]
+    [AuthorizePermission("pos.sale.read")]
+    public async Task<ActionResult<ApiResponse<PosChainLiveReportDto>>> ChainLive(CancellationToken ct = default)
+        => Ok(ApiResponse<PosChainLiveReportDto>.Ok(await _svc.ChainLiveAsync(TenantId, null, ct)));
+
+    [HttpGet("cost-variance")]
+    [AuthorizePermission("pos.sale.read")]
+    public async Task<ActionResult<ApiResponse<PosCostVarianceReportDto>>> CostVariance(
+        [FromQuery] DateTimeOffset from, [FromQuery] DateTimeOffset to,
+        [FromQuery] Guid? storeId = null, CancellationToken ct = default)
+        => Ok(ApiResponse<PosCostVarianceReportDto>.Ok(
+            await _svc.CostVarianceAsync(TenantId, from, to, storeId, ct)));
+
     [HttpGet("export.csv")]
     [AuthorizePermission("pos.sale.read")]
     public async Task<IActionResult> Export(

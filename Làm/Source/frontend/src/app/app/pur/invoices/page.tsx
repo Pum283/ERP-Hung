@@ -11,6 +11,7 @@ import {
   type PurInvoiceDetailDto,
   type PurInvoiceDto,
 } from "@/shared/api/pur-receiving-api";
+import { canPushInvoiceToAp, formatApPushMessage, pushStatusTone } from "@/shared/api/pur-push-helpers";
 import { usePermissions } from "@/shared/hooks/use-permissions";
 import { btn } from "@/shared/ui/btn";
 import { field, panel, statusPill, tableWrap, td, th } from "@/shared/ui/field";
@@ -81,7 +82,7 @@ export default function PurInvoicesPage() {
       <div>
         <h1 className="text-xl font-semibold tracking-tight">Hóa đơn nhà cung cấp</h1>
         <p className="mt-1 text-sm text-[var(--muted)]">
-          Nhập HĐ · đối soát 3 chiều PO–GRN–Invoice · đẩy AP stub (UC_PUR_040–041, 043)
+          Nhập HĐ · đối soát 3 chiều PO–GRN–Invoice · đẩy FIN AP thật (UC_PUR_040–041, 043)
         </p>
       </div>
       {error && <div className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>}
@@ -148,7 +149,10 @@ export default function PurInvoicesPage() {
               <div>
                 <b>{detail.header.code}</b> · {detail.header.invoiceNumber}
                 <div className="text-xs text-[var(--muted)]">
-                  {detail.header.vendorName} · PO {detail.header.poCode ?? "—"} · AP {detail.header.apPushStatus}
+                  {detail.header.vendorName} · PO {detail.header.poCode ?? "—"} · AP{" "}
+                  <span className={statusPill(pushStatusTone(detail.header.apPushStatus))}>
+                    {detail.header.apPushStatus}
+                  </span>
                 </div>
                 <div className="mt-1">
                   Sub {detail.header.subTotal.toLocaleString()} + thuế {detail.header.taxAmount.toLocaleString()}
@@ -182,9 +186,10 @@ export default function PurInvoicesPage() {
                       () => matchPurInvoice(detail.header.id), "Đã chạy đối soát 3 chiều",
                     )}>Đối soát 3 chiều</button>
                   )}
-                  {detail.header.matchStatus === "Matched" && detail.header.apPushStatus !== "Pushed" && (
+                  {canPushInvoiceToAp(detail.header.matchStatus, detail.header.apPushStatus, detail.header.totalAmount) && (
                     <button type="button" className={btn.ghost} onClick={() => void run(
-                      () => pushPurInvoiceAp(detail.header.id), "Đã đẩy AP (stub)",
+                      () => pushPurInvoiceAp(detail.header.id),
+                      formatApPushMessage(detail.header.code, detail.header.totalAmount),
                     )}>Đẩy FIN AP</button>
                   )}
                 </div>

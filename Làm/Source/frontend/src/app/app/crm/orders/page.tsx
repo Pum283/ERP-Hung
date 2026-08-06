@@ -12,6 +12,14 @@ import {
   type CrmSalesOrderDetailDto,
   type CrmSalesOrderDto,
 } from "@/shared/api/crm-sales-api";
+import {
+  canHoldStock,
+  canPushWarehouse,
+  holdStatusTone,
+  parseLogDeliveryRef,
+  parseReservationRef,
+  warehousePushTone,
+} from "@/shared/api/crm-order-sync-helpers";
 import { usePermissions } from "@/shared/hooks/use-permissions";
 import { btn } from "@/shared/ui/btn";
 import { field, panel, statusPill, tableWrap, td, th } from "@/shared/ui/field";
@@ -81,7 +89,7 @@ export default function CrmOrdersPage() {
       <div>
         <h1 className="text-xl font-semibold tracking-tight">Đơn hàng bán</h1>
         <p className="mt-1 text-sm text-[var(--muted)]">
-          Từ báo giá · trạng thái · giữ tồn stub · thanh toán · đẩy kho (UC_CRM_079, 081–082, 084, 087–088)
+          Từ báo giá · trạng thái · giữ tồn INV thật · thanh toán · đẩy kho/LOG thật (UC_CRM_079, 081–082, 084, 087–088)
         </p>
       </div>
       {error && <div className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>}
@@ -124,7 +132,16 @@ export default function CrmOrdersPage() {
               <div>
                 <b>{detail.order.code}</b>
                 <div className="text-xs text-[var(--muted)]">
-                  Giữ tồn: {detail.order.stockHoldStatus} · Kho: {detail.order.warehousePushStatus}
+                  Giữ tồn:{" "}
+                  <span className={statusPill(holdStatusTone(detail.order.stockHoldStatus))}>
+                    {detail.order.stockHoldStatus}
+                  </span>
+                  {parseReservationRef(detail.order.note) && ` (${parseReservationRef(detail.order.note)})`}
+                  {" · "}Kho:{" "}
+                  <span className={statusPill(warehousePushTone(detail.order.warehousePushStatus))}>
+                    {detail.order.warehousePushStatus}
+                  </span>
+                  {parseLogDeliveryRef(detail.order.note) && ` (lệnh giao ${parseLogDeliveryRef(detail.order.note)})`}
                 </div>
                 {detail.order.cancelReason && (
                   <div className="text-xs text-red-600">Hủy: {detail.order.cancelReason}</div>
@@ -169,12 +186,16 @@ export default function CrmOrdersPage() {
                         () => setCrmOrderStatus(detail.order.id, st), `→ ${st}`,
                       )}>{st}</button>
                     ))}
-                    <button type="button" className={btn.ghost} onClick={() => void run(
-                      () => holdCrmOrderStock(detail.order.id), "Đã giữ tồn (stub)",
-                    )}>Giữ tồn</button>
-                    <button type="button" className={btn.primary} onClick={() => void run(
-                      () => pushCrmOrderWarehouse(detail.order.id), "Đã đẩy kho (stub)",
-                    )}>Đẩy kho</button>
+                    {canHoldStock(detail.order.status, detail.order.stockHoldStatus) && (
+                      <button type="button" className={btn.ghost} onClick={() => void run(
+                        () => holdCrmOrderStock(detail.order.id), "Đã giữ tồn INV (reservation Active).",
+                      )}>Giữ tồn</button>
+                    )}
+                    {canPushWarehouse(detail.order.status, detail.order.warehousePushStatus) && (
+                      <button type="button" className={btn.primary} onClick={() => void run(
+                        () => pushCrmOrderWarehouse(detail.order.id), "Đã tạo lệnh giao LOG (Confirmed) + nhả giữ tồn.",
+                      )}>Đẩy kho</button>
+                    )}
                   </div>
                   <form className="flex flex-wrap gap-2" onSubmit={(e: FormEvent) => {
                     e.preventDefault();

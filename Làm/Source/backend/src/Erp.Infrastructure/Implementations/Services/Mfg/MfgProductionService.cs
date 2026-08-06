@@ -3,6 +3,7 @@ using Erp.Application.DTOs.Fin;
 using Erp.Application.DTOs.Mfg;
 using Erp.Application.Interfaces.Services.Fin;
 using Erp.Application.Interfaces.Services.Mfg;
+using Erp.Domain.Entities.Fin;
 using Erp.Domain.Entities.Mfg;
 using Erp.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -951,27 +952,41 @@ public sealed class MfgProductionService : IMfgProductionService
         fgItem.StandardCost = sheet.UnitCost;
         fgItem.UpdatedBy = userId;
 
-        // FIN stub: WIP → TP khi đủ kỳ + TK
-        if (req?.PeriodId is Guid periodId && req.WipAccountId is Guid wipId && req.FgAccountId is Guid fgAccId)
+        // UC_MFG_031: luôn tạo JE WIP→TP thật khi TotalCost > 0 (auto-resolve TK 154*/155* + kỳ Open).
+        if (sheet.TotalCost > 0)
         {
-            var period = await _db.FinPeriods.AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == periodId && x.TenantId == tenantId && !x.IsDeleted, ct)
-                ?? throw new AppException("Không tìm thấy kỳ KT.");
+            FinPeriod period;
+            if (req?.PeriodId is Guid periodId)
+            {
+                period = await _db.FinPeriods
+                    .FirstOrDefaultAsync(x => x.Id == periodId && x.TenantId == tenantId && !x.IsDeleted, ct)
+                    ?? throw new AppException("Không tìm thấy kỳ KT.");
+            }
+            else
+            {
+                var now = DateTimeOffset.UtcNow;
+                period = await _db.FinPeriods
+                    .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Status == "Open"
+                                && x.StartDate.Year == now.Year && x.StartDate.Month == now.Month)
+                    .OrderBy(x => x.StartDate).FirstOrDefaultAsync(ct)
+                    ?? throw new AppException("Không tìm thấy kỳ FIN Open khớp tháng hiện tại — chọn PeriodId.");
+            }
             if (period.Status == "Locked") throw new AppException("Kỳ đã khóa sổ.");
-            _ = await _db.FinAccounts.AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == wipId && x.TenantId == tenantId && !x.IsDeleted, ct)
-                ?? throw new AppException("TK WIP không hợp lệ.");
-            _ = await _db.FinAccounts.AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == fgAccId && x.TenantId == tenantId && !x.IsDeleted, ct)
-                ?? throw new AppException("TK TP không hợp lệ.");
+
+            var wipAcc = req?.WipAccountId is Guid wipId
+                ? await RequireFinAccount(tenantId, wipId, "TK WIP", ct)
+                : await ResolveFinAccountAsync(tenantId, ["154", "621"], "TK WIP (154*/621*)", ct);
+            var fgAcc = req?.FgAccountId is Guid fgAccId
+                ? await RequireFinAccount(tenantId, fgAccId, "TK TP", ct)
+                : await ResolveFinAccountAsync(tenantId, ["155", "152"], "TK thành phẩm (155*/152*)", ct);
 
             var lines = new List<FinJournalLineUpsertRequest>
             {
-                new(null, fgAccId, sheet.TotalCost, 0, wo.Code, null, "Nhập giá thành TP"),
-                new(null, wipId, 0, sheet.TotalCost, wo.Code, null, "Kết chuyển WIP"),
+                new(null, fgAcc.Id, sheet.TotalCost, 0, wo.Code, null, "Nhập giá thành TP"),
+                new(null, wipAcc.Id, 0, sheet.TotalCost, wo.Code, null, "Kết chuyển WIP"),
             };
-            var je = await _fin.CreateAutoJournalStubAsync(tenantId, userId, new FinJournalUpsertRequest(
-                null, null, periodId, DateTimeOffset.UtcNow,
+            var je = await _fin.CreateAutoJournalAsync(tenantId, userId, new FinJournalUpsertRequest(
+                null, null, period.Id, DateTimeOffset.UtcNow,
                 $"GT SX {sheet.Code}: {fgItem.Code} đơn giá {sheet.UnitCost:N4}",
                 wo.Code, null, "Auto", lines), ct);
             je = await _fin.PostJournalAsync(tenantId, userId, je.Id, ct);
@@ -985,6 +1000,27 @@ public sealed class MfgProductionService : IMfgProductionService
         sheet.UpdatedBy = userId;
         await _db.SaveChangesAsync(ct);
         return await MapCostSheetAsync(tenantId, sheet, ct);
+    }
+
+    private async Task<FinAccount> RequireFinAccount(
+        Guid tenantId, Guid id, string label, CancellationToken ct)
+        => await _db.FinAccounts.AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == id && x.TenantId == tenantId && !x.IsDeleted, ct)
+            ?? throw new AppException($"{label} không hợp lệ.");
+
+    private async Task<FinAccount> ResolveFinAccountAsync(
+        Guid tenantId, string[] codePrefixes, string label, CancellationToken ct)
+    {
+        foreach (var prefix in codePrefixes)
+        {
+            var acc = await _db.FinAccounts.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Status == "Active"
+                            && x.IsPostable && x.Code.StartsWith(prefix))
+                .OrderBy(x => x.Code)
+                .FirstOrDefaultAsync(ct);
+            if (acc is not null) return acc;
+        }
+        throw new AppException($"Không tìm thấy {label} trong hệ thống TK — chọn TK thủ công.");
     }
 
     private async Task<decimal> ResolveItemUnitCostAsync(Guid tenantId, MfgItem item, CancellationToken ct)

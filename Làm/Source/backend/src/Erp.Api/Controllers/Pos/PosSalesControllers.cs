@@ -41,10 +41,24 @@ public sealed class PosShiftController : ControllerBase
         Guid id, [FromBody] PosShiftCloseRequest req, CancellationToken ct)
         => Ok(ApiResponse<PosShiftDto>.Ok(await _svc.CloseShiftAsync(TenantId, UserId, id, req, ct)));
 
+    [HttpPost("{id:guid}/sync-fin")]
+    [AuthorizePermission("pos.shift.manage")]
+    public async Task<ActionResult<ApiResponse<PosShiftFinSyncResult>>> SyncFin(Guid id, CancellationToken ct)
+        => Ok(ApiResponse<PosShiftFinSyncResult>.Ok(
+            await _svc.SyncShiftRevenueToFinAsync(TenantId, UserId, id, ct)));
+
     [HttpPost("{id:guid}/print-report")]
     [AuthorizePermission("pos.shift.manage")]
     public async Task<ActionResult<ApiResponse<PosShiftDto>>> PrintReport(Guid id, CancellationToken ct)
         => Ok(ApiResponse<PosShiftDto>.Ok(await _svc.PrintShiftReportAsync(TenantId, UserId, id, ct)));
+
+    [HttpGet("{id:guid}/report.txt")]
+    [AuthorizePermission("pos.shift.read")]
+    public async Task<IActionResult> DownloadReport(Guid id, CancellationToken ct)
+    {
+        var (fileName, content) = await _svc.BuildShiftReportTextAsync(TenantId, UserId, id, ct);
+        return File(System.Text.Encoding.UTF8.GetBytes(content), "text/plain; charset=utf-8", fileName);
+    }
 }
 
 [ApiController]
@@ -113,6 +127,21 @@ public sealed class PosSaleController : ControllerBase
     [AuthorizePermission("pos.sale.manage")]
     public async Task<ActionResult<ApiResponse<PosSaleDto>>> PrintReceipt(Guid id, CancellationToken ct)
         => Ok(ApiResponse<PosSaleDto>.Ok(await _svc.PrintReceiptAsync(TenantId, UserId, id, ct)));
+
+    [HttpGet("{id:guid}/receipt.txt")]
+    [AuthorizePermission("pos.sale.read")]
+    public async Task<IActionResult> DownloadReceipt(Guid id, CancellationToken ct)
+    {
+        var (fileName, content) = await _svc.BuildReceiptTextAsync(TenantId, UserId, id, ct);
+        return File(System.Text.Encoding.UTF8.GetBytes(content), "text/plain; charset=utf-8", fileName);
+    }
+
+    [HttpGet("~/api/pos/stock-alerts")]
+    [AuthorizePermission("pos.sale.read")]
+    public async Task<ActionResult<ApiResponse<IReadOnlyList<PosStockAlertDto>>>> StockAlerts(
+        [FromQuery] Guid? storeId, CancellationToken ct)
+        => Ok(ApiResponse<IReadOnlyList<PosStockAlertDto>>.Ok(
+            await _svc.ListStockAlertsAsync(TenantId, storeId, ct)));
 }
 
 [ApiController]

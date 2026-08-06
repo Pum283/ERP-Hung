@@ -5,6 +5,7 @@ import {
   applyCrmPriceList,
   convertCrmQuoteToOrder,
   decideCrmQuoteDiscount,
+  downloadCrmQuoteText,
   fetchCrmPriceLists,
   fetchCrmQuoteDetail,
   fetchCrmQuotes,
@@ -18,6 +19,12 @@ import {
   type CrmQuoteDto,
   type CrmSalesOrderDto,
 } from "@/shared/api/crm-sales-api";
+import {
+  buildQuoteFilename,
+  canSendQuote,
+  formatQuoteSendFlash,
+  parseQuoteSendLog,
+} from "@/shared/api/crm-quote-helpers";
 import { usePermissions } from "@/shared/hooks/use-permissions";
 import { btn } from "@/shared/ui/btn";
 import { field, panel, statusPill, tableWrap, td, th } from "@/shared/ui/field";
@@ -154,6 +161,9 @@ export default function CrmQuotesPage() {
                 <div className="text-xs text-[var(--muted)]">
                   Opp: {detail.quote.opportunityCode ?? "—"} · CK {detail.quote.discountPercent}%
                   ({detail.quote.discountApprovalStatus}) · Gửi: {detail.quote.sentChannel}
+                  {parseQuoteSendLog(detail.quote.note) && (
+                    <> · {parseQuoteSendLog(detail.quote.note)}</>
+                  )}
                 </div>
                 <div className="mt-1">
                   Sub {detail.quote.subTotal.toLocaleString()} − CK {detail.quote.discountAmount.toLocaleString()}
@@ -213,12 +223,22 @@ export default function CrmQuotesPage() {
                         )}>Từ chối</button>
                       </>
                     )}
-                    <button type="button" className={btn.ghost} onClick={() => void run(
-                      () => sendCrmQuote(detail.quote.id, "Email"), "Đã gửi Email",
-                    )}>Gửi Email</button>
-                    <button type="button" className={btn.ghost} onClick={() => void run(
-                      () => sendCrmQuote(detail.quote.id, "Pdf"), "Đã gửi PDF",
-                    )}>Gửi PDF</button>
+                    {canSendQuote(detail.quote.status, detail.quote.discountApprovalStatus) && (
+                      <>
+                        <button type="button" className={btn.ghost} onClick={() => void run(
+                          () => sendCrmQuote(detail.quote.id, "Email"),
+                          formatQuoteSendFlash("Email", detail.quote.code),
+                        )}>Gửi Email</button>
+                        <button type="button" className={btn.ghost} onClick={() => void run(
+                          () => downloadCrmQuoteText(
+                            detail.quote.id,
+                            buildQuoteFilename(detail.quote.code),
+                            true,
+                          ),
+                          formatQuoteSendFlash("Pdf", detail.quote.code),
+                        )}>Xuất PDF/text</button>
+                      </>
+                    )}
                     {canOrder && (
                       <button type="button" className={btn.primary} onClick={() => void run(async () => {
                         const o = await convertCrmQuoteToOrder(detail.quote.id);

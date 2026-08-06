@@ -97,6 +97,20 @@ export async function sendCrmQuote(quoteId: string, channel: "Email" | "Pdf") {
     `/api/crm/quotes/${quoteId}/send`, { channel });
   return data.data;
 }
+
+/** UC_CRM_074 — tải nội dung báo giá text thật (tuỳ chọn đóng dấu Sent). */
+export async function downloadCrmQuoteText(quoteId: string, filename: string, stamp = true) {
+  const { data } = await api.get<Blob>(`/api/crm/quotes/${quoteId}/quote.txt`, {
+    params: { stamp },
+    responseType: "blob",
+  });
+  const url = URL.createObjectURL(data);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 export async function convertCrmQuoteToOrder(quoteId: string) {
   const { data } = await api.post<Envelope<CrmSalesOrderDto>>(
     `/api/crm/quotes/${quoteId}/convert-order`);

@@ -254,7 +254,7 @@ public sealed class FinRevenueService : IFinRevenueService
             new(null, dr, amount, 0, null, null, debitNote),
             new(null, cr, 0, amount, null, null, creditNote),
         };
-        var je = await _fin.CreateAutoJournalStubAsync(tenantId, userId, new FinJournalUpsertRequest(
+        var je = await _fin.CreateAutoJournalAsync(tenantId, userId, new FinJournalUpsertRequest(
             null, null, periodId, entity.DocDate, description, null, null, "Auto", lines), ct);
         je = await _fin.PostJournalAsync(tenantId, userId, je.Id, ct);
         entity.FinJournalId = je.Id;

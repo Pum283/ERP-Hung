@@ -98,6 +98,14 @@ public sealed class CrmQuoteController : ControllerBase
         Guid id, [FromBody] CrmQuoteSendRequest req, CancellationToken ct)
         => Ok(ApiResponse<CrmQuoteDto>.Ok(await _svc.SendQuoteAsync(TenantId, UserId, id, req, ct)));
 
+    [HttpGet("{id:guid}/quote.txt")]
+    [AuthorizePermission("crm.quote.read")]
+    public async Task<IActionResult> DownloadQuoteText(Guid id, [FromQuery] bool stamp = false, CancellationToken ct = default)
+    {
+        var (fileName, content) = await _svc.BuildQuoteTextAsync(TenantId, UserId, id, stamp, ct);
+        return File(System.Text.Encoding.UTF8.GetBytes(content), "text/plain; charset=utf-8", fileName);
+    }
+
     [HttpPost("{id:guid}/convert-order")]
     [AuthorizePermission("crm.order.manage")]
     public async Task<ActionResult<ApiResponse<CrmSalesOrderDto>>> ConvertOrder(Guid id, CancellationToken ct)

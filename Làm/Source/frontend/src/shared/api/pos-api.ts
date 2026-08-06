@@ -8,6 +8,9 @@ export type PosStoreDto = {
   name: string;
   address?: string | null;
   status: string;
+  warehouseId?: string | null;
+  warehouseName?: string | null;
+  monthlyRevenueTarget: number;
   terminalCount: number;
   printerCount: number;
   cashierCount: number;
@@ -120,6 +123,8 @@ export async function upsertPosStore(body: {
   name: string;
   address?: string;
   status?: string;
+  warehouseId?: string | null;
+  monthlyRevenueTarget?: number | null;
 }) {
   const { data } = await api.post<Envelope<PosStoreDto>>("/api/pos/stores", body);
   return data.data;
@@ -235,11 +240,14 @@ export async function upsertPosBom(
   return data.data;
 }
 
+export type PosSyncResult = {
+  productCount: number; createdCount: number; updatedCount: number;
+  suspendedCount: number; syncedAt: string;
+};
+
+/** UC_POS_015 — đồng bộ catalog thật từ back-office (INV SKU). */
 export async function syncPosCatalog() {
-  const { data } = await api.post<Envelope<{ productCount: number; syncedAt: string }>>(
-    "/api/pos/products/sync",
-    {},
-  );
+  const { data } = await api.post<Envelope<PosSyncResult>>("/api/pos/products/sync", {});
   return data.data;
 }
 

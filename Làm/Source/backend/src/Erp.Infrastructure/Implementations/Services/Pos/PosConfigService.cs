@@ -47,6 +47,20 @@ public sealed class PosConfigService : IPosConfigService
         entity.Name = name;
         entity.Address = NullIfEmpty(req.Address);
         entity.Status = status;
+        if (req.WarehouseId is Guid whId)
+        {
+            var whOk = await _db.InvWarehouses.AnyAsync(
+                x => x.Id == whId && x.TenantId == tenantId && !x.IsDeleted && x.Status == "Active", ct);
+            if (!whOk) throw new AppException("Kho INV không hợp lệ / không Active.");
+            entity.WarehouseId = whId;
+        }
+        else
+            entity.WarehouseId = null;
+        if (req.MonthlyRevenueTarget is decimal target)
+        {
+            if (target < 0) throw new AppException("Target doanh thu ≥ 0.");
+            entity.MonthlyRevenueTarget = decimal.Round(target, 2);
+        }
         entity.UpdatedBy = userId;
         await _db.SaveChangesAsync(ct);
         return (await MapStoresAsync(tenantId, [entity], ct))[0];
@@ -378,21 +392,58 @@ public sealed class PosConfigService : IPosConfigService
             entity.Id, entity.ProductId, entity.MaterialCode, entity.MaterialName, entity.Qty, entity.Unit);
     }
 
+    /// <summary>UC_POS_015 — đồng bộ catalog thật từ back-office (INV SKU là nguồn sự thật):
+    /// tạo SP thiếu, cập nhật tên đổi, suspend SP có SKU Inactive, đóng dấu SyncedAt.</summary>
     public async Task<PosSyncResult> SyncCatalogAsync(
         Guid tenantId, Guid userId, CancellationToken ct = default)
     {
-        // Cap-1: đánh dấu đồng bộ back-office (stub stamp) — không gọi hệ thống ngoài
         var now = DateTimeOffset.UtcNow;
+        var skus = await _db.InvSkus.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted)
+            .ToListAsync(ct);
+        var uoms = await _db.InvUnitsOfMeasure.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted)
+            .ToDictionaryAsync(x => x.Id, x => x.Code, ct);
         var products = await _db.PosProducts
             .Where(x => x.TenantId == tenantId && !x.IsDeleted)
             .ToListAsync(ct);
+        var byCode = products.ToDictionary(x => x.Code, StringComparer.OrdinalIgnoreCase);
+
+        int created = 0, updated = 0, suspendedCount = 0;
+        foreach (var sku in skus)
+        {
+            if (byCode.TryGetValue(sku.Code, out var p))
+            {
+                var changed = false;
+                if (p.Name != sku.Name) { p.Name = sku.Name; changed = true; }
+                // SKU ngừng ở back-office → suspend tại POS; không tự re-activate SP suspend tay.
+                if (sku.Status != "Active" && p.Status != "Suspended")
+                {
+                    p.Status = "Suspended";
+                    suspendedCount++;
+                    changed = true;
+                }
+                if (changed) { p.UpdatedBy = userId; updated++; }
+            }
+            else if (sku.Status == "Active")
+            {
+                _db.PosProducts.Add(new PosProduct
+                {
+                    TenantId = tenantId, Code = sku.Code, Name = sku.Name,
+                    Unit = uoms.GetValueOrDefault(sku.BaseUnitId), Status = "Active",
+                    SyncedAt = now, CreatedBy = userId,
+                });
+                created++;
+            }
+        }
+
         foreach (var p in products)
         {
             p.SyncedAt = now;
             p.UpdatedBy = userId;
         }
         await _db.SaveChangesAsync(ct);
-        return new PosSyncResult(products.Count, now);
+        return new PosSyncResult(products.Count + created, created, updated, suspendedCount, now);
     }
 
     public async Task<IReadOnlyList<PosTaxRateDto>> ListTaxRatesAsync(
@@ -604,9 +655,18 @@ public sealed class PosConfigService : IPosConfigService
             .GroupBy(x => x.StoreId).Select(g => new { g.Key, Count = g.Count() })
             .ToDictionaryAsync(x => x.Key, x => x.Count, ct);
 
+        var whIds = stores.Where(s => s.WarehouseId is not null).Select(s => s.WarehouseId!.Value).Distinct().ToList();
+        var whNames = whIds.Count == 0
+            ? new Dictionary<Guid, string>()
+            : await _db.InvWarehouses.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && whIds.Contains(x.Id))
+                .ToDictionaryAsync(x => x.Id, x => x.Name, ct);
+
         return stores.Select(s => new PosStoreDto(
             s.Id, s.Code, s.Name, s.Address, s.Status,
-            tCounts.GetValueOrDefault(s.Id), pCounts.GetValueOrDefault(s.Id), cCounts.GetValueOrDefault(s.Id))).ToList();
+            s.WarehouseId, s.WarehouseId is Guid wid ? whNames.GetValueOrDefault(wid) : null,
+            tCounts.GetValueOrDefault(s.Id), pCounts.GetValueOrDefault(s.Id), cCounts.GetValueOrDefault(s.Id),
+            s.MonthlyRevenueTarget)).ToList();
     }
 
     private async Task<IReadOnlyList<PosProductDto>> MapProductsAsync(

@@ -4,13 +4,16 @@ import { FormEvent, useCallback, useEffect, useState } from "react";
 import { fetchPosStores, type PosStoreDto } from "@/shared/api/pos-api";
 import {
   closePosShift,
+  downloadPosShiftReport,
   fetchPosShiftDetail,
   fetchPosShifts,
   openPosShift,
-  printPosShiftReport,
+  syncPosShiftFin,
   type PosShiftDetailDto,
   type PosShiftDto,
 } from "@/shared/api/pos-sales-api";
+import { buildShiftReportFilename } from "@/shared/api/pos-doc-helpers";
+import { formatFinSyncFlash, parseFinSyncFromNote } from "@/shared/api/pos-shift-fin-helpers";
 import { usePermissions } from "@/shared/hooks/use-permissions";
 import { btn } from "@/shared/ui/btn";
 import { field, panel, statusPill, tableWrap, td, th } from "@/shared/ui/field";
@@ -58,12 +61,12 @@ export default function PosShiftsPage() {
     setTimeout(() => setOk(null), 2500);
   }
 
-  async function run(action: () => Promise<unknown>, msg: string) {
+  async function run(action: () => Promise<unknown>, fallbackMsg: string) {
     try {
-      await action();
+      const result = await action();
       await load();
       if (selectedId) setDetail(await fetchPosShiftDetail(selectedId));
-      flash(msg);
+      flash(typeof result === "string" && result ? result : fallbackMsg);
     } catch (err) { setError((err as Error).message); }
   }
 
@@ -76,7 +79,7 @@ export default function PosShiftsPage() {
       <div>
         <h1 className="text-xl font-semibold tracking-tight">Ca thu ngân</h1>
         <p className="mt-1 text-sm text-[var(--muted)]">
-          Mở ca · tiền đầu · doanh thu · đóng ca / lệch quỹ · in BC (UC_POS_042–043, 045–048)
+          Mở ca · tiền đầu · đóng ca + sync DT FIN · in BC (UC_POS_042–043, 045–048, 059)
         </p>
       </div>
       {error && <div className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>}
@@ -160,14 +163,32 @@ export default function PosShiftsPage() {
                     <>
                       <input className={field} value={closingCash} onChange={(e) => setClosingCash(e.target.value)} placeholder="Tiền đếm" />
                       <button type="button" className={btn.primary} onClick={() => void run(
-                        () => closePosShift(detail.shift.id, Number(closingCash) || 0), "Đã đóng ca",
+                        async () => {
+                          const s = await closePosShift(detail.shift.id, Number(closingCash) || 0);
+                          const fin = parseFinSyncFromNote(s.note);
+                          return fin
+                            ? `Đã đóng ca · FIN ${fin.synced}+${fin.already}/${fin.paid}`
+                            : "Đã đóng ca";
+                        },
+                        "Đã đóng ca",
                       )}>Đóng ca</button>
                     </>
                   )}
                   <button type="button" className={btn.ghost} onClick={() => void run(
-                    () => printPosShiftReport(detail.shift.id), "Đã in BC ca (stub)",
+                    async () => {
+                      const r = await syncPosShiftFin(detail.shift.id);
+                      return formatFinSyncFlash(r);
+                    },
+                    "Đã sync FIN",
+                  )}>Sync DT → FIN</button>
+                  <button type="button" className={btn.ghost} onClick={() => void run(
+                    () => downloadPosShiftReport(detail.shift.id, buildShiftReportFilename(detail.shift.code)),
+                    "Đã tải báo cáo ca (DT + tiền mặt + chênh lệch).",
                   )}>In BC ca</button>
                 </div>
+              )}
+              {detail.shift.note && (
+                <p className="mt-2 text-xs text-[var(--muted)]">Ghi chú: {detail.shift.note}</p>
               )}
             </div>
           ) : (

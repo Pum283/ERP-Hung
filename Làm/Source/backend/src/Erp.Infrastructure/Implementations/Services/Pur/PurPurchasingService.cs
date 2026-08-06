@@ -596,6 +596,53 @@ public sealed class PurPurchasingService : IPurPurchasingService
         return (await MapPosAsync(tenantId, [po], ct))[0];
     }
 
+    public async Task<(string FileName, string Csv)> ExportPoCsvAsync(
+        Guid tenantId, Guid userId, Guid poId, CancellationToken ct = default)
+    {
+        var po = await RequirePo(tenantId, poId, ct);
+        if (po.Status is "Draft" or "Cancelled")
+            throw new AppException("Không xuất PO Draft/Cancelled.");
+
+        var vendor = await _db.PurVendors.AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == po.VendorId && x.TenantId == tenantId && !x.IsDeleted, ct);
+        var lines = await _db.PurPoLines.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && x.PoId == poId && !x.IsDeleted)
+            .OrderBy(x => x.ProductCode).ToListAsync(ct);
+
+        var sb = new System.Text.StringBuilder();
+        sb.Append('\uFEFF');
+        sb.AppendLine($"PO,{CsvCell(po.Code)},Version,{po.Version},Status,{po.Status}");
+        sb.AppendLine($"Vendor,{CsvCell(vendor?.Code)},{CsvCell(vendor?.Name)},Currency,{po.Currency},");
+        sb.AppendLine($"ApprovedAt,{po.ApprovedAt:yyyy-MM-dd HH:mm},SentAt,{po.SentAt:yyyy-MM-dd HH:mm},,");
+        sb.AppendLine();
+        sb.AppendLine("No,ProductCode,ProductName,Unit,Qty,UnitPrice,LineAmount,ReceivedQty,InvoicedQty");
+        var no = 0;
+        foreach (var l in lines)
+        {
+            no++;
+            var amount = Math.Round(l.Qty * l.UnitPrice, 2);
+            sb.AppendLine(
+                $"{no},{CsvCell(l.ProductCode)},{CsvCell(l.ProductName)},{CsvCell(l.Unit)}," +
+                $"{Num(l.Qty)},{Num(l.UnitPrice)},{Num(amount)},{Num(l.ReceivedQty)},{Num(l.InvoicedQty)}");
+        }
+        sb.AppendLine($",,,,,TOTAL,{Num(po.TotalAmount)},,");
+
+        po.PrintedAt = DateTimeOffset.UtcNow;
+        po.UpdatedBy = userId;
+        await _db.SaveChangesAsync(ct);
+        return ($"{po.Code}-v{po.Version}.csv", sb.ToString());
+    }
+
+    private static string CsvCell(string? s)
+    {
+        var v = s ?? "";
+        if (v.Contains(',') || v.Contains('"') || v.Contains('\n'))
+            return $"\"{v.Replace("\"", "\"\"")}\"";
+        return v;
+    }
+
+    private static string Num(decimal n) => n.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
     private async Task<PurPurchaseRequestDto> DecidePrAsync(
         Guid tenantId, Guid userId, Guid prId, string status, string? note, CancellationToken ct)
     {

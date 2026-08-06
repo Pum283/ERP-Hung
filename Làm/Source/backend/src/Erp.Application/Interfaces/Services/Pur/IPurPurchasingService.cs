@@ -32,4 +32,7 @@ public interface IPurPurchasingService
     Task<PurPurchaseOrderDto> ClosePoAsync(Guid tenantId, Guid userId, Guid poId, CancellationToken ct = default);
     Task<PurPurchaseOrderDto> CancelPoAsync(Guid tenantId, Guid userId, Guid poId, PurPoCancelRequest req, CancellationToken ct = default);
     Task<PurPurchaseOrderDto> PrintPoAsync(Guid tenantId, Guid userId, Guid poId, CancellationToken ct = default);
+
+    /// <summary>UC_PUR_033 — xuất PO CSV thật (header NCC + dòng + tổng), đồng thời đóng dấu PrintedAt.</summary>
+    Task<(string FileName, string Csv)> ExportPoCsvAsync(Guid tenantId, Guid userId, Guid poId, CancellationToken ct = default);
 }

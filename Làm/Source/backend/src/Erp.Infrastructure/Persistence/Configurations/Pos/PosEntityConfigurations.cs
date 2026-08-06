@@ -15,6 +15,8 @@ public sealed class PosStoreConfig : IEntityTypeConfiguration<PosStore>
         b.Property(x => x.Name).HasMaxLength(200).IsRequired();
         b.Property(x => x.Address).HasMaxLength(500);
         b.Property(x => x.Status).HasMaxLength(30).IsRequired();
+        b.Property(x => x.MonthlyRevenueTarget).HasPrecision(18, 2);
+        b.HasIndex(x => new { x.TenantId, x.WarehouseId });
     }
 }
 

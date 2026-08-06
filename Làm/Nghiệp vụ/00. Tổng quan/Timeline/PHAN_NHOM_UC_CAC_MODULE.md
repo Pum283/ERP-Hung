@@ -45,7 +45,7 @@
 |   Cấp | UC                                                                                              | Nội dung                                                                          |
 | ----: | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
 | **1** | `001–006`, `008–011`, `014–015` DONE                                                            | KH CN/DN · trùng · gộp · phân loại · phụ trách · 360° · liên hệ · import · search |
-| **2** | Lead+Opp DONE · Quote/Order `070–074,077,079,081–082,084,087–088` DONE · omni / POS tiếp             | tiếp                                                                              |
+| **2** | Lead+Opp DONE · Quote/Order DONE · **Marketing/promo `016,019,023,026,029,031,032–038` WIRED** · omni tiếp | `/app/crm/campaigns` · `/app/crm/promotions` (+ sync POS · BC voucher) |
 | **3** | Could/Won't                                                                                     |                                                                                   |
 
 ## POS (72 · Cap-1 config DONE)
@@ -53,7 +53,7 @@
 |   Cấp | UC                                                        | Nội dung                                                                          |
 | ----: | --------------------------------------------------------- | --------------------------------------------------------------------------------- |
 | **1** | `001–003`, `007`, `009–010`, `012`, `014–016`, `019` DONE | Điểm bán · quầy · máy in · quyền · nhóm/SP · BOM · ngưng · sync · bảng giá · thuế |
-| **2** | Ca+bán+promo DONE · BC `061–064,068` DONE · tồn/chuỗi tiếp | `/app/pos/reports` · CSV                                          |
+| **2** | Ca+bán+promo DONE · **BOM→INV `054` + alerts `055` + đóng ca→FIN `059` + BC `065–067` + chuỗi `069,072` WIRED** | `/app/pos/reports` 8 tab (live) · `/app/pos/stores` target |
 | **3** | Could/Won't                                               |                                                                                   |
 
 ## PUR (52 · Cap-1 DONE)

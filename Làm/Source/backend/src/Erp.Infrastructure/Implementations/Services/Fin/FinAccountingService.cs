@@ -303,13 +303,18 @@ public sealed class FinAccountingService : IFinAccountingService
             x.EffectiveFrom, x.EffectiveTo, x.Status, x.Note);
 
     public async Task<IReadOnlyList<FinJournalDto>> ListJournalsAsync(
-        Guid tenantId, string? q, CancellationToken ct = default)
+        Guid tenantId, string? q, string? source = null, CancellationToken ct = default)
     {
         var query = _db.FinJournals.AsNoTracking().Where(x => x.TenantId == tenantId && !x.IsDeleted);
         if (!string.IsNullOrWhiteSpace(q))
         {
             var term = q.Trim();
             query = query.Where(x => x.Code.Contains(term) || x.Description.Contains(term));
+        }
+        if (!string.IsNullOrWhiteSpace(source))
+        {
+            var src = source.Trim();
+            query = query.Where(x => x.Source == src);
         }
         var list = await query.OrderByDescending(x => x.EntryDate).Take(300).ToListAsync(ct);
         return await MapJournalsAsync(tenantId, list, ct);
@@ -330,7 +335,7 @@ public sealed class FinAccountingService : IFinAccountingService
         Guid tenantId, Guid userId, FinJournalUpsertRequest req, CancellationToken ct = default)
         => UpsertJournalCoreAsync(tenantId, userId, req, forceSource: null, ct);
 
-    public Task<FinJournalDto> CreateAutoJournalStubAsync(
+    public Task<FinJournalDto> CreateAutoJournalAsync(
         Guid tenantId, Guid userId, FinJournalUpsertRequest req, CancellationToken ct = default)
         => UpsertJournalCoreAsync(tenantId, userId, req with { Source = "Auto" }, forceSource: "Auto", ct);
 

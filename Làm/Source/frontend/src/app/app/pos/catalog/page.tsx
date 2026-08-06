@@ -25,6 +25,7 @@ import {
   type PosStoreDto,
   type PosTaxRateDto,
 } from "@/shared/api/pos-api";
+import { formatCatalogSyncMessage } from "@/shared/api/pos-doc-helpers";
 import { usePermissions } from "@/shared/hooks/use-permissions";
 import { btn } from "@/shared/ui/btn";
 import { field, panel, statusPill, tableWrap, td, th } from "@/shared/ui/field";
@@ -233,7 +234,7 @@ export default function PosCatalogPage() {
     try {
       const r = await syncPosCatalog();
       await load();
-      flash(`Đồng bộ catalog: ${r.productCount} SP · ${new Date(r.syncedAt).toLocaleString("vi-VN")}`);
+      flash(`${formatCatalogSyncMessage(r)} · ${new Date(r.syncedAt).toLocaleString("vi-VN")}`);
     } catch (err) {
       setError((err as Error).message);
     }

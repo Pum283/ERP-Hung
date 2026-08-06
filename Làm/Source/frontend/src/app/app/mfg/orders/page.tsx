@@ -483,27 +483,30 @@ export default function MfgOrdersPage() {
                         {woDetail.costSheet?.status === "Calculated" && (
                           <>
                             <select className={field} value={periodId} onChange={(e) => setPeriodId(e.target.value)}>
-                              <option value="">— Kỳ KT (tuỳ chọn FIN) —</option>
+                              <option value="">— Kỳ KT (auto tháng hiện tại) —</option>
                               {periods.map((p) => <option key={p.id} value={p.id}>{p.code}</option>)}
                             </select>
                             <select className={field} value={wipAccId} onChange={(e) => setWipAccId(e.target.value)}>
-                              <option value="">— TK WIP —</option>
+                              <option value="">— TK WIP (auto 154*) —</option>
                               {accounts.map((a) => <option key={a.id} value={a.id}>{a.code} · {a.name}</option>)}
                             </select>
                             <select className={field} value={fgAccId} onChange={(e) => setFgAccId(e.target.value)}>
-                              <option value="">— TK TP —</option>
+                              <option value="">— TK TP (auto 155*) —</option>
                               {accounts.map((a) => <option key={a.id} value={a.id}>{a.code} · {a.name}</option>)}
                             </select>
                             <button
                               type="button"
                               className={btn.ghost}
-                              onClick={() => run(() => pushMfgCost(woDetail.order.id, {
-                                periodId: periodId || null,
-                                wipAccountId: wipAccId || null,
-                                fgAccountId: fgAccId || null,
-                              }), "Đã đẩy giá thành INV/FIN.")}
+                              onClick={() => run(async () => {
+                                const sheet = await pushMfgCost(woDetail.order.id, {
+                                  periodId: periodId || null,
+                                  wipAccountId: wipAccId || null,
+                                  fgAccountId: fgAccId || null,
+                                });
+                                return sheet;
+                              }, "Đã đẩy giá thành INV + JE WIP→TP (auto TK/kỳ nếu trống).")}
                             >
-                              Đẩy INV (+ FIN nếu chọn TK)
+                              Đẩy INV + FIN JE
                             </button>
                           </>
                         )}

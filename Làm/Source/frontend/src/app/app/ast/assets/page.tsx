@@ -18,6 +18,11 @@ import {
   type AstDepreciationRunDto,
   type AstLocationDto,
 } from "@/shared/api/ast-api";
+import {
+  buildDepreciationJeCode,
+  canPushDepreciationFin,
+  depreciationFinLabel,
+} from "@/shared/api/ast-fin-helpers";
 import { usePermissions } from "@/shared/hooks/use-permissions";
 import { btn } from "@/shared/ui/btn";
 import { field, panel, statusPill, tableWrap, td, th } from "@/shared/ui/field";
@@ -221,9 +226,10 @@ export default function AstAssetsPage() {
                 <span className={statusPill(runDetail.run.status === "Pushed" ? "success" : "warning")}>
                   {runDetail.run.status}
                 </span>
-                {runDetail.run.finJournalId && (
-                  <span className="ml-2 text-xs text-[var(--muted)]">FIN JE đã tạo</span>
-                )}
+                <span className="ml-2 text-xs text-[var(--muted)]">
+                  {depreciationFinLabel(runDetail.run)}
+                  {runDetail.run.finJournalId ? ` · ${buildDepreciationJeCode(runDetail.run.code)}` : ""}
+                </span>
               </div>
               <div className={tableWrap}>
                 <table className="w-full text-sm">
@@ -239,12 +245,12 @@ export default function AstAssetsPage() {
                   </tbody>
                 </table>
               </div>
-              {canManage && runDetail.run.status !== "Pushed" && (
+              {canManage && canPushDepreciationFin(runDetail.run) && (
                 <button type="button" className={btn.ghost} onClick={() => void run(
                   () => pushAstDepreciationToFin(runDetail.run.id),
-                  "Đã đẩy FIN stub",
+                  `Đã tạo bút toán KH ${buildDepreciationJeCode(runDetail.run.code)} (Posted, Nợ CP KH / Có 214).`,
                 )}>
-                  Đẩy BT KH sang FIN (stub)
+                  Đẩy BT KH sang FIN
                 </button>
               )}
             </div>

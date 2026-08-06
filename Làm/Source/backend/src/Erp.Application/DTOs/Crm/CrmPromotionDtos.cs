@@ -50,6 +50,17 @@ public sealed record CrmApplyPromotionRequest(
 public sealed record CrmApplyPromotionResult(
     bool Applied, decimal DiscountAmount, string? Message);
 
+// ── Sync CRM → POS (UC_CRM_036) ──
+public sealed record CrmSyncPromoToPosResult(
+    Guid CrmPromotionId, Guid PosPromotionId, string PosPromotionCode,
+    bool Created, int VouchersSynced, int VouchersSkipped, string Message);
+
+// ── Voucher usage report (UC_CRM_038) ──
+public sealed record CrmVoucherUsageReportRowDto(
+    Guid VoucherId, string VoucherCode, Guid PromotionId,
+    string PromotionCode, string PromotionName,
+    int RedeemCount, decimal TotalDiscount, DateTimeOffset? LastUsedAt);
+
 // ── Chat History (UC_CRM_047) ──
 public sealed record CrmChatHistoryDto(
     Guid Id, string Channel, string? ExternalConversationId,
