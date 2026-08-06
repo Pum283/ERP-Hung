@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AppShell } from "@/components/shell/AppShell";
 import {
   fetchFinTrialBalance,
   fetchFinBalanceSheet,
@@ -76,12 +75,12 @@ export default function FinancialStatementsPage() {
   }
 
   return (
-    <AppShell title="Báo cáo tài chính & Kết chuyển cuối kỳ" moduleCode="FIN">
-      <div className="p-6 max-w-7xl mx-auto space-y-6">
-        {/* Header Controls */}
-        <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-          <div className="flex items-center gap-3">
-            <label className="text-sm font-semibold text-slate-700">Kỳ kế toán:</label>
+    <div className="p-6 max-w-7xl mx-auto space-y-6">
+      <h1 className="text-xl font-semibold text-slate-800">Báo cáo tài chính & Kết chuyển cuối kỳ</h1>
+      {/* Header Controls */}
+      <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+        <div className="flex items-center gap-3">
+          <label className="text-sm font-semibold text-slate-700">Kỳ kế toán:</label>
             <select
               value={periodId}
               onChange={(e) => setPeriodId(e.target.value)}
@@ -312,7 +311,6 @@ export default function FinancialStatementsPage() {
             </>
           )}
         </div>
-      </div>
-    </AppShell>
+    </div>
   );
 }
