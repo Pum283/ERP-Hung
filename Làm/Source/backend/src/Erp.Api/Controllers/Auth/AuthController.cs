@@ -102,4 +102,25 @@ public sealed class AuthController : ControllerBase
         await _auth.Disable2FaAsync(UserId, req, ct);
         return Ok(ApiResponse<object>.Ok(new { ok = true }));
     }
+
+    [HttpGet("trusted-devices")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<IReadOnlyList<TrustedDeviceDto>>>> TrustedDevices(CancellationToken ct)
+        => Ok(ApiResponse<IReadOnlyList<TrustedDeviceDto>>.Ok(await _auth.ListTrustedDevicesAsync(UserId, ct)));
+
+    [HttpPost("trusted-devices")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<TrustedDeviceDto>>> RegisterTrustedDevice([FromBody] RegisterTrustedDeviceRequest req, CancellationToken ct)
+    {
+        var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+        return Ok(ApiResponse<TrustedDeviceDto>.Ok(await _auth.RegisterTrustedDeviceAsync(UserId, req, ip, ct)));
+    }
+
+    [HttpDelete("trusted-devices/{id:guid}")]
+    [Authorize]
+    public async Task<ActionResult<ApiResponse<object>>> RevokeTrustedDevice(Guid id, CancellationToken ct)
+    {
+        await _auth.RevokeTrustedDeviceAsync(UserId, id, ct);
+        return Ok(ApiResponse<object>.Ok(new { ok = true }));
+    }
 }

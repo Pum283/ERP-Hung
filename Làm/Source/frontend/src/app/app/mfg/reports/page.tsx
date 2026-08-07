@@ -94,7 +94,7 @@ export default function MfgReportsPage() {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold tracking-tight">Báo cáo sản xuất</h1>
-          <p className="text-sm text-[var(--muted)]">UC_MFG_041–043 · 045–046 · tiến độ lệnh · sản lượng · variance NVL · dashboard · CSV. (Ca SX = Cap-1 Should sau)</p>
+          <p className="text-sm text-[var(--muted)]">UC_MFG_041–043 · 045–046 · tiến độ lệnh · sản lượng theo ca/xưởng · variance NVL · dashboard · CSV.</p>
         </div>
         <div className="flex flex-wrap gap-2">
           {([

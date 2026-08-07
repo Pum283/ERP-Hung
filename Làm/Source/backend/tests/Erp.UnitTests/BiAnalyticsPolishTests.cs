@@ -210,13 +210,14 @@ public sealed class BiAnalyticsPolishTests : IDisposable
     }
 
     [Fact]
-    public async Task DownloadRunExport_Pdf_IsPlainText()
+    public async Task DownloadRunExport_Pdf_IsPdfFormat()
     {
         var rpt = await SeedReportAsync("FIN");
         var run = await _svc.RunReportAsync(_tenant, _user, rpt.Id, new BiReportRunRequest("{}", "Pdf"));
         var (name, contentType, content) = await _svc.DownloadRunExportAsync(_tenant, run.Id);
-        Assert.EndsWith(".txt", name, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("text/plain", contentType, StringComparison.OrdinalIgnoreCase);
+        Assert.EndsWith(".pdf", name, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("application/pdf", contentType, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("%PDF-1.4", content);
         Assert.Contains("BÁO CÁO", content);
         Assert.Contains(rpt.Code, content);
     }
@@ -236,5 +237,46 @@ public sealed class BiAnalyticsPolishTests : IDisposable
         var rpt = await SeedReportAsync("CRM");
         await Assert.ThrowsAsync<Erp.Application.Common.Exceptions.AppException>(
             () => _svc.RunReportAsync(_tenant, _user, rpt.Id, new BiReportRunRequest("{bad", "None")));
+    }
+
+    [Fact]
+    public async Task KpiTarget_ComputesActualFromFinRevenueDocuments()
+    {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        _db.FinRevenueDocuments.Add(new FinRevenueDocument
+        {
+            TenantId = _tenant, Code = "RV-KPI", Kind = "SalesRevenue", SourceModule = "FIN",
+            RevenueAmount = 15_000_000, TotalAmount = 15_000_000, CogsAmount = 4_000_000,
+            DocDate = DateTimeOffset.UtcNow, Status = "Posted", CreatedBy = _user
+        });
+        await _db.SaveChangesAsync();
+
+        await _svc.UpsertKpiTargetAsync(_tenant, _user, new BiKpiTargetUpsertRequest(
+            null, "KPI-REV", "DT Tháng", "FIN", "Revenue", "2026-08",
+            today.AddDays(-5), today.AddDays(5), 20_000_000, 0, "VND", "Active", null));
+
+        var list = await _svc.ListKpiTargetsAsync(_tenant, "2026-08", "FIN");
+        Assert.Single(list);
+        Assert.Equal(15_000_000m, list[0].ActualStubValue);
+    }
+
+    [Fact]
+    public async Task KpiTarget_ComputesActualFromPosSales()
+    {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        _db.PosSales.Add(new Domain.Entities.Pos.PosSale
+        {
+            TenantId = _tenant, Code = "POS-S1", ShiftId = Guid.NewGuid(), StoreId = Guid.NewGuid(),
+            TotalAmount = 8_500_000, Status = "Paid", CreatedBy = _user
+        });
+        await _db.SaveChangesAsync();
+
+        await _svc.UpsertKpiTargetAsync(_tenant, _user, new BiKpiTargetUpsertRequest(
+            null, "KPI-POS", "Doanh số POS", "POS", "Revenue", "2026-08",
+            today.AddDays(-5), today.AddDays(5), 10_000_000, 0, "VND", "Active", null));
+
+        var board = await _svc.ListTargetVsActualAsync(_tenant, "2026-08", "POS");
+        Assert.Single(board);
+        Assert.Equal(8_500_000m, board[0].ActualValue);
     }
 }

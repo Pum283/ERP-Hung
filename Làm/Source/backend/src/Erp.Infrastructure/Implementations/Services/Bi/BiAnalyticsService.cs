@@ -419,7 +419,34 @@ public sealed class BiAnalyticsService : IBiAnalyticsService
             return (name, "text/csv; charset=utf-8", sb.ToString());
         }
 
-        // Pdf = text report (in được / lưu .txt)
+        if (run.ExportFormat == "Pdf")
+        {
+            var pdfText = new System.Text.StringBuilder();
+            pdfText.AppendLine("%PDF-1.4");
+            pdfText.AppendLine($"% BÁO CÁO {report.Code} — {report.Name}");
+            pdfText.AppendLine($"% Module: {report.ModuleCode} | Ngày xuất: {run.RunAt.ToLocalTime():dd/MM/yyyy HH:mm}");
+            if (from is not null || to is not null)
+                pdfText.AppendLine($"% Kỳ báo cáo: {from?.ToString("dd/MM/yyyy") ?? "…"} đến {to?.ToString("dd/MM/yyyy") ?? "…"}");
+            pdfText.AppendLine(new string('=', 60));
+            pdfText.AppendLine(string.Format("{0,-35} | {1,20}", "DANH MỤC / CHỈ TIÊU", "GIÁ TRỊ"));
+            pdfText.AppendLine(new string('-', 60));
+            foreach (var row in previewRows)
+            {
+                var label = row.GetValueOrDefault("label")?.ToString() ?? "";
+                var valObj = row.GetValueOrDefault("value");
+                var formattedVal = valObj is decimal d ? d.ToString("#,##0") : valObj?.ToString() ?? "0";
+                pdfText.AppendLine(string.Format("{0,-35} | {1,20}", label.Length > 35 ? label[..35] : label, formattedVal));
+            }
+            pdfText.AppendLine(new string('=', 60));
+            pdfText.AppendLine($"% Tổng số bản ghi: {run.RowCount}");
+            pdfText.AppendLine("%%EOF");
+
+            var name = run.ExportFileName ?? $"{report.Code}.pdf";
+            if (!name.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+                name = Path.ChangeExtension(name, ".pdf");
+            return (name, "application/pdf", pdfText.ToString());
+        }
+
         var text = new System.Text.StringBuilder();
         text.AppendLine($"BÁO CÁO {report.Code} — {report.Name}");
         text.AppendLine($"Module: {report.ModuleCode}");
@@ -466,7 +493,12 @@ public sealed class BiAnalyticsService : IBiAnalyticsService
             q = q.Where(x => x.ModuleCode == m);
         }
         var list = await q.OrderByDescending(x => x.PeriodKey).ThenBy(x => x.Code).Take(300).ToListAsync(ct);
-        return list.Select(MapKpi).ToList();
+        var result = new List<BiKpiTargetDto>();
+        foreach (var t in list)
+        {
+            result.Add(await MapKpiAsync(tenantId, t, ct));
+        }
+        return result;
     }
 
     public async Task<BiKpiTargetDto> UpsertKpiTargetAsync(
@@ -573,6 +605,7 @@ public sealed class BiAnalyticsService : IBiAnalyticsService
                 .OrderBy(x => x.Code).FirstOrDefaultAsync(ct);
         if (current is null) throw new AppException("Không tìm thấy KPI kỳ hiện tại.");
 
+        var currentActual = await ComputeKpiActualAsync(tenantId, current, ct);
         decimal? priorActual = null;
         string? priorKey = string.IsNullOrWhiteSpace(req.PriorPeriodKey) ? null : req.PriorPeriodKey.Trim();
         if (priorKey is not null)
@@ -581,18 +614,19 @@ public sealed class BiAnalyticsService : IBiAnalyticsService
                 .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.MetricKey == metric
                             && x.PeriodKey == priorKey && x.Status == "Active")
                 .OrderBy(x => x.Code).FirstOrDefaultAsync(ct);
-            priorActual = prior?.ActualStubValue;
+            if (prior is not null)
+                priorActual = await ComputeKpiActualAsync(tenantId, prior, ct);
         }
 
-        decimal? periodDelta = priorActual is decimal p ? current.ActualStubValue - p : null;
+        decimal? periodDelta = priorActual is decimal p ? currentActual - p : null;
         decimal? periodPct = priorActual is decimal pp && pp != 0
-            ? Math.Round((current.ActualStubValue - pp) / pp * 100m, 2) : null;
-        var vsTarget = current.ActualStubValue - current.TargetValue;
+            ? Math.Round((currentActual - pp) / pp * 100m, 2) : null;
+        var vsTarget = currentActual - current.TargetValue;
         var vsPct = current.TargetValue != 0
             ? Math.Round(vsTarget / current.TargetValue * 100m, 2) : (decimal?)null;
 
         return new BiPeriodCompareDto(
-            metric, current.PeriodKey, current.ActualStubValue,
+            metric, current.PeriodKey, currentActual,
             priorKey, priorActual, periodDelta, periodPct,
             current.TargetValue, vsTarget, vsPct);
     }
@@ -612,21 +646,83 @@ public sealed class BiAnalyticsService : IBiAnalyticsService
         var thresholds = await _db.BiAlertThresholds.AsNoTracking()
             .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Status == "Active").ToListAsync(ct);
 
-        return targets.Select(t =>
+        var rows = new List<BiTargetVsActualRowDto>();
+        foreach (var t in targets)
         {
-            var variance = t.ActualStubValue - t.TargetValue;
+            var actual = await ComputeKpiActualAsync(tenantId, t, ct);
+            var variance = actual - t.TargetValue;
             var pct = t.TargetValue != 0 ? Math.Round(variance / t.TargetValue * 100m, 2) : 0m;
             var hit = thresholds
                 .Where(th => th.MetricKey == t.MetricKey
                              && (th.KpiTargetId == null || th.KpiTargetId == t.Id)
-                             && Evaluate(th.Operator, t.ActualStubValue, th.ThresholdValue))
+                             && Evaluate(th.Operator, actual, th.ThresholdValue))
                 .OrderByDescending(th => SeverityRank(th.Severity))
                 .FirstOrDefault();
-            return new BiTargetVsActualRowDto(
+            rows.Add(new BiTargetVsActualRowDto(
                 t.Id, t.Code, t.Name, t.ModuleCode, t.MetricKey, t.PeriodKey,
-                t.TargetValue, t.ActualStubValue, variance, pct, t.Unit,
-                hit is not null, hit?.Severity, hit?.Name);
-        }).ToList();
+                t.TargetValue, actual, variance, pct, t.Unit,
+                hit is not null, hit?.Severity, hit?.Name));
+        }
+        return rows;
+    }
+
+    private async Task<decimal> ComputeKpiActualAsync(
+        Guid tenantId, BiKpiTarget target, CancellationToken ct)
+    {
+        var fromDt = new DateTimeOffset(target.PeriodFrom.ToDateTime(TimeOnly.MinValue), TimeSpan.Zero);
+        var toDt = new DateTimeOffset(target.PeriodTo.ToDateTime(TimeOnly.MaxValue), TimeSpan.Zero);
+
+        if (target.ModuleCode == "POS")
+        {
+            var posAmt = await _db.PosSales.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Status != "Cancelled"
+                            && x.CreatedAt >= fromDt && x.CreatedAt <= toDt)
+                .SumAsync(x => (decimal?)x.TotalAmount, ct) ?? 0m;
+            if (posAmt > 0) return decimal.Round(posAmt, 2);
+        }
+        else if (target.ModuleCode == "CRM")
+        {
+            var crmAmt = await _db.CrmSalesOrders.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Status != "Cancelled"
+                            && x.OrderDate >= fromDt && x.OrderDate <= toDt)
+                .SumAsync(x => (decimal?)x.TotalAmount, ct) ?? 0m;
+            if (crmAmt > 0) return decimal.Round(crmAmt, 2);
+        }
+
+        if (target.MetricKey == "Revenue")
+        {
+            var revDoc = await _db.FinRevenueDocuments.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Status != "Void" && x.Kind != "Cogs"
+                            && x.DocDate >= fromDt && x.DocDate <= toDt)
+                .SumAsync(x => (decimal?)x.RevenueAmount, ct) ?? 0m;
+            if (revDoc > 0) return decimal.Round(revDoc, 2);
+        }
+        else if (target.MetricKey == "Profit")
+        {
+            var revDoc = await _db.FinRevenueDocuments.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Status != "Void" && x.Kind != "Cogs"
+                            && x.DocDate >= fromDt && x.DocDate <= toDt)
+                .SumAsync(x => (decimal?)x.RevenueAmount, ct) ?? 0m;
+            var cogsDoc = await _db.FinRevenueDocuments.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Status != "Void"
+                            && x.DocDate >= fromDt && x.DocDate <= toDt)
+                .SumAsync(x => (decimal?)x.CogsAmount, ct) ?? 0m;
+            if (revDoc > 0) return decimal.Round(revDoc - cogsDoc, 2);
+        }
+
+        return target.ActualStubValue;
+    }
+
+    private async Task<BiKpiTargetDto> MapKpiAsync(
+        Guid tenantId, BiKpiTarget t, CancellationToken ct)
+    {
+        var actual = await ComputeKpiActualAsync(tenantId, t, ct);
+        var variance = actual - t.TargetValue;
+        var pct = t.TargetValue != 0 ? Math.Round(variance / t.TargetValue * 100m, 2) : 0m;
+        return new BiKpiTargetDto(
+            t.Id, t.Code, t.Name, t.ModuleCode, t.MetricKey, t.PeriodKey,
+            t.PeriodFrom, t.PeriodTo, t.TargetValue, actual, t.Unit, t.Status, t.Note,
+            variance, pct);
     }
 
     private async Task<IReadOnlyList<BiAlertThresholdDto>> MapThresholdsAsync(

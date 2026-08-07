@@ -55,6 +55,7 @@ public sealed class AppDbContext : DbContext
     public DbSet<NotificationRule> NotificationRules => Set<NotificationRule>();
     public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
     public DbSet<UserSession> UserSessions => Set<UserSession>();
+    public DbSet<SysTrustedDevice> TrustedDevices => Set<SysTrustedDevice>();
     public DbSet<LegalEntity> LegalEntities => Set<LegalEntity>();
     public DbSet<SalesPoint> SalesPoints => Set<SalesPoint>();
     public DbSet<Province> Provinces => Set<Province>();

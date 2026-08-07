@@ -29,7 +29,7 @@ export type PrtTicketDto = {
   id: string; accountId: string; accountEmail?: string | null; code: string; subject: string;
   description?: string | null; status: string; openedAt: string; closedAt?: string | null;
 };
-export type PrtLoginResultDto = { account: PrtAccountDto; message: string };
+export type PrtLoginResultDto = { account: PrtAccountDto; token: string; message: string };
 
 export async function fetchPrtAccounts(q?: string) {
   const { data } = await api.get<Envelope<PrtAccountDto[]>>("/api/prt/accounts", { params: { q } });
@@ -48,12 +48,18 @@ export async function registerPrtAccount(body: {
   const { data } = await api.post<Envelope<PrtAccountDto>>("/api/prt/accounts/register", body);
   return data.data;
 }
-export async function loginPrtStub(body: { email: string; password: string }) {
-  const { data } = await api.post<Envelope<PrtLoginResultDto>>("/api/prt/accounts/login-stub", body);
+export async function loginPrtAccount(body: { email: string; password: string }) {
+  const { data } = await api.post<Envelope<PrtLoginResultDto>>("/api/prt/accounts/login", body);
   return data.data;
 }
+export const loginPrtStub = loginPrtAccount;
+
 export async function forgotPrtPassword(email: string) {
-  const { data } = await api.post<Envelope<PrtAccountDto>>("/api/prt/accounts/forgot-password-stub", { email });
+  const { data } = await api.post<Envelope<PrtAccountDto>>("/api/prt/accounts/forgot-password", { email });
+  return data.data;
+}
+export async function resetPrtPassword(body: { email: string; resetToken: string; newPassword: string }) {
+  const { data } = await api.post<Envelope<PrtAccountDto>>("/api/prt/accounts/reset-password", body);
   return data.data;
 }
 export async function linkPrtCustomer(body: { accountId: string; customerCode: string; customerName?: string }) {

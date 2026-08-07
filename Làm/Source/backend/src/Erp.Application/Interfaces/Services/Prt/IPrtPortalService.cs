@@ -7,8 +7,11 @@ public interface IPrtPortalService
     Task<IReadOnlyList<PrtAccountDto>> ListAccountsAsync(Guid tenantId, string? q, CancellationToken ct = default);
     Task<PrtAccountDto> UpsertAccountAsync(Guid tenantId, Guid userId, PrtAccountUpsertRequest req, CancellationToken ct = default);
     Task<PrtAccountDto> RegisterAsync(Guid tenantId, Guid userId, PrtRegisterRequest req, CancellationToken ct = default);
+    Task<PrtLoginResultDto> LoginAsync(Guid tenantId, PrtLoginRequest req, CancellationToken ct = default);
     Task<PrtLoginResultDto> LoginStubAsync(Guid tenantId, PrtLoginRequest req, CancellationToken ct = default);
+    Task<PrtAccountDto> ForgotPasswordAsync(Guid tenantId, PrtForgotPasswordRequest req, CancellationToken ct = default);
     Task<PrtAccountDto> ForgotPasswordStubAsync(Guid tenantId, PrtForgotPasswordRequest req, CancellationToken ct = default);
+    Task<PrtAccountDto> ResetPasswordAsync(Guid tenantId, PrtResetPasswordRequest req, CancellationToken ct = default);
     Task<PrtAccountDto> LinkCustomerAsync(Guid tenantId, Guid userId, PrtLinkCustomerRequest req, CancellationToken ct = default);
 
     Task<IReadOnlyList<PrtOrderDto>> ListOrdersAsync(Guid tenantId, Guid? accountId, CancellationToken ct = default);

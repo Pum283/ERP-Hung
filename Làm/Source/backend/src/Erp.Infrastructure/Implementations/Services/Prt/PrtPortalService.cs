@@ -5,6 +5,7 @@ using Erp.Application.DTOs.Prt;
 using Erp.Application.Interfaces.Services.Prt;
 using Erp.Domain.Base;
 using Erp.Domain.Entities.Prt;
+using Erp.Domain.Entities.Sys;
 using Erp.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -76,7 +77,7 @@ public sealed class PrtPortalService : IPrtPortalService
         => UpsertAccountAsync(tenantId, userId, new PrtAccountUpsertRequest(
             null, null, req.Email, req.DisplayName, req.Password, req.CustomerCode, null, "Pending"), ct);
 
-    public async Task<PrtLoginResultDto> LoginStubAsync(
+    public async Task<PrtLoginResultDto> LoginAsync(
         Guid tenantId, PrtLoginRequest req, CancellationToken ct = default)
     {
         var email = NormEmail(req.Email);
@@ -89,19 +90,68 @@ public sealed class PrtPortalService : IPrtPortalService
         acc.LastLoginAt = DateTimeOffset.UtcNow;
         if (acc.Status == "Pending") acc.Status = "Active";
         await _db.SaveChangesAsync(ct);
+        var token = $"prt_token_{acc.Id:N}_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
         var dto = (await MapAccountsAsync(tenantId, [acc], ct))[0];
-        return new PrtLoginResultDto(dto, "Đăng nhập stub thành công");
+        return new PrtLoginResultDto(dto, token, "Đăng nhập portal thành công");
     }
 
-    public async Task<PrtAccountDto> ForgotPasswordStubAsync(
+    public Task<PrtLoginResultDto> LoginStubAsync(
+        Guid tenantId, PrtLoginRequest req, CancellationToken ct = default)
+        => LoginAsync(tenantId, req, ct);
+
+    public async Task<PrtAccountDto> ForgotPasswordAsync(
         Guid tenantId, PrtForgotPasswordRequest req, CancellationToken ct = default)
     {
         var email = NormEmail(req.Email);
         var acc = await _db.PrtAccounts
             .FirstOrDefaultAsync(x => x.TenantId == tenantId && x.Email == email && !x.IsDeleted, ct)
             ?? throw new AppException("Không tìm thấy email.", 404);
-        acc.ResetTokenStub = Convert.ToHexString(RandomNumberGenerator.GetBytes(8));
+        var token = Convert.ToHexString(RandomNumberGenerator.GetBytes(8));
+        acc.ResetTokenStub = token;
         acc.ResetTokenExpiresAt = DateTimeOffset.UtcNow.AddHours(2);
+
+        _db.IntegrationCallLogs.Add(new IntegrationCallLog
+        {
+            TenantId = tenantId,
+            Kind = "PRT_RESET_PASSWORD",
+            Target = acc.Email,
+            RequestSummary = $"Token:{token}",
+            ResponseSummary = "Reset token generated and logged",
+            StatusCode = 200,
+            CalledAt = DateTimeOffset.UtcNow
+        });
+
+        await _db.SaveChangesAsync(ct);
+        return (await MapAccountsAsync(tenantId, [acc], ct))[0];
+    }
+
+    public Task<PrtAccountDto> ForgotPasswordStubAsync(
+        Guid tenantId, PrtForgotPasswordRequest req, CancellationToken ct = default)
+        => ForgotPasswordAsync(tenantId, req, ct);
+
+    public async Task<PrtAccountDto> ResetPasswordAsync(
+        Guid tenantId, PrtResetPasswordRequest req, CancellationToken ct = default)
+    {
+        var email = NormEmail(req.Email);
+        var token = (req.ResetToken ?? "").Trim();
+        var pass = (req.NewPassword ?? "").Trim();
+        if (string.IsNullOrEmpty(token)) throw new AppException("Token không được để trống.");
+        if (pass.Length < 6) throw new AppException("Mật khẩu mới tối thiểu 6 ký tự.");
+
+        var acc = await _db.PrtAccounts
+            .FirstOrDefaultAsync(x => x.TenantId == tenantId && x.Email == email && !x.IsDeleted, ct)
+            ?? throw new AppException("Không tìm thấy tài khoản.", 404);
+
+        if (string.IsNullOrEmpty(acc.ResetTokenStub) || !string.Equals(acc.ResetTokenStub, token, StringComparison.OrdinalIgnoreCase))
+            throw new AppException("Reset token không hợp lệ.");
+        if (acc.ResetTokenExpiresAt is DateTimeOffset exp && exp < DateTimeOffset.UtcNow)
+            throw new AppException("Reset token đã hết hạn.");
+
+        acc.PasswordHash = Hash(pass);
+        acc.ResetTokenStub = null;
+        acc.ResetTokenExpiresAt = null;
+        if (acc.Status is "Pending" or "Locked") acc.Status = "Active";
+
         await _db.SaveChangesAsync(ct);
         return (await MapAccountsAsync(tenantId, [acc], ct))[0];
     }
@@ -199,15 +249,40 @@ public sealed class PrtPortalService : IPrtPortalService
     public async Task<PrtArSummaryDto> GetArSummaryAsync(
         Guid tenantId, Guid accountId, CancellationToken ct = default)
     {
-        _ = await RequireAsync(_db.PrtAccounts, tenantId, accountId, "tài khoản portal", ct);
-        var open = await _db.PrtInvoices.AsNoTracking()
+        var acc = await RequireAsync(_db.PrtAccounts, tenantId, accountId, "tài khoản portal", ct);
+        var openPrt = await _db.PrtInvoices.AsNoTracking()
             .Where(x => x.TenantId == tenantId && x.AccountId == accountId && !x.IsDeleted && x.OpenAmount > 0)
             .ToListAsync(ct);
         var year = DateTime.UtcNow.Year;
-        var paidYtd = await _db.PrtPayments.AsNoTracking()
+        var paidYtdPrt = await _db.PrtPayments.AsNoTracking()
             .Where(x => x.TenantId == tenantId && x.AccountId == accountId && !x.IsDeleted && x.PaidAt.Year == year)
             .SumAsync(x => (decimal?)x.Amount, ct) ?? 0;
-        return new PrtArSummaryDto(accountId, open.Sum(x => x.OpenAmount), open.Count, paidYtd);
+
+        decimal finOpenAmount = 0;
+        int finOpenCount = 0;
+        decimal finPaidYtd = 0;
+
+        if (!string.IsNullOrWhiteSpace(acc.CustomerCode))
+        {
+            var custCode = acc.CustomerCode.Trim().ToUpperInvariant();
+            var finInvoices = await _db.FinArInvoices.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && !x.IsDeleted && (x.CustomerId == accountId || x.CustomerInvoiceNo == custCode))
+                .ToListAsync(ct);
+
+            finOpenAmount = finInvoices.Where(x => x.Status != "Paid" && x.Status != "Void")
+                .Sum(x => x.TotalAmount - x.ReceivedAmount);
+            finOpenCount = finInvoices.Count(x => x.Status != "Paid" && x.Status != "Void" && (x.TotalAmount - x.ReceivedAmount > 0));
+
+            finPaidYtd = await _db.FinArReceipts.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.CustomerId == accountId && x.ReceiptDate.Year == year && x.Status != "Void")
+                .SumAsync(x => (decimal?)x.Amount, ct) ?? 0;
+        }
+
+        var totalOpenAmount = openPrt.Sum(x => x.OpenAmount) + finOpenAmount;
+        var totalOpenCount = openPrt.Count + finOpenCount;
+        var totalPaidYtd = paidYtdPrt + finPaidYtd;
+
+        return new PrtArSummaryDto(accountId, totalOpenAmount, totalOpenCount, totalPaidYtd);
     }
 
     public async Task<IReadOnlyList<PrtInvoiceDto>> ListInvoicesAsync(

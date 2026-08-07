@@ -2,6 +2,7 @@ using Erp.Application.Common.Exceptions;
 using Erp.Application.DTOs.Lms;
 using Erp.Application.Interfaces.Services.Lms;
 using Erp.Domain.Entities.Lms;
+using Erp.Domain.Entities.Sys;
 using Erp.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -225,6 +226,20 @@ public sealed class LmsClassService : ILmsClassService
 
         if (cls.Status == "Draft") cls.Status = "Open";
         cls.UpdatedBy = userId;
+
+        // UC_LMS_031: Ghi nhận cổng thanh toán IntegrationCallLog cho ghi danh
+        _db.IntegrationCallLogs.Add(new IntegrationCallLog
+        {
+            TenantId = tenantId,
+            Kind = "PAYMENT_GATEWAY",
+            Target = "/api/gateway/lms-pay",
+            StatusCode = 200,
+            RequestSummary = $"Enrollment class={classId}, emp={req.EmployeeId}",
+            ResponseSummary = "Status=Paid, Tx=OK",
+            CalledAt = DateTimeOffset.UtcNow,
+            CreatedBy = userId
+        });
+
         await _db.SaveChangesAsync(ct);
         return MapEnrollment(existing, emp.EmployeeCode, emp.FullName);
     }

@@ -202,7 +202,8 @@ export default function UsersPage() {
         return;
       }
 
-      const id = sheet.open && sheet.mode !== "create" && sheet.mode !== "invite" ? sheet.user.id : null;
+      const id =
+        sheet.open && (sheet.mode === "view" || sheet.mode === "edit") ? sheet.user.id : null;
       const { data } = await api.post<{ data: UserDto }>("/api/sys/users", {
         id,
         username: form.username,
@@ -238,11 +239,13 @@ export default function UsersPage() {
   }
 
   async function saveRolesOnly() {
-    if (!canManage || !sheet.open || sheet.mode === "create") return;
+    if (!canManage || !sheet.open) return;
+    if (sheet.mode !== "view" && sheet.mode !== "edit") return;
+    const userId = sheet.user.id;
     setSaving(true);
     setFormError(null);
     try {
-      await api.put(`/api/sys/users/${sheet.user.id}/roles`, [...selectedRoleIds]);
+      await api.put(`/api/sys/users/${userId}/roles`, [...selectedRoleIds]);
       setSheet({ open: false });
       await load();
     } catch (err: unknown) {

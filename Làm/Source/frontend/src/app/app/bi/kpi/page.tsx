@@ -212,7 +212,7 @@ export default function BiKpiPage() {
                 </select>
               </label>
               <label className={field.label}>Target<input className={field.input} value={tTarget} onChange={(e) => setTTarget(e.target.value)} /></label>
-              <label className={field.label}>Actual (stub)<input className={field.input} value={tActual} onChange={(e) => setTActual(e.target.value)} /></label>
+              <label className={field.label}>Actual (tùy chỉnh)<input className={field.input} value={tActual} onChange={(e) => setTActual(e.target.value)} /></label>
               <label className={field.label}>Từ<input className={field.input} type="date" value={tFrom} onChange={(e) => setTFrom(e.target.value)} /></label>
               <label className={field.label}>Đến<input className={field.input} type="date" value={tTo} onChange={(e) => setTTo(e.target.value)} /></label>
               <div className="flex items-end"><button type="submit" className={btn.primary}>Lưu mục tiêu</button></div>

@@ -43,4 +43,5 @@ public sealed record PrtTicketDto(
     string? Description, string Status, DateTimeOffset OpenedAt, DateTimeOffset? ClosedAt);
 public sealed record PrtTicketUpsertRequest(
     Guid? Id, Guid AccountId, string Subject, string? Description, string? Status);
-public sealed record PrtLoginResultDto(PrtAccountDto Account, string Message);
+public sealed record PrtLoginResultDto(PrtAccountDto Account, string Token, string Message);
+public sealed record PrtResetPasswordRequest(string Email, string ResetToken, string NewPassword);

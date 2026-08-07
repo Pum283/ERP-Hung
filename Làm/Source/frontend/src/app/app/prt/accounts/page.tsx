@@ -5,8 +5,9 @@ import {
   fetchPrtAccounts,
   forgotPrtPassword,
   linkPrtCustomer,
-  loginPrtStub,
+  loginPrtAccount,
   registerPrtAccount,
+  resetPrtPassword,
   type PrtAccountDto,
 } from "@/shared/api/prt-api";
 import { usePermissions } from "@/shared/hooks/use-permissions";
@@ -27,6 +28,8 @@ export default function PrtAccountsPage() {
   const [email, setEmail] = useState("khach@demo.local");
   const [name, setName] = useState("Khách demo");
   const [password, setPassword] = useState("!Abc123");
+  const [resetToken, setResetToken] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [custCode, setCustCode] = useState("CUS001");
   const [custName, setCustName] = useState("KH Demo");
 
@@ -64,9 +67,9 @@ export default function PrtAccountsPage() {
   return (
     <div className="space-y-4 p-6">
       <div>
-        <h1 className="text-xl font-semibold tracking-tight">Tài khoản portal</h1>
+        <h1 className="text-xl font-semibold tracking-tight">Tài khoản Portal Khách hàng</h1>
         <p className="mt-1 text-sm text-[var(--muted)]">
-          Đăng ký · login/quên MK stub · liên kết mã KH (UC_PRT_001–003)
+          Đăng ký · Quên / Đặt lại mật khẩu (OTP/Token) · Liên kết mã KH (UC_PRT_001–003)
         </p>
       </div>
       {error && <div className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>}
@@ -75,13 +78,13 @@ export default function PrtAccountsPage() {
 
       <div className="grid gap-4 xl:grid-cols-2">
         <section className={panel}>
-          <h2 className="mb-3 text-sm font-semibold">Danh sách</h2>
+          <h2 className="mb-3 text-sm font-semibold">Danh sách Tài khoản</h2>
           <div className={tableWrap}>
             <table className="w-full text-sm">
               <thead><tr><th className={th}>Email</th><th className={th}>KH</th><th className={th}>TT</th></tr></thead>
               <tbody>
                 {list.map((a) => (
-                  <tr key={a.id} className="cursor-pointer hover:bg-black/5" onClick={() => setSelectedId(a.id)}>
+                  <tr key={a.id} className="cursor-pointer hover:bg-black/5" onClick={() => { setSelectedId(a.id); setEmail(a.email); }}>
                     <td className={td}>
                       <div>{a.email}</div>
                       <div className="text-xs text-[var(--muted)]">{a.displayName} · {a.code}</div>
@@ -98,41 +101,62 @@ export default function PrtAccountsPage() {
         </section>
 
         <section className={panel}>
-          <h2 className="mb-3 text-sm font-semibold">Thao tác stub</h2>
+          <h2 className="mb-3 text-sm font-semibold">Xác thực & Khôi phục Mật khẩu</h2>
           {canManage && (
-            <div className="space-y-3 text-sm">
-              <form className="space-y-2" onSubmit={(e: FormEvent) => {
+            <div className="space-y-4 text-sm">
+              <form className="space-y-2 border-b border-black/10 pb-3" onSubmit={(e: FormEvent) => {
                 e.preventDefault();
                 void run(() => registerPrtAccount({
                   email, displayName: name, password, customerCode: custCode || undefined,
-                }), "Đã đăng ký");
+                }), "Đã đăng ký tài khoản");
               }}>
+                <div className="text-xs font-medium text-[var(--muted)]">Tạo / Đăng ký tài khoản</div>
                 <input className={field} placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                <input className={field} placeholder="Tên" value={name} onChange={(e) => setName(e.target.value)} />
-                <input className={field} type="password" placeholder="MK" value={password}
+                <input className={field} placeholder="Họ tên" value={name} onChange={(e) => setName(e.target.value)} />
+                <input className={field} type="password" placeholder="Mật khẩu" value={password}
                   onChange={(e) => setPassword(e.target.value)} />
-                <button className={btn.primary} type="submit">Đăng ký</button>
+                <div className="flex gap-2 pt-1">
+                  <button className={btn.primary} type="submit">Đăng ký</button>
+                  <button type="button" className={btn.ghost} onClick={() => void run(
+                    async () => {
+                      const res = await loginPrtAccount({ email, password });
+                      flash(`Đăng nhập thành công (${res.account.displayName})`);
+                    }, "Đã xác thực",
+                  )}>
+                    Đăng nhập Portal
+                  </button>
+                </div>
               </form>
-              <div className="flex flex-wrap gap-2">
-                <button type="button" className={btn.ghost} onClick={() => void run(
-                  () => loginPrtStub({ email, password }), "Login stub OK",
-                )}>
-                  Login stub
-                </button>
-                <button type="button" className={btn.ghost} onClick={() => void run(
-                  () => forgotPrtPassword(email), "Đã tạo reset token stub",
-                )}>
-                  Quên MK stub
-                </button>
+
+              <div className="space-y-2 border-b border-black/10 pb-3">
+                <div className="text-xs font-medium text-[var(--muted)]">Quên / Đặt lại MK (Token)</div>
+                <div className="flex gap-2">
+                  <input className={field} placeholder="Email nhận token" value={email} onChange={(e) => setEmail(e.target.value)} />
+                  <button type="button" className={btn.ghost} onClick={() => void run(
+                    () => forgotPrtPassword(email), "Đã gửi Token reset qua email (Integration Logged)",
+                  )}>
+                    Gửi OTP/Token
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2 pt-1">
+                  <input className={field} placeholder="Mã Token OTP" value={resetToken} onChange={(e) => setResetToken(e.target.value)} />
+                  <input className={field} type="password" placeholder="MK mới" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+                  <button type="button" className={btn.primary} onClick={() => void run(
+                    () => resetPrtPassword({ email, resetToken, newPassword }), "Đặt lại mật khẩu thành công!",
+                  )}>
+                    Đổi MK
+                  </button>
+                </div>
               </div>
+
               {selected && (
-                <form className="flex flex-wrap gap-2 border-t border-black/10 pt-3" onSubmit={(e: FormEvent) => {
+                <form className="flex flex-wrap gap-2 pt-1" onSubmit={(e: FormEvent) => {
                   e.preventDefault();
                   void run(() => linkPrtCustomer({
                     accountId: selected.id, customerCode: custCode, customerName: custName,
                   }), "Đã liên kết mã KH");
                 }}>
-                  <div className="w-full text-xs text-[var(--muted)]">Liên kết: {selected.email}</div>
+                  <div className="w-full text-xs font-medium text-[var(--muted)]">Liên kết mã KH: {selected.email}</div>
                   <input className={field} placeholder="Mã KH" value={custCode} onChange={(e) => setCustCode(e.target.value)} />
                   <input className={field} placeholder="Tên KH" value={custName} onChange={(e) => setCustName(e.target.value)} />
                   <button className={btn.primary} type="submit">Liên kết KH</button>
@@ -145,3 +169,4 @@ export default function PrtAccountsPage() {
     </div>
   );
 }
+

@@ -91,3 +91,48 @@ export async function inviteUser(body: {
   const { data } = await api.post<Envelope<InviteUserResult>>("/api/sys/users/invite", body);
   return data.data;
 }
+
+export type UserSessionDto = {
+  id: string;
+  sessionKey: string;
+  ipAddress?: string | null;
+  userAgent?: string | null;
+  lastSeenAt: string;
+  expiresAt: string;
+  isRevoked: boolean;
+};
+
+export async function fetchUserSessions() {
+  const { data } = await api.get<Envelope<UserSessionDto[]>>("/api/auth/sessions");
+  return data.data;
+}
+
+export async function revokeUserSession(sessionId: string) {
+  const { data } = await api.delete<Envelope<{ ok: boolean }>>(`/api/auth/sessions/${sessionId}`);
+  return data.data;
+}
+
+export type TrustedDeviceDto = {
+  id: string;
+  deviceFingerprint: string;
+  deviceName: string;
+  ipAddress: string;
+  lastUsedAt: string;
+  expiresAt: string;
+  isActive: boolean;
+};
+
+export async function fetchTrustedDevices() {
+  const { data } = await api.get<Envelope<TrustedDeviceDto[]>>("/api/auth/trusted-devices");
+  return data.data;
+}
+
+export async function registerTrustedDevice(body: { deviceFingerprint: string; deviceName: string }) {
+  const { data } = await api.post<Envelope<TrustedDeviceDto>>("/api/auth/trusted-devices", body);
+  return data.data;
+}
+
+export async function revokeTrustedDevice(id: string) {
+  const { data } = await api.delete<Envelope<{ ok: boolean }>>(`/api/auth/trusted-devices/${id}`);
+  return data.data;
+}

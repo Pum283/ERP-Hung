@@ -7,7 +7,8 @@ public sealed record UserScopeContext(
     bool BypassDataScope,
     Guid UserId,
     Guid? DepartmentId,
-    IReadOnlyList<Guid> AccessibleDepartmentIds);
+    IReadOnlyList<Guid> AccessibleDepartmentIds,
+    IReadOnlyList<Guid>? AccessibleSalesPointIds = null);
 
 public interface IDataScopeService
 {

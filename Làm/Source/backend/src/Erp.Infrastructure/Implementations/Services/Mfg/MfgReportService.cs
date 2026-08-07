@@ -75,19 +75,28 @@ public sealed class MfgReportService : IMfgReportService
             .GroupBy(r =>
             {
                 wos.TryGetValue(r.WorkOrderId, out var wo);
-                return (Day: r.ReceivedAt.UtcDateTime.ToString("yyyy-MM-dd"), WorkshopId: wo?.WorkshopId);
+                var localTime = r.ReceivedAt.ToLocalTime();
+                var shift = GetShiftLabel(localTime.Hour);
+                return (Day: localTime.ToString("yyyy-MM-dd"), ShiftLabel: shift, WorkshopId: wo?.WorkshopId);
             })
             .Select(g =>
             {
                 workshops.TryGetValue(g.Key.WorkshopId ?? Guid.Empty, out var ws);
                 return new MfgOutputRowDto(
-                    g.Key.Day, "—", g.Key.WorkshopId, ws?.Code, ws?.Name,
+                    g.Key.Day, g.Key.ShiftLabel, g.Key.WorkshopId, ws?.Code, ws?.Name,
                     g.Sum(x => x.Qty), g.Count(),
                     g.Select(x => x.WorkOrderId).Distinct().Count());
             })
-            .OrderByDescending(x => x.Day).ThenBy(x => x.WorkshopCode)
+            .OrderByDescending(x => x.Day).ThenBy(x => x.ShiftLabel).ThenBy(x => x.WorkshopCode)
             .ToList();
     }
+
+    private static string GetShiftLabel(int hour) => hour switch
+    {
+        >= 6 and < 14 => "Ca 1 (06:00-14:00)",
+        >= 14 and < 22 => "Ca 2 (14:00-22:00)",
+        _ => "Ca 3 (22:00-06:00)"
+    };
 
     public async Task<IReadOnlyList<MfgMaterialVarianceRowDto>> MaterialVarianceAsync(
         Guid tenantId, Guid? workOrderId = null, CancellationToken ct = default)

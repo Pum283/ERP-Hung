@@ -16,4 +16,7 @@ public interface IAuthService
     Task Disable2FaAsync(Guid userId, Verify2FaRequest req, CancellationToken ct = default);
     Task<IReadOnlyList<UserSessionDto>> ListSessionsAsync(Guid userId, CancellationToken ct = default);
     Task RevokeSessionAsync(Guid userId, Guid sessionId, CancellationToken ct = default);
+    Task<IReadOnlyList<TrustedDeviceDto>> ListTrustedDevicesAsync(Guid userId, CancellationToken ct = default);
+    Task<TrustedDeviceDto> RegisterTrustedDeviceAsync(Guid userId, RegisterTrustedDeviceRequest req, string? ip, CancellationToken ct = default);
+    Task RevokeTrustedDeviceAsync(Guid userId, Guid deviceId, CancellationToken ct = default);
 }

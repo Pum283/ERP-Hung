@@ -43,7 +43,11 @@ public sealed class DataScopeService : IDataScopeService
 
         if (bypass)
         {
-            return new UserScopeContext(ScopeType.All, true, userId, primaryDeptId, Array.Empty<Guid>());
+            var allSalesPoints = await _db.SalesPoints.AsNoTracking()
+                .Where(sp => sp.TenantId == user.TenantId && !sp.IsDeleted)
+                .Select(sp => sp.Id)
+                .ToListAsync(ct);
+            return new UserScopeContext(ScopeType.All, true, userId, primaryDeptId, Array.Empty<Guid>(), allSalesPoints);
         }
 
         var scope = ScopeType.Own;
@@ -76,6 +80,14 @@ public sealed class DataScopeService : IDataScopeService
             }
         }
 
-        return new UserScopeContext(scope, false, userId, primaryDeptId, deptIds);
+        // UC_SYS_029: Resolve SalesPoint scope from UserDataScopes
+        var salesPointScopes = await _db.UserDataScopes.AsNoTracking()
+            .Where(x => x.UserId == userId && x.TenantId == user.TenantId && !x.IsDeleted
+                        && (x.Dimension == "SalesPoint" || x.Dimension == "OrgUnit"))
+            .Select(x => x.ScopeId)
+            .Distinct()
+            .ToListAsync(ct);
+
+        return new UserScopeContext(scope, false, userId, primaryDeptId, deptIds, salesPointScopes);
     }
 }

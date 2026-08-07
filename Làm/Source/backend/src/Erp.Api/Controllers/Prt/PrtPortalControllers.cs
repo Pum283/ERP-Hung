@@ -36,17 +36,25 @@ public sealed class PrtAccountController : ControllerBase
         [FromBody] PrtRegisterRequest req, CancellationToken ct)
         => Ok(ApiResponse<PrtAccountDto>.Ok(await _svc.RegisterAsync(TenantId, UserId, req, ct)));
 
+    [HttpPost("login")]
     [HttpPost("login-stub")]
     [AuthorizePermission("prt.account.manage")]
     public async Task<ActionResult<ApiResponse<PrtLoginResultDto>>> Login(
         [FromBody] PrtLoginRequest req, CancellationToken ct)
-        => Ok(ApiResponse<PrtLoginResultDto>.Ok(await _svc.LoginStubAsync(TenantId, req, ct)));
+        => Ok(ApiResponse<PrtLoginResultDto>.Ok(await _svc.LoginAsync(TenantId, req, ct)));
 
+    [HttpPost("forgot-password")]
     [HttpPost("forgot-password-stub")]
     [AuthorizePermission("prt.account.manage")]
     public async Task<ActionResult<ApiResponse<PrtAccountDto>>> Forgot(
         [FromBody] PrtForgotPasswordRequest req, CancellationToken ct)
-        => Ok(ApiResponse<PrtAccountDto>.Ok(await _svc.ForgotPasswordStubAsync(TenantId, req, ct)));
+        => Ok(ApiResponse<PrtAccountDto>.Ok(await _svc.ForgotPasswordAsync(TenantId, req, ct)));
+
+    [HttpPost("reset-password")]
+    [AuthorizePermission("prt.account.manage")]
+    public async Task<ActionResult<ApiResponse<PrtAccountDto>>> ResetPassword(
+        [FromBody] PrtResetPasswordRequest req, CancellationToken ct)
+        => Ok(ApiResponse<PrtAccountDto>.Ok(await _svc.ResetPasswordAsync(TenantId, req, ct)));
 
     [HttpPost("link-customer")]
     [AuthorizePermission("prt.account.manage")]

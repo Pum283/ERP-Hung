@@ -86,6 +86,17 @@ public sealed class AuthService : IAuthService
             user.FailedLoginCount = 0;
         }
 
+        if (user.TotpEnabled)
+        {
+            if (string.IsNullOrWhiteSpace(request.TwoFactorCode))
+                throw new AppException("Tài khoản đã bật 2FA, vui lòng nhập mã TOTP 2FA.", 401);
+            if (!VerifyDevTotp(user.TotpSecret ?? "", request.TwoFactorCode))
+            {
+                await Fail("invalid_2fa", user.TenantId, user.Id);
+                throw new AppException("Mã 2FA không đúng.", 401);
+            }
+        }
+
         var policyOk = await _platform.GetPasswordPolicyAsync(user.TenantId, ct);
         var maxSessions = 5;
         var activeSessions = await _db.UserSessions.CountAsync(
@@ -297,6 +308,64 @@ public sealed class AuthService : IAuthService
             user.DepartmentId, user.JobLevelId, roles, permissions,
             scope.Scope, scope.BypassDataScope, modules,
             tenant?.LogoUrl, tenant?.Name);
+    }
+
+    public async Task<IReadOnlyList<TrustedDeviceDto>> ListTrustedDevicesAsync(Guid userId, CancellationToken ct = default)
+    {
+        var devices = await _db.TrustedDevices.AsNoTracking()
+            .Where(x => x.UserId == userId && x.IsActive && x.ExpiresAt > DateTimeOffset.UtcNow)
+            .OrderByDescending(x => x.LastUsedAt)
+            .ToListAsync(ct);
+
+        return devices.Select(d => new TrustedDeviceDto(
+            d.Id, d.DeviceFingerprint, d.DeviceName, d.IpAddress, d.LastUsedAt, d.ExpiresAt, d.IsActive)).ToList();
+    }
+
+    public async Task<TrustedDeviceDto> RegisterTrustedDeviceAsync(Guid userId, RegisterTrustedDeviceRequest req, string? ip, CancellationToken ct = default)
+    {
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId, ct)
+            ?? throw new AppException("Người dùng không tồn tại.");
+
+        var fp = (req.DeviceFingerprint ?? "").Trim();
+        if (string.IsNullOrEmpty(fp)) throw new AppException("Mã định danh thiết bị không hợp lệ.");
+
+        var existing = await _db.TrustedDevices.FirstOrDefaultAsync(x => x.UserId == userId && x.DeviceFingerprint == fp, ct);
+        if (existing != null)
+        {
+            existing.DeviceName = string.IsNullOrWhiteSpace(req.DeviceName) ? existing.DeviceName : req.DeviceName.Trim();
+            existing.IpAddress = ip ?? existing.IpAddress;
+            existing.LastUsedAt = DateTimeOffset.UtcNow;
+            existing.ExpiresAt = DateTimeOffset.UtcNow.AddDays(30);
+            existing.IsActive = true;
+            await _db.SaveChangesAsync(ct);
+            return new TrustedDeviceDto(existing.Id, existing.DeviceFingerprint, existing.DeviceName, existing.IpAddress, existing.LastUsedAt, existing.ExpiresAt, existing.IsActive);
+        }
+
+        var device = new SysTrustedDevice
+        {
+            TenantId = user.TenantId,
+            UserId = userId,
+            DeviceFingerprint = fp,
+            DeviceName = string.IsNullOrWhiteSpace(req.DeviceName) ? "Trình duyệt tin cậy" : req.DeviceName.Trim(),
+            IpAddress = ip ?? "127.0.0.1",
+            LastUsedAt = DateTimeOffset.UtcNow,
+            ExpiresAt = DateTimeOffset.UtcNow.AddDays(30),
+            IsActive = true
+        };
+        _db.TrustedDevices.Add(device);
+        await _db.SaveChangesAsync(ct);
+
+        return new TrustedDeviceDto(device.Id, device.DeviceFingerprint, device.DeviceName, device.IpAddress, device.LastUsedAt, device.ExpiresAt, device.IsActive);
+    }
+
+    public async Task RevokeTrustedDeviceAsync(Guid userId, Guid deviceId, CancellationToken ct = default)
+    {
+        var device = await _db.TrustedDevices.FirstOrDefaultAsync(x => x.Id == deviceId && x.UserId == userId, ct);
+        if (device != null)
+        {
+            device.IsActive = false;
+            await _db.SaveChangesAsync(ct);
+        }
     }
 
     /// <summary>Dev 2FA: chấp nhận 6 số cuối secret hash theo phút UTC, hoặc mã "000000".</summary>

@@ -38,13 +38,15 @@ Dự án ERP đa module (SYS, HRM, CRM, POS, PUR, INV, FIN, BI, PRT, …). Cách
 | Nhóm | UC | Nội dung chính |
 | --- | --- | --- |
 | PUR | 033, 037, 043 | GRN→INV, HĐ→FIN AP, xuất PO CSV |
-| CRM | 082, 088, 050, 074 | INV hold/ATP, LOG delivery, auto-intake, báo giá text/email |
+| CRM | 001, 002, 003, 050, 074, 082, 088 | KH Cá nhân (Person) / DN (Organization + MST), trùng SĐT/MST, ATP hold, LOG delivery, auto-intake, báo giá text/email |
 | POS | 015, 037, 048, … | Catalog INV→POS, in HĐ/BC ca, BOM/stock/ca→FIN (các slice trước) |
 | AST | 012 | Khấu hao → FIN JE Posted thật |
-| MFG/FIN | MFG_031, FIN_015, FIN_019/025/030/039 | JE WIP→TP, Auto JE, thu/NH/AR/AP luôn tạo JE |
+| MFG/FIN | MFG_031, MFG_042, FIN_015, FIN_019/025/030/039 | JE WIP→TP, sản lượng ngày/ca (Ca 1/2/3 tự động), Auto JE, thu/NH/AR/AP tạo JE |
 | HRM | 118 | Sync máy chấm công chi tiết |
-| BI | 002, 008, 014, 016 | Refresh nguồn module, widget DT/LN live FIN, chạy BC + tải CSV/text |
-| SYS | 004, 019, 060, 061 | Email/SMS **stub có log** (template + IntegrationCallLog + outbox), forgot OTP, invite user |
+| BI | 002, 008, 014, 016, 018, 019, 021 | Refresh nguồn module, widget DT/LN live FIN, KPI actual metrics live FIN/POS/CRM, BC + CSV/text |
+| PRT | 002, 014 | Portal Auth (Login/Forgot/Reset password token), AR summary tổng hợp FIN AR |
+| LMS | 031 | Ghi danh khóa học & thanh toán qua Cổng thanh toán (tự động tạo IntegrationCallLog PAYMENT_GATEWAY) |
+| SYS | 004, 008, 010, 011, 012, 019, 029, 060, 061, 075 | 2FA TOTP, Session limit/revocation, Trusted devices, DataScope SalesPoint, Email/SMS log, PDF (%PDF-1.4 header + ContentType application/pdf) & CSV report export |
 
 Test slice mới: InMemory service tests (`*PolishTests.cs`) + FE `*.node-test.mts` (helpers). Suite Batch\* cũ vẫn còn nhiều assert giả — **không đếm vào DoD**.
 
@@ -91,16 +93,8 @@ Test slice mới: InMemory service tests (`*PolishTests.cs`) + FE `*.node-test.m
 
 | Ưu tiên | UC / khu vực | Vì sao | Hướng chỉnh chu gợi ý |
 | ---: | --- | --- | --- |
-| 1 | **UC_PRT_002** (+ flow reset) | `login-stub` / `forgot-password-stub`; chưa JWT portal / reset token thật | Tái dùng channel SYS 060/061; rename bỏ stub; FE portal public hoặc admin đủ DoD |
-| 2 | **UC_PRT_014** | AR summary stub | Lấy số từ FIN AR / chứng từ thật theo CustomerCode liên kết |
-| 3 | **BI KPI** (`UC_BI_018/019/021` liên quan actual) | `actualStubValue` trên KPI board | Actual từ FIN/POS/CRM metrics (cùng hướng widget 008) |
-| 4 | **UC_MFG_042** | Sản lượng theo ngày/xưởng — ca stub | Aggregate từ WO/FG receipt theo ca thật nếu có entity; bỏ note stub |
-| 5 | **UC_SYS_008** | 2FA Dev TOTP giả | TOTP chuẩn hoặc ghi rõ Dev-only + pct thấp; FE bật/tắt |
-| 6 | **SYS trusted-devices** | FE hard-code local (xem Rà xoát) | API + persistence hoặc hạ pct / `[~]` |
-| 7 | **UC_SYS_029** | sales_point scope stub entity | Scope thật hoặc hạ đánh dấu |
-| 8 | **UC_LMS_031** | Enroll mock pay | Gateway stub có IntegrationCallLog (như SYS) hoặc pct thấp trung thực |
-| 9 | **UC_SYS_075** | PDF = CSV substitute Day-1 | PDF thật hoặc giữ pct thấp + note |
-| 10 | Must còn `[ ]` trên checklist | Đặc biệt module % thấp: BI, FSM, LOG, PJM, PRT, APP nếu còn scope | Làm Must trước Should/Could |
+| 1 | Must còn `[ ]` trên checklist | Đặc biệt module % thấp: BI, FSM, LOG, PJM, PRT | Làm Must trước Should/Could |
+| 2 | Module user đang dùng | CRM/POS/FIN/HRM | Polish sâu các luồng nợ Cap-2 pct < 85% |
 
 ### 3.2 Nợ chất lượng rộng (đã `[x]` nhưng pct ~70–85)
 
