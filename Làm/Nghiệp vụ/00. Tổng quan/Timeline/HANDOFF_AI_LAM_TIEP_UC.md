@@ -38,7 +38,7 @@ Dự án ERP đa module (SYS, HRM, CRM, POS, PUR, INV, FIN, BI, PRT, …). Cách
 | Nhóm | UC | Nội dung chính |
 | --- | --- | --- |
 | PUR | 033, 037, 043 | GRN→INV, HĐ→FIN AP, xuất PO CSV |
-| CRM | 001, 002, 003, 050, 074, 082, 088 | KH Cá nhân (Person) / DN (Organization + MST), trùng SĐT/MST, ATP hold, LOG delivery, auto-intake, báo giá text/email |
+| CRM | 001, 002, 003, 012, 013, 016, 017, 018, 019, 020, 021, 025, 027, 028, 030, 050, 052, 059, 064, 066, 069, 074, 075, 076, 078, 082, 083, 085, 086, 088 | Master KH (Person/Org, Blacklist, Audit log), Campaign Marketing (Budget/Expense, Close snapshot), Auto Lead sync, UTM Attribution, Funnel ROI/ROAS/CPL/CAC, Lead Scoring, Lead Merging, Dự báo doanh thu, Ghi nhận Đối thủ, Báo cáo Win-Rate, Phiên bản báo giá v2+, Tự động hết hạn báo giá, In báo giá HTML/PDF, Tách/Gộp đơn bán, Trả hàng/điều chỉnh đơn, Gắn hợp đồng bán, ATP hold, LOG delivery, auto-intake, báo giá text/email |
 | POS | 015, 037, 048, … | Catalog INV→POS, in HĐ/BC ca, BOM/stock/ca→FIN (các slice trước) |
 | AST | 012 | Khấu hao → FIN JE Posted thật |
 | MFG/FIN | MFG_031, MFG_042, FIN_015, FIN_019/025/030/039 | JE WIP→TP, sản lượng ngày/ca (Ca 1/2/3 tự động), Auto JE, thu/NH/AR/AP tạo JE |
@@ -65,14 +65,14 @@ Test slice mới: InMemory service tests (`*PolishTests.cs`) + FE `*.node-test.m
 | Stub | Chỉ tạm; ghi `[~]` hoặc `pct` thấp + note rõ. **Cấm** `[x]` pct 100 khi còn stub/mock/hard-code |
 | Test BE | **5–20** case gọi service / API / DB InMemory (hoặc WebApplicationFactory) |
 | Test FE | **5–20** case helpers/`node:test` (hoặc component/E2E) cho luồng đó |
-| Progress | Sửa `uc_progress.json` → chạy script checklist (xem §6) |
+| Progress | Sửa trực tiếp file Markdown (`CHECKLIST_UC.md`, `uc_progress.json`, `HANDOFF_AI_LAM_TIEP_UC.md`) — không dùng script Python. |
 
 ### Cấm
 
 - Đánh dấu hàng loạt 100% catalog / note copy-paste giống nhau.
 - Ship “Day-1 khung”, `alert('(stub)')`, mock data FE rồi ghi xong.
 - Import EF entity module A vào service module B (trừ SYS; cross-module qua interface/outbox).
-- Sửa tay hàng loạt `CHECKLIST_UC.md` — **chỉ** qua JSON + script.
+- Chạy script Python để sinh lại `CHECKLIST_UC.md` — **tất cả file MD bắt buộc sửa trực tiếp**.
 - Tính `Batch*UcTests` assert chuỗi/`Assert.True` local là “đã test UC”.
 
 ### Ý nghĩa cột tiến độ

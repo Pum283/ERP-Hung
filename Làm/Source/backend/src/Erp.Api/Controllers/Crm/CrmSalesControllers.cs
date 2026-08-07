@@ -106,10 +106,28 @@ public sealed class CrmQuoteController : ControllerBase
         return File(System.Text.Encoding.UTF8.GetBytes(content), "text/plain; charset=utf-8", fileName);
     }
 
+    [HttpGet("{id:guid}/quote.html")]
+    [AuthorizePermission("crm.quote.read")]
+    public async Task<IActionResult> DownloadQuoteHtml(Guid id, CancellationToken ct = default)
+    {
+        var (fileName, content) = await _svc.BuildQuotePdfHtmlAsync(TenantId, UserId, id, ct);
+        return File(System.Text.Encoding.UTF8.GetBytes(content), "text/html; charset=utf-8", fileName);
+    }
+
     [HttpPost("{id:guid}/convert-order")]
     [AuthorizePermission("crm.order.manage")]
     public async Task<ActionResult<ApiResponse<CrmSalesOrderDto>>> ConvertOrder(Guid id, CancellationToken ct)
         => Ok(ApiResponse<CrmSalesOrderDto>.Ok(await _svc.ConvertQuoteToOrderAsync(TenantId, UserId, id, ct)));
+
+    [HttpPost("{id:guid}/version")]
+    [AuthorizePermission("crm.quote.manage")]
+    public async Task<ActionResult<ApiResponse<CrmQuoteDto>>> CreateVersion(Guid id, CancellationToken ct)
+        => Ok(ApiResponse<CrmQuoteDto>.Ok(await _svc.CreateNewVersionAsync(TenantId, UserId, id, ct)));
+
+    [HttpPost("check-expired")]
+    [AuthorizePermission("crm.quote.manage")]
+    public async Task<ActionResult<ApiResponse<int>>> CheckExpired(CancellationToken ct)
+        => Ok(ApiResponse<int>.Ok(await _svc.CheckAndExpireQuotesAsync(TenantId, ct)));
 }
 
 [ApiController]
@@ -160,4 +178,28 @@ public sealed class CrmSalesOrderController : ControllerBase
     [AuthorizePermission("crm.order.manage")]
     public async Task<ActionResult<ApiResponse<CrmSalesOrderDto>>> PushWarehouse(Guid id, CancellationToken ct)
         => Ok(ApiResponse<CrmSalesOrderDto>.Ok(await _svc.PushToWarehouseAsync(TenantId, UserId, id, ct)));
+
+    [HttpPost("{id:guid}/return")]
+    [AuthorizePermission("crm.order.manage")]
+    public async Task<ActionResult<ApiResponse<CrmSalesOrderDto>>> ReturnOrder(
+        Guid id, [FromBody] CrmOrderReturnRequest req, CancellationToken ct)
+        => Ok(ApiResponse<CrmSalesOrderDto>.Ok(await _svc.ReturnOrderAsync(TenantId, UserId, id, req, ct)));
+
+    [HttpPost("{id:guid}/link-contract")]
+    [AuthorizePermission("crm.order.manage")]
+    public async Task<ActionResult<ApiResponse<CrmSalesOrderDto>>> LinkContract(
+        Guid id, [FromBody] CrmOrderLinkContractRequest req, CancellationToken ct)
+        => Ok(ApiResponse<CrmSalesOrderDto>.Ok(await _svc.LinkContractAsync(TenantId, UserId, id, req, ct)));
+
+    [HttpPost("{id:guid}/split")]
+    [AuthorizePermission("crm.order.manage")]
+    public async Task<ActionResult<ApiResponse<CrmSalesOrderDto>>> SplitOrder(
+        Guid id, [FromBody] CrmOrderSplitRequest req, CancellationToken ct)
+        => Ok(ApiResponse<CrmSalesOrderDto>.Ok(await _svc.SplitOrderAsync(TenantId, UserId, id, req, ct)));
+
+    [HttpPost("merge")]
+    [AuthorizePermission("crm.order.manage")]
+    public async Task<ActionResult<ApiResponse<CrmSalesOrderDto>>> MergeOrders(
+        [FromBody] CrmOrderMergeRequest req, CancellationToken ct)
+        => Ok(ApiResponse<CrmSalesOrderDto>.Ok(await _svc.MergeOrdersAsync(TenantId, UserId, req, ct)));
 }

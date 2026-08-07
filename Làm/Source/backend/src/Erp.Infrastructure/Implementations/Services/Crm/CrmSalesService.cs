@@ -553,6 +553,77 @@ public sealed class CrmSalesService : ICrmSalesService
         return (await MapOrdersAsync(tenantId, [order], ct))[0];
     }
 
+    public async Task<CrmQuoteDto> CreateNewVersionAsync(
+        Guid tenantId, Guid userId, Guid quoteId, CancellationToken ct = default)
+    {
+        var oldQuote = await RequireAsync(_db.CrmQuotes, tenantId, quoteId, "báo giá", ct);
+        var oldLines = await _db.CrmQuoteLines.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && x.QuoteId == quoteId && !x.IsDeleted)
+            .OrderBy(x => x.LineNo).ToListAsync(ct);
+
+        var newVersion = oldQuote.Version + 1;
+        var newCode = $"{oldQuote.Code.Split("-v")[0]}-v{newVersion}";
+
+        var newQuote = new CrmQuote
+        {
+            TenantId = tenantId,
+            Code = newCode,
+            OpportunityId = oldQuote.OpportunityId,
+            CustomerId = oldQuote.CustomerId,
+            PriceListId = oldQuote.PriceListId,
+            QuoteDate = DateTimeOffset.UtcNow,
+            ValidUntil = DateTimeOffset.UtcNow.AddDays(14),
+            Status = "Draft",
+            DiscountPercent = oldQuote.DiscountPercent,
+            DiscountAmount = oldQuote.DiscountAmount,
+            SubTotal = oldQuote.SubTotal,
+            TotalAmount = oldQuote.TotalAmount,
+            DiscountApprovalStatus = "None",
+            SentChannel = "None",
+            Version = newVersion,
+            Note = $"Phiên bản mới v{newVersion} sao chép từ {oldQuote.Code}",
+            CreatedBy = userId
+        };
+        _db.CrmQuotes.Add(newQuote);
+        await _db.SaveChangesAsync(ct);
+
+        foreach (var l in oldLines)
+        {
+            _db.CrmQuoteLines.Add(new CrmQuoteLine
+            {
+                TenantId = tenantId, QuoteId = newQuote.Id,
+                ItemCode = l.ItemCode, ItemName = l.ItemName,
+                Quantity = l.Quantity, UnitPrice = l.UnitPrice,
+                LineAmount = l.LineAmount, LineNo = l.LineNo, CreatedBy = userId
+            });
+        }
+        await _db.SaveChangesAsync(ct);
+
+        return (await MapQuotesAsync(tenantId, [newQuote], ct))[0];
+    }
+
+    public async Task<int> CheckAndExpireQuotesAsync(Guid tenantId, CancellationToken ct = default)
+    {
+        var now = DateTimeOffset.UtcNow;
+        var expiredQuotes = await _db.CrmQuotes
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted &&
+                        x.ValidUntil < now &&
+                        (x.Status == "Draft" || x.Status == "Sent" || x.Status == "PendingDiscount"))
+            .ToListAsync(ct);
+
+        foreach (var q in expiredQuotes)
+        {
+            q.Status = "Expired";
+            q.Note = AppendNote(q.Note, $"[Hệ thống] Tự động hết hạn vào {now:yyyy-MM-dd HH:mm}Z");
+        }
+
+        if (expiredQuotes.Count > 0)
+        {
+            await _db.SaveChangesAsync(ct);
+        }
+        return expiredQuotes.Count;
+    }
+
     public async Task<IReadOnlyList<CrmSalesOrderDto>> ListOrdersAsync(
         Guid tenantId, string? status = null, CancellationToken ct = default)
     {
@@ -767,6 +838,137 @@ public sealed class CrmSalesService : ICrmSalesService
         order.UpdatedBy = userId;
         await _db.SaveChangesAsync(ct);
         return (await MapOrdersAsync(tenantId, [order], ct))[0];
+    }
+
+    public async Task<CrmSalesOrderDto> ReturnOrderAsync(
+        Guid tenantId, Guid userId, Guid orderId, CrmOrderReturnRequest req, CancellationToken ct = default)
+    {
+        var order = await RequireAsync(_db.CrmSalesOrders, tenantId, orderId, "đơn hàng", ct);
+        if (order.Status == "Cancelled") throw new AppException("Đơn hàng đã hủy — không thể trả hàng.");
+        var reason = Req(req.Reason, 500, "Lý do trả hàng");
+        order.Status = "Returned";
+        order.ReturnReason = reason;
+        if (order.StockHoldStatus == "Held")
+        {
+            await ReleaseCrmReservationAsync(tenantId, userId, order.Id, ct);
+            order.StockHoldStatus = "Released";
+        }
+        order.Note = AppendNote(order.Note, $"[Trả hàng/Điều chỉnh] Lý do: {reason}");
+        order.UpdatedBy = userId;
+        await _db.SaveChangesAsync(ct);
+        return (await MapOrdersAsync(tenantId, [order], ct))[0];
+    }
+
+    public async Task<CrmSalesOrderDto> LinkContractAsync(
+        Guid tenantId, Guid userId, Guid orderId, CrmOrderLinkContractRequest req, CancellationToken ct = default)
+    {
+        var order = await RequireAsync(_db.CrmSalesOrders, tenantId, orderId, "đơn hàng", ct);
+        order.ContractId = req.ContractId;
+        order.Note = AppendNote(order.Note, $"[Hợp đồng] Gắn với HĐ ID: {req.ContractId}");
+        order.UpdatedBy = userId;
+        await _db.SaveChangesAsync(ct);
+        return (await MapOrdersAsync(tenantId, [order], ct))[0];
+    }
+
+    public async Task<(string FileName, string Content)> BuildQuotePdfHtmlAsync(
+        Guid tenantId, Guid userId, Guid quoteId, CancellationToken ct = default)
+    {
+        var (fn, txt) = await BuildQuoteTextAsync(tenantId, userId, quoteId, stampSent: false, ct);
+        var html = $"<!DOCTYPE html><html><head><title>{fn}</title><style>body{{font-family:sans-serif;padding:20px;}}pre{{background:#f4f4f4;padding:15px;border-radius:4px;}}</style></head><body><h2>Báo giá Pum's ERP</h2><pre>{System.Net.WebUtility.HtmlEncode(txt)}</pre></body></html>";
+        return (fn.Replace(".txt", ".html"), html);
+    }
+
+    public async Task<CrmSalesOrderDto> SplitOrderAsync(
+        Guid tenantId, Guid userId, Guid orderId, CrmOrderSplitRequest req, CancellationToken ct = default)
+    {
+        if (req.LineIds == null || req.LineIds.Count == 0)
+            throw new AppException("Chỉ định ít nhất 1 dòng hàng để tách.");
+
+        var originalOrder = await RequireAsync(_db.CrmSalesOrders, tenantId, orderId, "đơn hàng gốc", ct);
+        if (originalOrder.Status is "Delivered" or "Cancelled")
+            throw new AppException("Không thể tách đơn đã hoàn thành hoặc đã hủy.");
+
+        var linesToMove = await _db.CrmSalesOrderLines
+            .Where(x => x.TenantId == tenantId && x.OrderId == orderId && req.LineIds.Contains(x.Id) && !x.IsDeleted)
+            .ToListAsync(ct);
+
+        if (linesToMove.Count == 0)
+            throw new AppException("Không tìm thấy các dòng chỉ định.");
+
+        var newOrderCode = $"{originalOrder.Code}-S1";
+        var newOrder = new CrmSalesOrder
+        {
+            TenantId = tenantId,
+            Code = newOrderCode,
+            QuoteId = originalOrder.QuoteId,
+            CustomerId = originalOrder.CustomerId,
+            OpportunityId = originalOrder.OpportunityId,
+            OwnerUserId = originalOrder.OwnerUserId,
+            OrderDate = DateTimeOffset.UtcNow,
+            Status = "Draft",
+            Note = $"Tách từ đơn {originalOrder.Code}",
+            CreatedBy = userId
+        };
+        _db.CrmSalesOrders.Add(newOrder);
+        await _db.SaveChangesAsync(ct);
+
+        var newSubTotal = 0m;
+        var lineNo = 1;
+        foreach (var l in linesToMove)
+        {
+            l.OrderId = newOrder.Id;
+            l.LineNo = lineNo++;
+            l.UpdatedBy = userId;
+            newSubTotal += l.LineAmount;
+        }
+
+        newOrder.SubTotal = newSubTotal;
+        newOrder.TotalAmount = newSubTotal;
+        originalOrder.Note = AppendNote(originalOrder.Note, $"Đã tách bớt {linesToMove.Count} dòng sang {newOrderCode}");
+        originalOrder.UpdatedBy = userId;
+
+        await _db.SaveChangesAsync(ct);
+        return (await MapOrdersAsync(tenantId, [newOrder], ct))[0];
+    }
+
+    public async Task<CrmSalesOrderDto> MergeOrdersAsync(
+        Guid tenantId, Guid userId, CrmOrderMergeRequest req, CancellationToken ct = default)
+    {
+        if (req.PrimaryOrderId == req.SecondaryOrderId)
+            throw new AppException("Chỉ định 2 đơn hàng khác nhau để gộp.");
+
+        var primary = await RequireAsync(_db.CrmSalesOrders, tenantId, req.PrimaryOrderId, "đơn hàng chính", ct);
+        var secondary = await RequireAsync(_db.CrmSalesOrders, tenantId, req.SecondaryOrderId, "đơn hàng phụ", ct);
+
+        if (secondary.Status is "Delivered" or "Cancelled")
+            throw new AppException("Không thể gộp đơn phụ đã giao hoặc đã hủy.");
+
+        var secLines = await _db.CrmSalesOrderLines
+            .Where(x => x.TenantId == tenantId && x.OrderId == secondary.Id && !x.IsDeleted)
+            .ToListAsync(ct);
+
+        var maxLineNo = await _db.CrmSalesOrderLines
+            .Where(x => x.TenantId == tenantId && x.OrderId == primary.Id && !x.IsDeleted)
+            .Select(x => (int?)x.LineNo).MaxAsync(ct) ?? 0;
+
+        foreach (var l in secLines)
+        {
+            l.OrderId = primary.Id;
+            l.LineNo = ++maxLineNo;
+            l.UpdatedBy = userId;
+        }
+
+        secondary.Status = "Cancelled";
+        secondary.CancelReason = Opt(req.Reason, 500) ?? $"Gộp trùng dòng hàng sang đơn {primary.Code}";
+        secondary.UpdatedBy = userId;
+
+        primary.SubTotal += secondary.SubTotal;
+        primary.TotalAmount += secondary.TotalAmount;
+        primary.Note = AppendNote(primary.Note, $"Gộp dòng hàng từ đơn {secondary.Code}");
+        primary.UpdatedBy = userId;
+
+        await _db.SaveChangesAsync(ct);
+        return (await MapOrdersAsync(tenantId, [primary], ct))[0];
     }
 
     private async Task<decimal> SumQuoteLinesAsync(Guid tenantId, Guid quoteId, CancellationToken ct)

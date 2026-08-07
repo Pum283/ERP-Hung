@@ -52,3 +52,7 @@ public sealed record CrmSalesOrderDetailDto(
     IReadOnlyList<CrmOrderPaymentDto> Payments);
 public sealed record CrmOrderStatusRequest(string Status);
 public sealed record CrmOrderCancelRequest(string Reason);
+public sealed record CrmOrderReturnRequest(string Reason, decimal? ReturnAmount);
+public sealed record CrmOrderLinkContractRequest(Guid ContractId);
+public sealed record CrmOrderSplitRequest(IReadOnlyList<Guid> LineIds);
+public sealed record CrmOrderMergeRequest(Guid PrimaryOrderId, Guid SecondaryOrderId, string? Reason);

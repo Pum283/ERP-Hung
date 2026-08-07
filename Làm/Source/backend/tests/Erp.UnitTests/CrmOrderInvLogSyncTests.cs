@@ -243,4 +243,76 @@ public sealed class CrmOrderInvLogSyncTests : IDisposable
         await Assert.ThrowsAsync<AppException>(() => _svc.PushToWarehouseAsync(_tenant, _user, order.Id));
         Assert.Equal(0, await _db.LogDeliveryOrders.CountAsync());
     }
+
+    [Fact]
+    public async Task ReturnOrder_MarksStatusReturnedAndLogsReason()
+    {
+        SeedInv();
+        var order = SeedOrder(status: "Confirmed");
+        await _db.SaveChangesAsync();
+
+        var res = await _svc.ReturnOrderAsync(_tenant, _user, order.Id, new CrmOrderReturnRequest("Hang loi ky thuat", null));
+
+        Assert.Equal("Returned", res.Status);
+        var dbOrder = await _db.CrmSalesOrders.FirstAsync(x => x.Id == order.Id);
+        Assert.Equal("Hang loi ky thuat", dbOrder.ReturnReason);
+        Assert.Contains("Lý do: Hang loi ky thuat", dbOrder.Note);
+    }
+
+    [Fact]
+    public async Task LinkContract_AssociatesContractIdWithSalesOrder()
+    {
+        SeedInv();
+        var order = SeedOrder();
+        await _db.SaveChangesAsync();
+        var contractId = Guid.NewGuid();
+
+        var res = await _svc.LinkContractAsync(_tenant, _user, order.Id, new CrmOrderLinkContractRequest(contractId));
+
+        var dbOrder = await _db.CrmSalesOrders.FirstAsync(x => x.Id == order.Id);
+        Assert.Equal(contractId, dbOrder.ContractId);
+        Assert.Contains(contractId.ToString(), dbOrder.Note);
+    }
+
+    [Fact]
+    public async Task SplitOrder_SplitsItemsIntoNewOrder()
+    {
+        SeedInv();
+        var order = SeedOrder();
+        var l2 = new CrmSalesOrderLine
+        {
+            TenantId = _tenant, OrderId = order.Id, LineNo = 2, ItemCode = "SP002", ItemName = "SP 2", Quantity = 1, UnitPrice = 500, LineAmount = 500
+        };
+        _db.CrmSalesOrderLines.Add(l2);
+        await _db.SaveChangesAsync();
+
+        var res = await _svc.SplitOrderAsync(_tenant, _user, order.Id, new CrmOrderSplitRequest([l2.Id]));
+
+        Assert.NotNull(res);
+        Assert.Equal($"{order.Code}-S1", res.Code);
+        Assert.Equal(500, res.TotalAmount);
+    }
+
+    [Fact]
+    public async Task MergeOrders_MergesSecondaryIntoPrimary()
+    {
+        SeedInv();
+        var o1 = SeedOrder();
+        var o2 = new CrmSalesOrder
+        {
+            TenantId = _tenant, Code = "SO-SEC-01", OrderDate = DateTimeOffset.UtcNow, Status = "Draft", SubTotal = 300, TotalAmount = 300
+        };
+        _db.CrmSalesOrders.Add(o2);
+        _db.CrmSalesOrderLines.Add(new CrmSalesOrderLine
+        {
+            TenantId = _tenant, OrderId = o2.Id, LineNo = 1, ItemCode = "SP003", ItemName = "SP 3", Quantity = 1, UnitPrice = 300, LineAmount = 300
+        });
+        await _db.SaveChangesAsync();
+
+        var res = await _svc.MergeOrdersAsync(_tenant, _user, new CrmOrderMergeRequest(o1.Id, o2.Id, "Gop trung khach"));
+
+        Assert.Equal(o1.Id, res.Id);
+        var secDb = await _db.CrmSalesOrders.FirstAsync(x => x.Id == o2.Id);
+        Assert.Equal("Cancelled", secDb.Status);
+    }
 }

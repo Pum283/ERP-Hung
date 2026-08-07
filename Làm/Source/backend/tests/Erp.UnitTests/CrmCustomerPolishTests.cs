@@ -78,4 +78,22 @@ public sealed class CrmCustomerPolishTests : IDisposable
         Assert.Single(orgOnly);
         Assert.Equal("KH-O1", orgOnly[0].Code);
     }
+
+    [Fact]
+    public async Task SetStatus_BlacklistCustomer_UpdatesStatusAndLogsHistory()
+    {
+        var cust = await _svc.UpsertAsync(_tenant, _user, new CrmCustomerUpsertRequest(
+            null, "KH-BL1", "Person", "Nguyễn Văn Gian", null, "0977888999", null, null,
+            "Customer", null, null, null, null, "Active"));
+
+        var updated = await _svc.SetStatusAsync(_tenant, _user, cust.Id, new CrmCustomerSetStatusRequest(
+            "Blacklisted", "Vi phạm hợp đồng thanh toán"));
+
+        Assert.Equal("Blacklisted", updated.Status);
+        Assert.Contains("Blacklisted", updated.Note ?? "");
+
+        var handoverLogs = await _db.CrmCustomerHandovers.Where(x => x.CustomerId == cust.Id).ToListAsync();
+        Assert.Single(handoverLogs);
+        Assert.Contains("Blacklisted", handoverLogs[0].Note ?? "");
+    }
 }

@@ -21,6 +21,8 @@ public interface ICrmLeadService
 
     Task<CrmLeadImportResult> ImportCsvAsync(Guid tenantId, Guid userId, CrmLeadImportRequest req, CancellationToken ct = default);
     Task<CrmLeadConversionReportDto> GetConversionReportAsync(Guid tenantId, CancellationToken ct = default);
+    Task<CrmLeadDto> CalculateLeadScoreAsync(Guid tenantId, Guid userId, Guid leadId, CancellationToken ct = default);
+    Task<CrmLeadDto> MergeLeadsAsync(Guid tenantId, Guid userId, CrmLeadMergeRequest req, CancellationToken ct = default);
 
     Task<IReadOnlyList<CrmOpportunityDto>> ListOpportunitiesAsync(Guid tenantId, string? q, string? stage, CancellationToken ct = default);
     Task<CrmOpportunityDetailDto> GetOpportunityDetailAsync(Guid tenantId, Guid opportunityId, CancellationToken ct = default);
@@ -28,4 +30,7 @@ public interface ICrmLeadService
     Task<CrmOpportunityLineDto> UpsertOpportunityLineAsync(Guid tenantId, Guid userId, Guid opportunityId, CrmOpportunityLineUpsertRequest req, CancellationToken ct = default);
     Task<CrmOpportunityDto> SetOpportunityStageAsync(Guid tenantId, Guid userId, Guid opportunityId, CrmOpportunityStageRequest req, CancellationToken ct = default);
     Task<CrmQuoteDto> CreateQuoteFromOpportunityAsync(Guid tenantId, Guid userId, Guid opportunityId, CancellationToken ct = default);
+    Task<CrmRevenueForecastDto> GetRevenueForecastAsync(Guid tenantId, CancellationToken ct = default);
+    Task<CrmWinRateReportDto> GetWinRateReportAsync(Guid tenantId, CancellationToken ct = default);
+    Task<CrmOpportunityDto> UpdateCompetitorInfoAsync(Guid tenantId, Guid userId, Guid opportunityId, CrmOpportunityCompetitorRequest req, CancellationToken ct = default);
 }

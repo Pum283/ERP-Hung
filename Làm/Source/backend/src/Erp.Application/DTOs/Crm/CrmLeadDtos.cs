@@ -53,11 +53,12 @@ public sealed record CrmOpportunityDto(
     Guid? CustomerId, string? CustomerName, Guid? OwnerUserId, string? OwnerName,
     string Stage, decimal EstimatedValue, decimal ProbabilityPercent,
     DateTimeOffset? ExpectedCloseDate, Guid? QuoteId, string? QuoteCode,
-    string? LostReason, string? Note, int LineCount);
+    string? LostReason, string? CompetitorName, string? NegotiationNotes, string? Note, int LineCount);
+public sealed record CrmOpportunityCompetitorRequest(string CompetitorName, string? NegotiationNotes);
 public sealed record CrmOpportunityUpsertRequest(
     Guid? Id, string? Code, string Name, Guid? LeadId, Guid? CustomerId, Guid? OwnerUserId,
     string? Stage, decimal? EstimatedValue, decimal? ProbabilityPercent,
-    DateTimeOffset? ExpectedCloseDate, string? Note);
+    DateTimeOffset? ExpectedCloseDate, string? CompetitorName, string? NegotiationNotes, string? Note);
 public sealed record CrmOpportunityLineDto(
     Guid Id, Guid OpportunityId, string ItemCode, string ItemName,
     decimal Quantity, decimal UnitPrice, decimal LineAmount, int LineNo);
@@ -66,3 +67,9 @@ public sealed record CrmOpportunityLineUpsertRequest(
 public sealed record CrmOpportunityDetailDto(
     CrmOpportunityDto Opportunity, IReadOnlyList<CrmOpportunityLineDto> Lines);
 public sealed record CrmOpportunityStageRequest(string Stage, string? LostReason);
+
+public sealed record CrmRevenueForecastMonthlyDto(string Month, int OpportunityCount, decimal TotalEstimatedValue, decimal WeightedValue);
+public sealed record CrmRevenueForecastDto(decimal TotalEstimatedValue, decimal WeightedForecastValue, IReadOnlyList<CrmRevenueForecastMonthlyDto> MonthlyForecasts);
+
+public sealed record CrmLossReasonBreakdownDto(string Reason, int Count, decimal Percentage);
+public sealed record CrmWinRateReportDto(int Total, int Won, int Lost, int InProgress, decimal WinRatePercent, decimal LossRatePercent, IReadOnlyList<CrmLossReasonBreakdownDto> LossReasons);

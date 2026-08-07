@@ -22,5 +22,7 @@ public class CrmSalesOrder : TenantEntity
     /// <summary>None · Pushed · Failed</summary>
     public string WarehousePushStatus { get; set; } = "None";
     public string? CancelReason { get; set; }
+    public string? ReturnReason { get; set; }
+    public Guid? ContractId { get; set; }
     public string? Note { get; set; }
 }

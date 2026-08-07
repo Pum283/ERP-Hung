@@ -35,6 +35,10 @@ public sealed record CrmCustomerUpsertRequest(
     int? PotentialScore,
     string? Status);
 
+public sealed record CrmCustomerSetStatusRequest(
+    string Status,
+    string? Reason);
+
 public sealed record CrmCustomerSearchRequest(
     string? Q,
     string? CustomerType,
@@ -97,3 +101,5 @@ public sealed record CrmImportRowResult(string Code, bool Ok, string Message);
 public sealed record CrmImportResult(int Total, int Success, int Failed, IReadOnlyList<CrmImportRowResult> Rows);
 
 public sealed record CrmImportRequest(string CsvText);
+
+public sealed record CrmLeadMergeRequest(Guid PrimaryLeadId, Guid SecondaryLeadId, string? Reason);

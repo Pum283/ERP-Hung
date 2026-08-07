@@ -109,6 +109,17 @@ public sealed class CrmLeadController : ControllerBase
     [AuthorizePermission("crm.lead.read")]
     public async Task<ActionResult<ApiResponse<CrmLeadConversionReportDto>>> ConversionReport(CancellationToken ct)
         => Ok(ApiResponse<CrmLeadConversionReportDto>.Ok(await _svc.GetConversionReportAsync(TenantId, ct)));
+
+    [HttpPost("{id:guid}/score")]
+    [AuthorizePermission("crm.lead.manage")]
+    public async Task<ActionResult<ApiResponse<CrmLeadDto>>> CalculateScore(Guid id, CancellationToken ct)
+        => Ok(ApiResponse<CrmLeadDto>.Ok(await _svc.CalculateLeadScoreAsync(TenantId, UserId, id, ct)));
+
+    [HttpPost("merge")]
+    [AuthorizePermission("crm.lead.manage")]
+    public async Task<ActionResult<ApiResponse<CrmLeadDto>>> Merge(
+        [FromBody] CrmLeadMergeRequest req, CancellationToken ct)
+        => Ok(ApiResponse<CrmLeadDto>.Ok(await _svc.MergeLeadsAsync(TenantId, UserId, req, ct)));
 }
 
 [ApiController]
@@ -157,4 +168,21 @@ public sealed class CrmOpportunityController : ControllerBase
     [AuthorizePermission("crm.opportunity.manage")]
     public async Task<ActionResult<ApiResponse<CrmQuoteDto>>> CreateQuote(Guid id, CancellationToken ct)
         => Ok(ApiResponse<CrmQuoteDto>.Ok(await _svc.CreateQuoteFromOpportunityAsync(TenantId, UserId, id, ct)));
+
+    [HttpGet("revenue-forecast")]
+    [AuthorizePermission("crm.opportunity.read")]
+    public async Task<ActionResult<ApiResponse<CrmRevenueForecastDto>>> RevenueForecast(CancellationToken ct)
+        => Ok(ApiResponse<CrmRevenueForecastDto>.Ok(await _svc.GetRevenueForecastAsync(TenantId, ct)));
+
+    [HttpGet("win-rate-report")]
+    [AuthorizePermission("crm.opportunity.read")]
+    public async Task<ActionResult<ApiResponse<CrmWinRateReportDto>>> WinRateReport(CancellationToken ct)
+        => Ok(ApiResponse<CrmWinRateReportDto>.Ok(await _svc.GetWinRateReportAsync(TenantId, ct)));
+
+    [HttpPost("{id:guid}/competitor")]
+    [AuthorizePermission("crm.opportunity.manage")]
+    public async Task<ActionResult<ApiResponse<CrmOpportunityDto>>> UpdateCompetitor(
+        Guid id, [FromBody] CrmOpportunityCompetitorRequest req, CancellationToken ct)
+        => Ok(ApiResponse<CrmOpportunityDto>.Ok(
+            await _svc.UpdateCompetitorInfoAsync(TenantId, UserId, id, req, ct)));
 }

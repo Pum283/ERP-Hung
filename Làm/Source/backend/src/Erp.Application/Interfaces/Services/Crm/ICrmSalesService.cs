@@ -21,6 +21,8 @@ public interface ICrmSalesService
     /// <summary>UC_CRM_074 — sinh nội dung báo giá text thật (đóng dấu SentChannel=Pdf nếu stamp=true).</summary>
     Task<(string FileName, string Content)> BuildQuoteTextAsync(Guid tenantId, Guid userId, Guid quoteId, bool stampSent = false, CancellationToken ct = default);
     Task<CrmSalesOrderDto> ConvertQuoteToOrderAsync(Guid tenantId, Guid userId, Guid quoteId, CancellationToken ct = default);
+    Task<CrmQuoteDto> CreateNewVersionAsync(Guid tenantId, Guid userId, Guid quoteId, CancellationToken ct = default);
+    Task<int> CheckAndExpireQuotesAsync(Guid tenantId, CancellationToken ct = default);
 
     Task<IReadOnlyList<CrmSalesOrderDto>> ListOrdersAsync(Guid tenantId, string? status = null, CancellationToken ct = default);
     Task<CrmSalesOrderDetailDto> GetOrderDetailAsync(Guid tenantId, Guid id, CancellationToken ct = default);
@@ -29,4 +31,9 @@ public interface ICrmSalesService
     Task<CrmSalesOrderDto> CancelOrderAsync(Guid tenantId, Guid userId, Guid orderId, CrmOrderCancelRequest req, CancellationToken ct = default);
     Task<CrmOrderPaymentDto> AddPaymentAsync(Guid tenantId, Guid userId, Guid orderId, CrmOrderPaymentRequest req, CancellationToken ct = default);
     Task<CrmSalesOrderDto> PushToWarehouseAsync(Guid tenantId, Guid userId, Guid orderId, CancellationToken ct = default);
+    Task<(string FileName, string Content)> BuildQuotePdfHtmlAsync(Guid tenantId, Guid userId, Guid quoteId, CancellationToken ct = default);
+    Task<CrmSalesOrderDto> ReturnOrderAsync(Guid tenantId, Guid userId, Guid orderId, CrmOrderReturnRequest req, CancellationToken ct = default);
+    Task<CrmSalesOrderDto> LinkContractAsync(Guid tenantId, Guid userId, Guid orderId, CrmOrderLinkContractRequest req, CancellationToken ct = default);
+    Task<CrmSalesOrderDto> SplitOrderAsync(Guid tenantId, Guid userId, Guid orderId, CrmOrderSplitRequest req, CancellationToken ct = default);
+    Task<CrmSalesOrderDto> MergeOrdersAsync(Guid tenantId, Guid userId, CrmOrderMergeRequest req, CancellationToken ct = default);
 }

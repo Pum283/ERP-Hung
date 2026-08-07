@@ -33,3 +33,19 @@ export function parseLogDeliveryRef(note: string | null | undefined): string | n
   const m = (note ?? "").match(/LOG (DG-[\w-]+)/);
   return m ? m[1] : null;
 }
+
+export function canReturnOrder(status: string): boolean {
+  return status === "Confirmed" || status === "Delivered";
+}
+
+export function canSplitOrder(status: string, lineCount: number): boolean {
+  return status !== "Delivered" && status !== "Cancelled" && lineCount > 1;
+}
+
+export function canMergeOrders(status1: string, status2: string): boolean {
+  return status1 !== "Delivered" && status1 !== "Cancelled" && status2 !== "Delivered" && status2 !== "Cancelled";
+}
+
+export function canLinkContract(status: string): boolean {
+  return status !== "Cancelled";
+}

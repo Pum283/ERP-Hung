@@ -17,5 +17,7 @@ public class CrmOpportunity : TenantEntity
     public DateTimeOffset? ExpectedCloseDate { get; set; }
     public Guid? QuoteId { get; set; }
     public string? LostReason { get; set; }
+    public string? CompetitorName { get; set; }
+    public string? NegotiationNotes { get; set; }
     public string? Note { get; set; }
 }

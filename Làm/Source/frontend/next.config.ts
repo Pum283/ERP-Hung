@@ -1,9 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Static export for MonsterASP IIS wwwroot (no Node process required)
-  output: "export",
-  images: { unoptimized: true },
+  // Standalone for MonsterASP IIS + HttpPlatformHandler (Node)
+  output: "standalone",
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
 };

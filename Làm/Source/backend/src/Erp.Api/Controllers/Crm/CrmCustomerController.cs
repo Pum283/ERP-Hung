@@ -71,6 +71,12 @@ public sealed class CrmCustomerController : ControllerBase
         [FromBody] CrmMergeRequest req, CancellationToken ct)
         => Ok(ApiResponse<CrmCustomerDto>.Ok(await _svc.MergeAsync(TenantId, UserId, req, ct)));
 
+    [HttpPost("{id:guid}/status")]
+    [AuthorizePermission("crm.customer.manage")]
+    public async Task<ActionResult<ApiResponse<CrmCustomerDto>>> SetStatus(
+        Guid id, [FromBody] CrmCustomerSetStatusRequest req, CancellationToken ct)
+        => Ok(ApiResponse<CrmCustomerDto>.Ok(await _svc.SetStatusAsync(TenantId, UserId, id, req, ct)));
+
     [HttpGet("{id:guid}/contacts")]
     [AuthorizePermission("crm.customer.read")]
     public async Task<ActionResult<ApiResponse<IReadOnlyList<CrmContactDto>>>> Contacts(

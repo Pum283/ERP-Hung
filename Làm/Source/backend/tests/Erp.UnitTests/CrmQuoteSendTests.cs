@@ -151,11 +151,54 @@ public sealed class CrmQuoteSendTests : IDisposable
     public async Task BuildQuoteText_StampMarksSentAsPdf()
     {
         var quote = SeedQuote();
-
         await _svc.BuildQuoteTextAsync(_tenant, _user, quote.Id, stampSent: true);
 
         var q = await _db.CrmQuotes.SingleAsync(x => x.Id == quote.Id);
         Assert.Equal("Sent", q.Status);
         Assert.Equal("Pdf", q.SentChannel);
+    }
+
+    [Fact]
+    public async Task CreateNewVersion_CreatesIncrementedVersionAndCopiesLines()
+    {
+        var quote = SeedQuote();
+
+        var newVer = await _svc.CreateNewVersionAsync(_tenant, _user, quote.Id);
+
+        Assert.Equal(2, newVer.Version);
+        Assert.Equal("BG-001-v2", newVer.Code);
+        Assert.Equal("Draft", newVer.Status);
+
+        var lines = await _db.CrmQuoteLines.Where(x => x.QuoteId == newVer.Id).ToListAsync();
+        Assert.Single(lines);
+        Assert.Equal("SP1", lines[0].ItemCode);
+    }
+
+    [Fact]
+    public async Task CheckAndExpireQuotes_MarksOverdueQuotesAsExpired()
+    {
+        var quote = SeedQuote();
+        quote.ValidUntil = DateTimeOffset.UtcNow.AddDays(-1);
+        quote.Status = "Sent";
+        await _db.SaveChangesAsync();
+
+        var count = await _svc.CheckAndExpireQuotesAsync(_tenant);
+
+        Assert.Equal(1, count);
+        var q = await _db.CrmQuotes.SingleAsync(x => x.Id == quote.Id);
+        Assert.Equal("Expired", q.Status);
+        Assert.Contains("Tự động hết hạn", q.Note);
+    }
+
+    [Fact]
+    public async Task BuildQuotePdfHtml_GeneratesHtmlTemplate()
+    {
+        var quote = SeedQuote();
+
+        var (fileName, content) = await _svc.BuildQuotePdfHtmlAsync(_tenant, _user, quote.Id);
+
+        Assert.EndsWith(".html", fileName);
+        Assert.Contains("<html>", content);
+        Assert.Contains("Báo giá Pum's ERP", content);
     }
 }

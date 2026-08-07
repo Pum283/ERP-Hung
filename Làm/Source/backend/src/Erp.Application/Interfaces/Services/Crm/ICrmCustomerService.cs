@@ -17,6 +17,8 @@ public interface ICrmCustomerService
         Guid tenantId, Guid userId, Guid customerId, CrmHandoverRequest req, CancellationToken ct = default);
     Task<CrmCustomerDto> MergeAsync(
         Guid tenantId, Guid userId, CrmMergeRequest req, CancellationToken ct = default);
+    Task<CrmCustomerDto> SetStatusAsync(
+        Guid tenantId, Guid userId, Guid customerId, CrmCustomerSetStatusRequest req, CancellationToken ct = default);
 
     Task<IReadOnlyList<CrmContactDto>> ListContactsAsync(
         Guid tenantId, Guid customerId, CancellationToken ct = default);

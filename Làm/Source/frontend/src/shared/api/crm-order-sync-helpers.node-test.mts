@@ -1,6 +1,10 @@
 import {
   canHoldStock,
+  canLinkContract,
+  canMergeOrders,
   canPushWarehouse,
+  canReturnOrder,
+  canSplitOrder,
   holdStatusTone,
   parseLogDeliveryRef,
   parseReservationRef,
@@ -38,6 +42,45 @@ describe("canPushWarehouse", () => {
   });
   it("allows retry after Failed", () => {
     assert.equal(canPushWarehouse("Confirmed", "Failed"), true);
+  });
+});
+
+describe("canReturnOrder", () => {
+  it("true for Confirmed and Delivered", () => {
+    assert.equal(canReturnOrder("Confirmed"), true);
+    assert.equal(canReturnOrder("Delivered"), true);
+  });
+  it("false for Draft or Cancelled", () => {
+    assert.equal(canReturnOrder("Draft"), false);
+    assert.equal(canReturnOrder("Cancelled"), false);
+  });
+});
+
+describe("canSplitOrder", () => {
+  it("true for active order with >1 lines", () => {
+    assert.equal(canSplitOrder("Confirmed", 3), true);
+  });
+  it("false if only 1 line or Delivered/Cancelled", () => {
+    assert.equal(canSplitOrder("Confirmed", 1), false);
+    assert.equal(canSplitOrder("Delivered", 3), false);
+  });
+});
+
+describe("canMergeOrders", () => {
+  it("true if both orders are active", () => {
+    assert.equal(canMergeOrders("Draft", "Confirmed"), true);
+  });
+  it("false if any order is Delivered or Cancelled", () => {
+    assert.equal(canMergeOrders("Delivered", "Draft"), false);
+    assert.equal(canMergeOrders("Draft", "Cancelled"), false);
+  });
+});
+
+describe("canLinkContract", () => {
+  it("true for non-cancelled orders", () => {
+    assert.equal(canLinkContract("Draft"), true);
+    assert.equal(canLinkContract("Confirmed"), true);
+    assert.equal(canLinkContract("Cancelled"), false);
   });
 });
 

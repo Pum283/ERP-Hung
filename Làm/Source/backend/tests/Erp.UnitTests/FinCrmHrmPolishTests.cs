@@ -74,6 +74,20 @@ public sealed class FinCrmHrmPolishTests : IDisposable
             => throw new AppException("noop");
         public Task<CrmSalesOrderDto> PushToWarehouseAsync(Guid tenantId, Guid userId, Guid orderId, CancellationToken ct = default)
             => throw new AppException("noop");
+        public Task<CrmQuoteDto> CreateNewVersionAsync(Guid tenantId, Guid userId, Guid quoteId, CancellationToken ct = default)
+            => throw new AppException("noop");
+        public Task<int> CheckAndExpireQuotesAsync(Guid tenantId, CancellationToken ct = default)
+            => Task.FromResult(0);
+        public Task<(string FileName, string Content)> BuildQuotePdfHtmlAsync(Guid tenantId, Guid userId, Guid quoteId, CancellationToken ct = default)
+            => throw new AppException("noop");
+        public Task<CrmSalesOrderDto> ReturnOrderAsync(Guid tenantId, Guid userId, Guid orderId, CrmOrderReturnRequest req, CancellationToken ct = default)
+            => throw new AppException("noop");
+        public Task<CrmSalesOrderDto> LinkContractAsync(Guid tenantId, Guid userId, Guid orderId, CrmOrderLinkContractRequest req, CancellationToken ct = default)
+            => throw new AppException("noop");
+        public Task<CrmSalesOrderDto> SplitOrderAsync(Guid tenantId, Guid userId, Guid orderId, CrmOrderSplitRequest req, CancellationToken ct = default)
+            => throw new AppException("noop");
+        public Task<CrmSalesOrderDto> MergeOrdersAsync(Guid tenantId, Guid userId, CrmOrderMergeRequest req, CancellationToken ct = default)
+            => throw new AppException("noop");
     }
 
     public FinCrmHrmPolishTests()
@@ -221,11 +235,12 @@ public sealed class FinCrmHrmPolishTests : IDisposable
         });
         await _db.SaveChangesAsync();
 
+        var baseTime = new DateTimeOffset(2026, 8, 7, 8, 0, 0, TimeSpan.Zero);
         var r = await _att.SyncDeviceAsync(_tenant, _user, new AttendanceDeviceSyncRequest([
-            new("NV01", DateTimeOffset.UtcNow, "in", "MAY1"),
-            new("NV01", DateTimeOffset.UtcNow.AddMinutes(1), "in", "MAY1"), // dup
-            new("NOPE", DateTimeOffset.UtcNow, "in", "MAY1"), // unknown
-            new("NV01", DateTimeOffset.UtcNow.AddHours(8), "bad", "MAY1"), // invalid
+            new("NV01", baseTime, "in", "MAY1"),
+            new("NV01", baseTime.AddMinutes(1), "in", "MAY1"), // dup
+            new("NOPE", baseTime, "in", "MAY1"), // unknown
+            new("NV01", baseTime.AddMinutes(10), "bad", "MAY1"), // invalid
         ]));
 
         Assert.Equal(1, r.Synced);

@@ -418,6 +418,64 @@ public sealed class CrmLeadService : ICrmLeadService
         return new CrmLeadConversionReportDto(total, converted, lost, rate, rows);
     }
 
+    public async Task<CrmLeadDto> CalculateLeadScoreAsync(
+        Guid tenantId, Guid userId, Guid leadId, CancellationToken ct = default)
+    {
+        var lead = await RequireAsync(_db.CrmLeads, tenantId, leadId, "lead", ct);
+        var score = 0;
+        if (!string.IsNullOrWhiteSpace(lead.Phone)) score += 20;
+        if (!string.IsNullOrWhiteSpace(lead.Email)) score += 20;
+        if (!string.IsNullOrWhiteSpace(lead.CompanyName)) score += 20;
+        var actCount = await _db.CrmLeadActivities.CountAsync(
+            x => x.TenantId == tenantId && x.LeadId == leadId && !x.IsDeleted, ct);
+        score += Math.Min(actCount * 10, 40);
+
+        lead.Score = score;
+        lead.UpdatedBy = userId;
+        await _db.SaveChangesAsync(ct);
+        return (await MapLeadsAsync(tenantId, [lead], ct))[0];
+    }
+
+    public async Task<CrmLeadDto> MergeLeadsAsync(
+        Guid tenantId, Guid userId, CrmLeadMergeRequest req, CancellationToken ct = default)
+    {
+        if (req.PrimaryLeadId == req.SecondaryLeadId)
+            throw new AppException("Chỉ định 2 Lead khác nhau để gộp.");
+        var primary = await RequireAsync(_db.CrmLeads, tenantId, req.PrimaryLeadId, "lead chính", ct);
+        var secondary = await RequireAsync(_db.CrmLeads, tenantId, req.SecondaryLeadId, "lead phụ", ct);
+
+        if (secondary.MergedIntoId != null)
+            throw new AppException("Lead phụ đã được gộp trước đó.");
+
+        // Chuyển toàn bộ Tasks và Activities sang Lead chính
+        var tasks = await _db.CrmLeadTasks
+            .Where(x => x.TenantId == tenantId && x.LeadId == secondary.Id && !x.IsDeleted).ToListAsync(ct);
+        foreach (var t in tasks) { t.LeadId = primary.Id; t.UpdatedBy = userId; }
+
+        var acts = await _db.CrmLeadActivities
+            .Where(x => x.TenantId == tenantId && x.LeadId == secondary.Id && !x.IsDeleted).ToListAsync(ct);
+        foreach (var a in acts) { a.LeadId = primary.Id; }
+
+        // Bổ sung thông tin thiếu từ secondary sang primary nếu primary trống
+        if (string.IsNullOrWhiteSpace(primary.Phone) && !string.IsNullOrWhiteSpace(secondary.Phone))
+            primary.Phone = secondary.Phone;
+        if (string.IsNullOrWhiteSpace(primary.Email) && !string.IsNullOrWhiteSpace(secondary.Email))
+            primary.Email = secondary.Email;
+        if (string.IsNullOrWhiteSpace(primary.CompanyName) && !string.IsNullOrWhiteSpace(secondary.CompanyName))
+            primary.CompanyName = secondary.CompanyName;
+
+        secondary.MergedIntoId = primary.Id;
+        secondary.PipelineStatus = "Lost";
+        secondary.LostReason = NullIfEmpty(req.Reason) ?? $"Gộp trùng vào lead {primary.Code}";
+        secondary.UpdatedBy = userId;
+        primary.UpdatedBy = userId;
+
+        await _db.SaveChangesAsync(ct);
+
+        // Tự động tính lại Score cho Lead chính
+        return await CalculateLeadScoreAsync(tenantId, userId, primary.Id, ct);
+    }
+
     public async Task<IReadOnlyList<CrmOpportunityDto>> ListOpportunitiesAsync(
         Guid tenantId, string? q, string? stage, CancellationToken ct = default)
     {
@@ -481,10 +539,23 @@ public sealed class CrmLeadService : ICrmLeadService
         entity.EstimatedValue = req.EstimatedValue ?? entity.EstimatedValue;
         entity.ProbabilityPercent = req.ProbabilityPercent ?? entity.ProbabilityPercent;
         entity.ExpectedCloseDate = req.ExpectedCloseDate;
+        if (!string.IsNullOrWhiteSpace(req.CompetitorName)) entity.CompetitorName = NullIfEmpty(req.CompetitorName);
+        if (!string.IsNullOrWhiteSpace(req.NegotiationNotes)) entity.NegotiationNotes = NullIfEmpty(req.NegotiationNotes);
         entity.Note = NullIfEmpty(req.Note);
         entity.UpdatedBy = userId;
         await _db.SaveChangesAsync(ct);
         return (await MapOppsAsync(tenantId, [entity], ct))[0];
+    }
+
+    public async Task<CrmOpportunityDto> UpdateCompetitorInfoAsync(
+        Guid tenantId, Guid userId, Guid opportunityId, CrmOpportunityCompetitorRequest req, CancellationToken ct = default)
+    {
+        var opp = await RequireAsync(_db.CrmOpportunities, tenantId, opportunityId, "cơ hội", ct);
+        opp.CompetitorName = Req(req.CompetitorName, 200, "Tên đối thủ");
+        opp.NegotiationNotes = NullIfEmpty(req.NegotiationNotes);
+        opp.UpdatedBy = userId;
+        await _db.SaveChangesAsync(ct);
+        return (await MapOppsAsync(tenantId, [opp], ct))[0];
     }
 
     public async Task<CrmOpportunityLineDto> UpsertOpportunityLineAsync(
@@ -547,6 +618,53 @@ public sealed class CrmLeadService : ICrmLeadService
     public Task<CrmQuoteDto> CreateQuoteFromOpportunityAsync(
         Guid tenantId, Guid userId, Guid opportunityId, CancellationToken ct = default)
         => _sales.CreateQuoteFromOpportunityAsync(tenantId, userId, opportunityId, ct);
+
+    public async Task<CrmRevenueForecastDto> GetRevenueForecastAsync(Guid tenantId, CancellationToken ct = default)
+    {
+        var opps = await _db.CrmOpportunities.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Stage != "Lost").ToListAsync(ct);
+
+        var totalEstimated = opps.Sum(x => x.EstimatedValue);
+        var weightedForecast = opps.Sum(x => Math.Round(x.EstimatedValue * x.ProbabilityPercent / 100m, 2));
+
+        var monthly = opps
+            .GroupBy(x => (x.ExpectedCloseDate ?? x.CreatedAt).ToString("yyyy-MM"))
+            .OrderBy(g => g.Key)
+            .Select(g => new CrmRevenueForecastMonthlyDto(
+                g.Key,
+                g.Count(),
+                g.Sum(x => x.EstimatedValue),
+                g.Sum(x => Math.Round(x.EstimatedValue * x.ProbabilityPercent / 100m, 2))))
+            .ToList();
+
+        return new CrmRevenueForecastDto(totalEstimated, weightedForecast, monthly);
+    }
+
+    public async Task<CrmWinRateReportDto> GetWinRateReportAsync(Guid tenantId, CancellationToken ct = default)
+    {
+        var opps = await _db.CrmOpportunities.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted).ToListAsync(ct);
+
+        var total = opps.Count;
+        var won = opps.Count(x => x.Stage == "Won");
+        var lost = opps.Count(x => x.Stage == "Lost");
+        var inProgress = total - won - lost;
+
+        var winRate = total > 0 ? Math.Round(100m * won / total, 2) : 0m;
+        var lossRate = total > 0 ? Math.Round(100m * lost / total, 2) : 0m;
+
+        var lossReasons = opps
+            .Where(x => x.Stage == "Lost" && !string.IsNullOrWhiteSpace(x.LostReason))
+            .GroupBy(x => x.LostReason!.Trim())
+            .Select(g => new CrmLossReasonBreakdownDto(
+                g.Key,
+                g.Count(),
+                lost > 0 ? Math.Round(100m * g.Count() / lost, 2) : 0m))
+            .OrderByDescending(x => x.Count)
+            .ToList();
+
+        return new CrmWinRateReportDto(total, won, lost, inProgress, winRate, lossRate, lossReasons);
+    }
 
     private async Task<CrmLeadActivity> AddActivityInternal(
         Guid tenantId, Guid userId, Guid leadId, string type, string content, CancellationToken ct,
@@ -618,7 +736,7 @@ public sealed class CrmLeadService : ICrmLeadService
             o.OwnerUserId, o.OwnerUserId is Guid u ? users.GetValueOrDefault(u) : null,
             o.Stage, o.EstimatedValue, o.ProbabilityPercent, o.ExpectedCloseDate,
             o.QuoteId, o.QuoteId is Guid q ? quotes.GetValueOrDefault(q) : null,
-            o.LostReason, o.Note, lineCounts.GetValueOrDefault(o.Id))).ToList();
+            o.LostReason, o.CompetitorName, o.NegotiationNotes, o.Note, lineCounts.GetValueOrDefault(o.Id))).ToList();
     }
 
     private async Task<IReadOnlyList<CrmLeadTaskDto>> LoadTasksAsync(Guid tenantId, Guid leadId, CancellationToken ct)

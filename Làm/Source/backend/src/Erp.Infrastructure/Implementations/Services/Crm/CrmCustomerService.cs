@@ -15,7 +15,7 @@ public sealed class CrmCustomerService : ICrmCustomerService
     private static readonly HashSet<string> Segments =
         new(StringComparer.OrdinalIgnoreCase) { "Lead", "Prospect", "Customer", "Partner" };
     private static readonly HashSet<string> Statuses =
-        new(StringComparer.OrdinalIgnoreCase) { "Active", "Inactive", "Merged" };
+        new(StringComparer.OrdinalIgnoreCase) { "Active", "Inactive", "Merged", "Blacklisted" };
 
     private readonly AppDbContext _db;
 
@@ -562,5 +562,42 @@ public sealed class CrmCustomerService : ICrmCustomerService
         }
         result.Add(cur.ToString());
         return result;
+    }
+
+    public async Task<CrmCustomerDto> SetStatusAsync(
+        Guid tenantId, Guid userId, Guid customerId, CrmCustomerSetStatusRequest req, CancellationToken ct = default)
+    {
+        var targetStatus = (req.Status ?? "").Trim();
+        if (!Statuses.Contains(targetStatus) || targetStatus == "Merged")
+            throw new AppException("Trạng thái không hợp lệ.");
+
+        var customer = await _db.CrmCustomers.FirstOrDefaultAsync(
+            x => x.Id == customerId && x.TenantId == tenantId && !x.IsDeleted, ct)
+            ?? throw new AppException("Khách hàng không tồn tại.", 404);
+
+        if (customer.Status == "Merged")
+            throw new AppException("Khách đã gộp — không đổi trạng thái.");
+
+        customer.Status = targetStatus;
+        if (!string.IsNullOrWhiteSpace(req.Reason))
+        {
+            var note = $"[{DateTimeOffset.UtcNow:dd/MM/yyyy HH:mm}] Đổi trạng thái -> {targetStatus}: {req.Reason.Trim()}";
+            customer.Note = string.IsNullOrEmpty(customer.Note) ? note : $"{customer.Note}\n{note}";
+        }
+        customer.UpdatedBy = userId;
+
+        _db.CrmCustomerHandovers.Add(new CrmCustomerHandover
+        {
+            TenantId = tenantId,
+            CustomerId = customerId,
+            FromUserId = userId,
+            ToUserId = customer.OwnerUserId ?? userId,
+            Note = $"Đổi trạng thái sang {targetStatus}. " + (req.Reason ?? ""),
+            HandedAt = DateTimeOffset.UtcNow,
+            CreatedBy = userId
+        });
+
+        await _db.SaveChangesAsync(ct);
+        return (await MapCustomersAsync(tenantId, [customer], ct))[0];
     }
 }
