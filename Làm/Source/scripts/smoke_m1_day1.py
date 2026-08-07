@@ -12,8 +12,8 @@ from datetime import date, timedelta
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-BASE = "http://localhost:5000"
-FE = "http://localhost:3000"
+BASE = "http://localhost:1111"
+FE = "http://localhost:2222"
 results: list[str] = []
 
 

@@ -25,6 +25,8 @@ public interface ISysMasterService
     Task SetUserRolesAsync(Guid tenantId, Guid userId, IReadOnlyList<Guid> roleIds, Guid? actorId, CancellationToken ct = default);
     Task SoftDeleteUserAsync(Guid tenantId, Guid userId, Guid actorId, CancellationToken ct = default);
     Task<ResetPasswordResultDto> AdminResetPasswordAsync(Guid tenantId, Guid userId, Guid actorId, CancellationToken ct = default);
+    /// <summary>UC_SYS_019 — mời user: tạo TK + OTP + gửi Email/SMS qua channel stub.</summary>
+    Task<InviteUserResultDto> InviteUserAsync(Guid tenantId, Guid actorId, InviteUserRequest req, CancellationToken ct = default);
     Task<RoleDto> CopyRoleAsync(Guid tenantId, Guid roleId, Guid? actorId, string newCode, string newName, CancellationToken ct = default);
 
     Task<IReadOnlyList<MenuItemDto>> GetMyMenuAsync(Guid tenantId, Guid userId, CancellationToken ct = default);

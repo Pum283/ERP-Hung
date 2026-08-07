@@ -96,12 +96,10 @@ public sealed class HrmAttendanceController : ControllerBase
 
     [HttpPost("sync-device")]
     [AuthorizePermission("hrm.employee.manage")]
-    public async Task<ActionResult<ApiResponse<object>>> SyncDevice(
+    public async Task<ActionResult<ApiResponse<AttendanceDeviceSyncResult>>> SyncDevice(
         [FromBody] AttendanceDeviceSyncRequest req, CancellationToken ct)
-    {
-        var n = await _svc.SyncDeviceAsync(TenantId, UserId, req, ct);
-        return Ok(ApiResponse<object>.Ok(new { synced = n }));
-    }
+        => Ok(ApiResponse<AttendanceDeviceSyncResult>.Ok(
+            await _svc.SyncDeviceAsync(TenantId, UserId, req, ct)));
 
     [HttpPost("recalc-ot")]
     [AuthorizePermission("hrm.employee.manage")]

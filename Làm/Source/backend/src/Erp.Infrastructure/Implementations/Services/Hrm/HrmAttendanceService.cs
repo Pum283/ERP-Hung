@@ -306,19 +306,38 @@ public sealed class HrmAttendanceService : IHrmAttendanceService
         return missing.Count + opens.Count(x => x.Status == "MissingCheckout");
     }
 
-    public async Task<int> SyncDeviceAsync(
+    public async Task<AttendanceDeviceSyncResult> SyncDeviceAsync(
         Guid tenantId, Guid userId, AttendanceDeviceSyncRequest req, CancellationToken ct = default)
     {
-        if (req.Items is null || req.Items.Count == 0) return 0;
+        if (req.Items is null || req.Items.Count == 0)
+            return new AttendanceDeviceSyncResult(0, 0, 0, 0, 0, 0);
+
         var policy = await EnsurePolicyAsync(tenantId, ct);
-        var n = 0;
-        foreach (var item in req.Items.Take(500))
+        int synced = 0, unknown = 0, locked = 0, dup = 0, invalid = 0;
+        var items = req.Items.Take(500).ToList();
+
+        foreach (var item in items)
         {
+            if (string.IsNullOrWhiteSpace(item.EmployeeCode))
+            {
+                unknown++;
+                continue;
+            }
+
             var emp = await _db.Employees.FirstOrDefaultAsync(
-                x => x.TenantId == tenantId && x.EmployeeCode == item.EmployeeCode && !x.IsDeleted, ct);
-            if (emp is null) continue;
+                x => x.TenantId == tenantId && x.EmployeeCode == item.EmployeeCode.Trim() && !x.IsDeleted, ct);
+            if (emp is null)
+            {
+                unknown++;
+                continue;
+            }
+
             var workDate = DateOnly.FromDateTime(item.PunchedAt.LocalDateTime);
-            if (await IsLockedAsync(tenantId, workDate, ct)) continue;
+            if (await IsLockedAsync(tenantId, workDate, ct))
+            {
+                locked++;
+                continue;
+            }
 
             Guid? deviceId = null;
             if (!string.IsNullOrWhiteSpace(item.DeviceCode))
@@ -332,35 +351,48 @@ public sealed class HrmAttendanceService : IHrmAttendanceService
             var type = (item.PunchType ?? "").Trim().ToLowerInvariant();
             if (type is "in" or "checkin")
             {
-                if (rec.CheckInAt is null || item.PunchedAt < rec.CheckInAt)
+                if (rec.CheckInAt is not null && item.PunchedAt >= rec.CheckInAt)
                 {
-                    rec.CheckInAt = item.PunchedAt;
-                    rec.CheckInMethod = "DeviceSync";
-                    rec.DeviceId = deviceId;
-                    rec.Status = rec.CheckOutAt is null ? "Open" : "Closed";
-                    await ApplyLateAndWorkAsync(tenantId, rec, policy, ct);
-                    n++;
+                    dup++;
+                    continue;
                 }
+                rec.CheckInAt = item.PunchedAt;
+                rec.CheckInMethod = "DeviceSync";
+                rec.DeviceId = deviceId;
+                rec.Status = rec.CheckOutAt is null ? "Open" : "Closed";
+                await ApplyLateAndWorkAsync(tenantId, rec, policy, ct);
+                synced++;
             }
             else if (type is "out" or "checkout")
             {
-                if (rec.CheckInAt is null) continue;
-                if (rec.CheckOutAt is null || item.PunchedAt > rec.CheckOutAt)
+                if (rec.CheckInAt is null)
                 {
-                    rec.CheckOutAt = item.PunchedAt;
-                    rec.CheckOutMethod = "DeviceSync";
-                    rec.DeviceId = deviceId;
-                    rec.Status = "Closed";
-                    if (policy.EnableOt) await ApplyOtAsync(tenantId, rec, policy, ct);
-                    n++;
+                    invalid++;
+                    continue;
                 }
+                if (rec.CheckOutAt is not null && item.PunchedAt <= rec.CheckOutAt)
+                {
+                    dup++;
+                    continue;
+                }
+                rec.CheckOutAt = item.PunchedAt;
+                rec.CheckOutMethod = "DeviceSync";
+                rec.DeviceId = deviceId;
+                rec.Status = "Closed";
+                if (policy.EnableOt) await ApplyOtAsync(tenantId, rec, policy, ct);
+                synced++;
+            }
+            else
+            {
+                invalid++;
+                continue;
             }
 
             rec.UpdatedBy = userId;
         }
 
         await _db.SaveChangesAsync(ct);
-        return n;
+        return new AttendanceDeviceSyncResult(synced, unknown, locked, dup, invalid, items.Count);
     }
 
     public async Task<int> RecalcOtAsync(
@@ -612,6 +644,10 @@ public sealed class HrmAttendanceService : IHrmAttendanceService
     {
         var rec = await _db.AttendanceRecords.FirstOrDefaultAsync(
             x => x.TenantId == tenantId && x.EmployeeId == employeeId && x.WorkDate == workDate && !x.IsDeleted, ct);
+        if (rec is not null) return rec;
+        // Bản ghi vừa Add trong cùng batch (chưa SaveChanges) — tránh tạo trùng khi sync máy.
+        rec = _db.AttendanceRecords.Local.FirstOrDefault(
+            x => x.TenantId == tenantId && x.EmployeeId == employeeId && x.WorkDate == workDate && !x.IsDeleted);
         if (rec is not null) return rec;
         rec = new AttendanceRecord
         {

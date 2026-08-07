@@ -25,7 +25,7 @@ public interface IHrmAttendanceService
     Task<IReadOnlyList<AttendanceMissingAlertDto>> MissingAlertsAsync(Guid tenantId, DateOnly? date, CancellationToken ct = default);
 
     Task<int> MarkMissingAsync(Guid tenantId, Guid userId, DateOnly date, CancellationToken ct = default);
-    Task<int> SyncDeviceAsync(Guid tenantId, Guid userId, AttendanceDeviceSyncRequest req, CancellationToken ct = default);
+    Task<AttendanceDeviceSyncResult> SyncDeviceAsync(Guid tenantId, Guid userId, AttendanceDeviceSyncRequest req, CancellationToken ct = default);
     Task<int> RecalcOtAsync(Guid tenantId, Guid userId, DateOnly from, DateOnly to, CancellationToken ct = default);
 
     Task<IReadOnlyList<AttendanceAdjustDto>> ListAdjustsAsync(Guid tenantId, CancellationToken ct = default);

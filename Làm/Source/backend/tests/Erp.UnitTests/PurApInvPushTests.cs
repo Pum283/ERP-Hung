@@ -1,6 +1,7 @@
 using Erp.Application.Common.Exceptions;
 using Erp.Application.DTOs.Fin;
 using Erp.Application.Interfaces.Services.Fin;
+using Erp.Domain.Entities.Fin;
 using Erp.Domain.Entities.Inv;
 using Erp.Domain.Entities.Pur;
 using Erp.Infrastructure.Implementations.Services.Fin;
@@ -91,11 +92,28 @@ public sealed class PurApInvPushTests : IDisposable
         return inv;
     }
 
+    private void SeedFinOpenPeriodAndApAccounts()
+    {
+        var now = DateTimeOffset.UtcNow;
+        _db.FinPeriods.Add(new FinPeriod
+        {
+            TenantId = _tenant, FiscalYearId = Guid.NewGuid(),
+            Code = $"{now:yyyy-MM}", Name = "Tháng hiện tại",
+            StartDate = new DateTimeOffset(now.Year, now.Month, 1, 0, 0, 0, TimeSpan.Zero),
+            EndDate = new DateTimeOffset(now.Year, now.Month, DateTime.DaysInMonth(now.Year, now.Month), 0, 0, 0, TimeSpan.Zero),
+            Status = "Open", CreatedBy = _user,
+        });
+        _db.FinAccounts.AddRange(
+            new FinAccount { TenantId = _tenant, Code = "3311", Name = "Phải trả NCC", AccountType = "Liability", CreatedBy = _user },
+            new FinAccount { TenantId = _tenant, Code = "1561", Name = "Hàng mua", AccountType = "Asset", CreatedBy = _user });
+    }
+
     // ── UC_PUR_043 đẩy FIN AP thật ──
 
     [Fact]
     public async Task PushAp_CreatesRealOpenFinApInvoice()
     {
+        SeedFinOpenPeriodAndApAccounts();
         var vendor = AddVendor();
         var po = AddPo(vendor.Id);
         var inv = AddMatchedInvoice(vendor.Id, po.Id);
@@ -110,11 +128,13 @@ public sealed class PurApInvPushTests : IDisposable
         Assert.Equal(550_000, ap.TotalAmount);
         Assert.Equal(vendor.Id, ap.VendorId);
         Assert.Equal("HD-9", ap.VendorInvoiceNo);
+        Assert.NotNull(ap.FinJournalId);
     }
 
     [Fact]
     public async Task PushAp_IsIdempotent()
     {
+        SeedFinOpenPeriodAndApAccounts();
         var vendor = AddVendor();
         var inv = AddMatchedInvoice(vendor.Id, null);
         await _db.SaveChangesAsync();

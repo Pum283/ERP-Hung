@@ -339,6 +339,40 @@ public sealed class FinAccountingService : IFinAccountingService
         Guid tenantId, Guid userId, FinJournalUpsertRequest req, CancellationToken ct = default)
         => UpsertJournalCoreAsync(tenantId, userId, req with { Source = "Auto" }, forceSource: "Auto", ct);
 
+    public async Task<Guid> ResolvePostableAccountIdAsync(
+        Guid tenantId, IReadOnlyList<string> codePrefixes, string label, CancellationToken ct = default)
+    {
+        foreach (var prefix in codePrefixes)
+        {
+            var acc = await _db.FinAccounts.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Status == "Active"
+                            && x.IsPostable && x.Code.StartsWith(prefix))
+                .OrderBy(x => x.Code)
+                .FirstOrDefaultAsync(ct);
+            if (acc is not null) return acc.Id;
+        }
+        throw new AppException($"Không tìm thấy {label} trong hệ thống TK — chọn TK thủ công.");
+    }
+
+    public async Task<Guid> ResolveOpenPeriodIdAsync(
+        Guid tenantId, Guid? periodId, DateTimeOffset asOf, CancellationToken ct = default)
+    {
+        if (periodId is Guid pid)
+        {
+            var period = await RequireAsync(_db.FinPeriods, tenantId, pid, "kỳ KT", ct);
+            if (period.Status == "Locked") throw new AppException("Kỳ đã khóa sổ.");
+            return period.Id;
+        }
+
+        var open = await _db.FinPeriods
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Status == "Open"
+                        && x.StartDate.Year == asOf.Year && x.StartDate.Month == asOf.Month)
+            .OrderBy(x => x.StartDate)
+            .FirstOrDefaultAsync(ct)
+            ?? throw new AppException("Không tìm thấy kỳ FIN Open khớp tháng chứng từ — chọn PeriodId.");
+        return open.Id;
+    }
+
     private async Task<FinJournalDto> UpsertJournalCoreAsync(
         Guid tenantId, Guid userId, FinJournalUpsertRequest req, string? forceSource, CancellationToken ct)
     {

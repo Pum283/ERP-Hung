@@ -2,16 +2,15 @@
 
 | Thành phần | URL |
 |---|---|
-| FE shell | http://localhost:3000 |
-| BE API (HTTPS) | https://localhost:7000 |
-| BE API (HTTP) | http://localhost:5000 |
-| Swagger | https://localhost:7000/swagger |
+| FE shell | http://localhost:2222 |
+| BE API (HTTP) | http://localhost:1111 |
+| Swagger | http://localhost:1111/swagger |
 
 **Công thức (Phase 1):** 1 FE + 1 BE — khác Digione (nhiều port theo phân hệ).
 
 ## CORS
 
-BE cho phép origin `http://localhost:3000`.
+BE cho phép origin `http://localhost:2222`.
 
 ## Tài khoản seed
 

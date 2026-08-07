@@ -2,6 +2,7 @@
 
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import {
+  downloadBiRunExport,
   fetchBiDatasets,
   fetchBiPermissions,
   fetchBiReports,
@@ -14,6 +15,12 @@ import {
   type BiReportPermissionDto,
   type BiReportRunDto,
 } from "@/shared/api/bi-api";
+import {
+  biExportActionLabel,
+  biExportDownloadName,
+  buildBiReportFilterJson,
+  canDownloadBiExport,
+} from "@/shared/api/bi-helpers";
 import { usePermissions } from "@/shared/hooks/use-permissions";
 import { btn } from "@/shared/ui/btn";
 import { field, panel, statusPill, tableWrap, td, th } from "@/shared/ui/field";
@@ -90,7 +97,7 @@ export default function BiReportsPage() {
       <div>
         <h1 className="text-xl font-semibold tracking-tight">Thư viện báo cáo</h1>
         <p className="mt-1 text-sm text-[var(--muted)]">
-          Danh mục BC · quyền xem · chạy lọc · xuất Excel/PDF stub (UC_BI_003, 013–014, 016)
+          Danh mục BC · quyền xem · chạy lọc thật · tải CSV/text (UC_BI_003, 013–014, 016)
         </p>
       </div>
       {error && <div className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>}
@@ -153,7 +160,7 @@ export default function BiReportsPage() {
                   <input className={field} type="date" value={filterFrom} onChange={(e) => setFilterFrom(e.target.value)} />
                   <input className={field} type="date" value={filterTo} onChange={(e) => setFilterTo(e.target.value)} />
                   <button type="button" className={btn.primary} onClick={() => {
-                    const filterJson = JSON.stringify({ from: filterFrom || null, to: filterTo || null });
+                    const filterJson = buildBiReportFilterJson(filterFrom, filterTo);
                     void run(async () => {
                       const res = await runBiReport(selected.id, { filterJson, exportFormat: "None" });
                       setLastRun(res);
@@ -162,20 +169,34 @@ export default function BiReportsPage() {
                     Chạy
                   </button>
                   <button type="button" className={btn.ghost} onClick={() => {
-                    const filterJson = JSON.stringify({ from: filterFrom || null, to: filterTo || null });
+                    const filterJson = buildBiReportFilterJson(filterFrom, filterTo);
                     void run(async () => {
                       const res = await runBiReport(selected.id, { filterJson, exportFormat: "Excel" });
                       setLastRun(res);
-                    }, "Đã xuất Excel stub");
+                      const blob = await downloadBiRunExport(res.id);
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement("a");
+                      a.href = url;
+                      a.download = biExportDownloadName(res.exportFileName, selected.code, "Excel");
+                      a.click();
+                      URL.revokeObjectURL(url);
+                    }, biExportActionLabel("Excel"));
                   }}>
                     Excel
                   </button>
                   <button type="button" className={btn.ghost} onClick={() => {
-                    const filterJson = JSON.stringify({ from: filterFrom || null, to: filterTo || null });
+                    const filterJson = buildBiReportFilterJson(filterFrom, filterTo);
                     void run(async () => {
                       const res = await runBiReport(selected.id, { filterJson, exportFormat: "Pdf" });
                       setLastRun(res);
-                    }, "Đã xuất PDF stub");
+                      const blob = await downloadBiRunExport(res.id);
+                      const url = URL.createObjectURL(blob);
+                      const a = document.createElement("a");
+                      a.href = url;
+                      a.download = biExportDownloadName(res.exportFileName, selected.code, "Pdf");
+                      a.click();
+                      URL.revokeObjectURL(url);
+                    }, biExportActionLabel("Pdf"));
                   }}>
                     PDF
                   </button>
@@ -186,6 +207,27 @@ export default function BiReportsPage() {
                 <div className="rounded-md border border-black/10 p-3 text-xs">
                   <div>Run: {new Date(lastRun.runAt).toLocaleString()} · {lastRun.rowCount} dòng · {lastRun.exportFormat}</div>
                   {lastRun.exportFileName && <div>File: {lastRun.exportFileName}</div>}
+                  {lastRun.note && <div className="text-[var(--muted)]">{lastRun.note}</div>}
+                  {canRun && canDownloadBiExport(lastRun.exportFormat) && (
+                    <button type="button" className={`${btn.ghost} mt-2`} onClick={() => {
+                      void (async () => {
+                        try {
+                          const blob = await downloadBiRunExport(lastRun.id);
+                          const url = URL.createObjectURL(blob);
+                          const a = document.createElement("a");
+                          a.href = url;
+                          a.download = biExportDownloadName(
+                            lastRun.exportFileName, selected.code, lastRun.exportFormat as "Excel" | "Pdf",
+                          );
+                          a.click();
+                          URL.revokeObjectURL(url);
+                          flash("Đã tải file xuất");
+                        } catch (err) { setError((err as Error).message); }
+                      })();
+                    }}>
+                      Tải lại file
+                    </button>
+                  )}
                   {lastRun.resultPreviewJson && <pre className="mt-1 overflow-auto">{lastRun.resultPreviewJson}</pre>}
                 </div>
               )}
@@ -234,7 +276,7 @@ export default function BiReportsPage() {
               <thead>
                 <tr>
                   <th className={th}>Thời điểm</th><th className={th}>BC</th>
-                  <th className={th}>Dòng</th><th className={th}>Xuất</th><th className={th}>TT</th>
+                  <th className={th}>Dòng</th><th className={th}>Xuất</th><th className={th}>TT</th><th className={th}></th>
                 </tr>
               </thead>
               <tbody>
@@ -246,6 +288,26 @@ export default function BiReportsPage() {
                     <td className={td}>{r.exportFormat}{r.exportFileName ? ` · ${r.exportFileName}` : ""}</td>
                     <td className={td}>
                       <span className={statusPill(r.status === "Succeeded" ? "success" : "danger")}>{r.status}</span>
+                    </td>
+                    <td className={td}>
+                      {canRun && canDownloadBiExport(r.exportFormat) && (
+                        <button type="button" className={btn.ghost} onClick={() => {
+                          void (async () => {
+                            try {
+                              const blob = await downloadBiRunExport(r.id);
+                              const url = URL.createObjectURL(blob);
+                              const a = document.createElement("a");
+                              a.href = url;
+                              a.download = biExportDownloadName(r.exportFileName, r.reportCode ?? "report", r.exportFormat);
+                              a.click();
+                              URL.revokeObjectURL(url);
+                              flash("Đã tải file xuất");
+                            } catch (err) { setError((err as Error).message); }
+                          })();
+                        }}>
+                          Tải
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

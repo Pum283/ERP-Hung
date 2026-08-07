@@ -88,6 +88,15 @@ public sealed class BiReportController : ControllerBase
     public async Task<ActionResult<ApiResponse<IReadOnlyList<BiReportRunDto>>>> Runs(
         [FromQuery] Guid? reportId, CancellationToken ct)
         => Ok(ApiResponse<IReadOnlyList<BiReportRunDto>>.Ok(await _svc.ListRunsAsync(TenantId, reportId, ct)));
+
+    /// <summary>UC_BI_016 — tải CSV/text thật của lần chạy xuất.</summary>
+    [HttpGet("runs/{runId:guid}/export")]
+    [AuthorizePermission("bi.report.run")]
+    public async Task<IActionResult> DownloadRunExport(Guid runId, CancellationToken ct)
+    {
+        var (fileName, contentType, content) = await _svc.DownloadRunExportAsync(TenantId, runId, ct);
+        return File(System.Text.Encoding.UTF8.GetBytes(content), contentType, fileName);
+    }
 }
 
 [ApiController]

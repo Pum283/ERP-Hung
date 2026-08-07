@@ -21,6 +21,7 @@ import {
   type CrmLeadDto,
   type CrmLeadSourceDto,
 } from "@/shared/api/crm-lead-api";
+import { canAutoIntake } from "@/shared/api/crm-hrm-intake-helpers";
 import { fetchMsgDirectory, type MsgDirectoryUserDto } from "@/shared/api/msg-api";
 import { usePermissions } from "@/shared/hooks/use-permissions";
 import { btn } from "@/shared/ui/btn";
@@ -154,11 +155,12 @@ export default function CrmLeadsPage() {
                 </select>
                 <button className={btn.primary} type="submit">Tạo thủ công</button>
               </form>
-              <button type="button" className={btn.ghost} onClick={() => void run(
-                () => autoIntakeCrmLead({
-                  name: name || "Lead website", phone, sourceCode: srcCode, note: "Auto intake",
-                }), "Đã tiếp nhận auto",
-              )}>
+              <button type="button" className={btn.ghost} disabled={!canAutoIntake(name || "Lead website", phone)} onClick={() => void run(async () => {
+                const lead = await autoIntakeCrmLead({
+                  name: name || "Lead website", phone, sourceCode: srcCode || "WEBSITE", note: "Auto intake",
+                });
+                return lead;
+              }, "Đã tiếp nhận auto-intake (dedup SĐT/Email · activity).")}>
                 Auto intake (website)
               </button>
               <form className="flex flex-wrap gap-2" onSubmit={(e: FormEvent) => {

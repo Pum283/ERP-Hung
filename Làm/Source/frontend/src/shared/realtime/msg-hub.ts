@@ -8,7 +8,7 @@ import {
 } from "@microsoft/signalr";
 import type { ChatMessageDto, ReactionToggledDto } from "@/shared/api/msg-api";
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+const baseURL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:1111";
 
 export type MessageReceivedPayload = ChatMessageDto;
 

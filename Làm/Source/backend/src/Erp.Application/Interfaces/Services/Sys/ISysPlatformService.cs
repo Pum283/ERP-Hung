@@ -71,6 +71,10 @@ public interface ISysPlatformService
     Task<IReadOnlyList<ExternalIntegrationDto>> ListIntegrationsAsync(Guid tenantId, CancellationToken ct = default);
     Task<ExternalIntegrationDto> UpsertIntegrationAsync(Guid tenantId, Guid? actorId, ExternalIntegrationDto req, CancellationToken ct = default);
 
+    /// <summary>UC_SYS_060/061 — render MessageTemplate + ghi IntegrationCallLog (+ outbox), không gọi SMTP/SMS gateway.</summary>
+    Task<ChannelSendResultDto> SendChannelMessageAsync(
+        Guid tenantId, Guid? actorId, ChannelSendRequest req, CancellationToken ct = default);
+
     Task<IReadOnlyList<LocalePackDto>> ListLocalePacksAsync(Guid tenantId, CancellationToken ct = default);
     Task SetUserLocaleAsync(Guid tenantId, Guid userId, string localeCode, CancellationToken ct = default);
 

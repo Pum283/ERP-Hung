@@ -6,7 +6,7 @@
 | ------------- | ----------------------------------------------- |
 | Mã            | `API-SPEC` (living)                             |
 | Cập nhật lần  | 04/08/2026 — Tenant logo Cloudinary · multi-role/dept RBAC |
-| Base URL      | `https://localhost:7000` (dev)                  |
+| Base URL      | `http://localhost:1111` (dev)                   |
 | Swagger       | `/swagger` (đối chiếu runtime)                  |
 | Auth          | JWT Bearer                                      |
 | Content-Type  | `application/json` (trừ upload file)            |

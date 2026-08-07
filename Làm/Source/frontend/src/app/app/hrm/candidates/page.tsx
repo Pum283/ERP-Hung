@@ -131,7 +131,7 @@ export default function CandidatesPage() {
     return <p className="text-body text-destructive">Không có quyền hrm.recruit.read</p>;
   }
 
-  const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+  const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:1111";
 
   return (
     <div className="space-y-6">

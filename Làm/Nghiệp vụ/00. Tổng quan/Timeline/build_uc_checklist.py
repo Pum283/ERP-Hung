@@ -189,10 +189,10 @@ FE_PAGE_COUNT: dict[str, int] = {
 
 # Rủi ro chất lượng còn lại dù [x] DoD khung (xem Rà xoát UC.md)
 MODULE_RISK: dict[str, str] = {
-    "SYS": "Cao hơn Day-1; trusted-devices FE mock; OTP/2FA còn stub",
-    "HRM": "Cap-2 dày nhất; một phần Day-1 khung",
+    "SYS": "Cao hơn Day-1; Email/SMS stub+IntegrationCallLog wired; 2FA/trusted-device còn Dev",
+    "HRM": "Cap-2 dày; sync máy chấm công wired thật; một phần Day-1 khung",
     "LMS": "Cert/thanh toán còn mock",
-    "CRM": "Báo giá Email/PDF text thật + marketing Cap-2; còn Should omni",
+    "CRM": "Auto-intake + báo giá Email/PDF text thật + marketing Cap-2; còn Should omni",
     "POS": "BOM→INV + stock alerts + đóng ca→FIN + sync catalog INV→POS + in HĐ/BC ca wired thật",
     "PUR": "Đẩy INV/AP + xuất PO CSV wired thật; RFQ/hợp đồng còn thiếu",
     "INV": "Cap-2 FEFO/hold/HSD có; một phần UC còn thiếu",
@@ -200,10 +200,10 @@ MODULE_RISK: dict[str, str] = {
     "MFG": "Đẩy giá thành INV + JE WIP→TP thật; ca/báo cáo nâng cao còn thiếu",
     "FSM": "Cap-2 parts/ticket; APP mobile Must ngoài scope",
     "PJM": "Cap-2 progress/cost; FE mỏng (~3 trang)",
-    "FIN": "BT Auto (Source=Auto) wired thật; cash-flow còn đơn giản hóa",
+    "FIN": "BT Auto + JE thu/NH/AR/AP wired thật; cash-flow còn đơn giản hóa",
     "AST": "Đẩy BT KH → FIN JE thật (Posted cân Nợ/Có); IoT/thanh lý nâng cao còn thiếu",
     "WF": "Cap-1/2 duyệt; mobile/WF nâng cao còn thiếu",
-    "BI": "ETL/KPI/widget/export stub",
+    "BI": "KPI actual còn stub một phần; dataset/widget/export Cap-2 đã live",
     "PRT": "Login/forgot stub; portal mỏng (~3 trang)",
 }
 
@@ -271,10 +271,10 @@ def render(catalog: list[dict], progress: dict) -> str:
         f"(một phần vẫn stub — xem cột Rủi ro / Rà xoát UC) |"
     )
     lines.append(
-        "| Test BE (xUnit chạy được) | **464+** pass — nhiều case Batch assert giả; slice Cap-2 mới = InMemory thật |"
+        "| Test BE (xUnit chạy được) | **570+** pass — nhiều case Batch assert giả; slice Cap-2 mới = InMemory thật |"
     )
     lines.append(
-        "| Test FE | **~37** node:test (calc/helpers CRM+POS) — chưa Jest/Vitest/Playwright E2E |"
+        "| Test FE | **~133** node:test (helpers CRM/POS/PUR/AST/BI/SYS…) — chưa Jest/Vitest/Playwright E2E |"
     )
     lines.append("| FE `page.tsx` (app) | **~99** (kể cả redirect / catch-all) |")
     lines.append("| Kế hoạch giai đoạn | [CHECKLIST_TIEN_DO_GIAI_DOAN.md](../CHECKLIST_TIEN_DO_GIAI_DOAN.md) |")
@@ -443,7 +443,19 @@ def render(catalog: list[dict], progress: dict) -> str:
     )
     lines.append(
         f"| {today} | **Hoàn thiện UC dang dở MFG/FIN/CRM:** JE WIP→TP thật + BT Auto (filter Source) + báo giá text/Email: "
-        f"UC `MFG_031,FIN_015,CRM_074` →90 · BE 13 InMemory + FE 9 node:test · **{done_n}/{total}** ({pct_all}%) |"
+        f"UC `MFG_031,FIN_015,CRM_074` →90 · BE 13 InMemory + FE 9 node:test |"
+    )
+    lines.append(
+        f"| {today} | **Hoàn thiện UC dang dở FIN/CRM/HRM:** JE thu·NH·AR·AP luôn thật + auto-intake dedup + sync máy chi tiết: "
+        f"UC `FIN_019/025/030/039,CRM_050,HRM_118` →90–95 · BE 7 InMemory + FE 6 node:test · **{done_n}/{total}** ({pct_all}%) |"
+    )
+    lines.append(
+        f"| {today} | **Hoàn thiện UC dang dở BI:** refresh nguồn module thật + widget DT/LN live FIN + chạy BC filter + tải CSV/text: "
+        f"UC `002,008,014,016` →95 · BE 10 InMemory + FE 8 node:test · **{done_n}/{total}** ({pct_all}%) |"
+    )
+    lines.append(
+        f"| {today} | **Hoàn thiện UC dang dở SYS:** Email/SMS stub (template+IntegrationCallLog+outbox) + forgot OTP + invite user: "
+        f"UC `060,061,004,019` →90–95 · BE 10 InMemory + FE 7 node:test · **{done_n}/{total}** ({pct_all}%) |"
     )
     lines.append("")
     return "\n".join(lines)

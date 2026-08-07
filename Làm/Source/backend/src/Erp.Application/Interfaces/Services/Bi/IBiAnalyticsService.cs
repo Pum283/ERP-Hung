@@ -22,6 +22,9 @@ public interface IBiAnalyticsService
     Task<BiReportRunDto> RunReportAsync(Guid tenantId, Guid userId, Guid reportId, BiReportRunRequest req, CancellationToken ct = default);
     Task<IReadOnlyList<BiReportRunDto>> ListRunsAsync(Guid tenantId, Guid? reportId, CancellationToken ct = default);
 
+    /// <summary>UC_BI_016 — tải nội dung xuất thật (CSV cho Excel, text cho Pdf) từ lần chạy.</summary>
+    Task<(string FileName, string ContentType, string Content)> DownloadRunExportAsync(Guid tenantId, Guid runId, CancellationToken ct = default);
+
     Task<IReadOnlyList<BiKpiTargetDto>> ListKpiTargetsAsync(
         Guid tenantId, string? periodKey = null, string? moduleCode = null, CancellationToken ct = default);
     Task<BiKpiTargetDto> UpsertKpiTargetAsync(

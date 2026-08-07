@@ -3,7 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Eye, Search, Shield } from "lucide-react";
 import { api } from "@/shared/api/client";
-import { fetchRoles, type RoleDto } from "@/shared/api/sys-api";
+import { canInviteUser, formatInviteFlash } from "@/shared/api/sys-channel-helpers";
+import { fetchRoles, inviteUser, type RoleDto } from "@/shared/api/sys-api";
 import { usePermissions } from "@/shared/hooks/use-permissions";
 import { SideSheet } from "@/shared/ui/SideSheet";
 
@@ -35,7 +36,7 @@ type DeptRow = { departmentId: string; jobLevelId: string; isPrimary: boolean };
 
 type SheetState =
   | { open: false }
-  | { open: true; mode: "create" }
+  | { open: true; mode: "create" | "invite" }
   | { open: true; mode: "view" | "edit"; user: UserDto };
 
 const emptyForm = {
@@ -68,6 +69,7 @@ export default function UsersPage() {
   const [formError, setFormError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [flash, setFlash] = useState<string | null>(null);
 
   const roleById = useMemo(() => new Map(roles.map((r) => [r.id, r])), [roles]);
 
@@ -115,12 +117,24 @@ export default function UsersPage() {
 
   async function openCreate() {
     setFormError(null);
+    setFlash(null);
     setEditMode(true);
     setForm(emptyForm);
     setDeptRows([]);
     setSelectedRoleIds(new Set());
     await loadCatalogs().catch(() => undefined);
     setSheet({ open: true, mode: "create" });
+  }
+
+  async function openInvite() {
+    setFormError(null);
+    setFlash(null);
+    setEditMode(true);
+    setForm(emptyForm);
+    setDeptRows([]);
+    setSelectedRoleIds(new Set());
+    await loadCatalogs().catch(() => undefined);
+    setSheet({ open: true, mode: "invite" });
   }
 
   async function openView(user: UserDto) {
@@ -165,8 +179,30 @@ export default function UsersPage() {
     if (!canManage) return;
     setSaving(true);
     setFormError(null);
+    setFlash(null);
     try {
-      const id = sheet.open && sheet.mode !== "create" ? sheet.user.id : null;
+      if (sheet.open && sheet.mode === "invite") {
+        if (!canInviteUser(form.username, form.email, form.phone)) {
+          setFormError("Mời user cần username và Email hoặc SĐT.");
+          return;
+        }
+        const res = await inviteUser({
+          username: form.username,
+          displayName: form.displayName || null,
+          email: form.email || null,
+          phone: form.phone || null,
+          primaryOrgUnitId: form.primaryOrgUnitId || null,
+        });
+        if (selectedRoleIds.size > 0) {
+          await api.put(`/api/sys/users/${res.userId}/roles`, [...selectedRoleIds]);
+        }
+        setFlash(formatInviteFlash(res));
+        setSheet({ open: false });
+        await load();
+        return;
+      }
+
+      const id = sheet.open && sheet.mode !== "create" && sheet.mode !== "invite" ? sheet.user.id : null;
       const { data } = await api.post<{ data: UserDto }>("/api/sys/users", {
         id,
         username: form.username,
@@ -234,14 +270,16 @@ export default function UsersPage() {
       })
     : users;
 
-  const showForm = sheet.open && (sheet.mode === "create" || editMode);
+  const showForm = sheet.open && (sheet.mode === "create" || sheet.mode === "invite" || editMode);
   const title = !sheet.open
     ? ""
     : sheet.mode === "create"
       ? "Thêm người dùng"
-      : editMode
-        ? "Sửa người dùng"
-        : "Chi tiết người dùng";
+      : sheet.mode === "invite"
+        ? "Mời người dùng (OTP Email/SMS)"
+        : editMode
+          ? "Sửa người dùng"
+          : "Chi tiết người dùng";
 
   const rolePicker = (
     <div className="space-y-2 sm:col-span-2">
@@ -288,15 +326,27 @@ export default function UsersPage() {
           </p>
         </div>
         {canManage && (
-          <button
-            type="button"
-            onClick={() => void openCreate()}
-            className="inline-flex h-9 items-center rounded-md bg-brand px-3 text-body font-semibold text-brand-foreground hover:bg-brand-hover"
-          >
-            Thêm người dùng
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => void openInvite()}
+              className="inline-flex h-9 items-center rounded-md border border-border bg-surface px-3 text-body font-semibold text-foreground hover:bg-muted/40"
+            >
+              Mời (OTP)
+            </button>
+            <button
+              type="button"
+              onClick={() => void openCreate()}
+              className="inline-flex h-9 items-center rounded-md bg-brand px-3 text-body font-semibold text-brand-foreground hover:bg-brand-hover"
+            >
+              Thêm người dùng
+            </button>
+          </div>
         )}
       </div>
+      {flash && (
+        <div className="rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{flash}</div>
+      )}
 
       <div className="flex h-9 max-w-md items-center gap-2 rounded-md border border-border bg-surface px-2.5">
         <Search className="h-3.5 w-3.5 text-muted-foreground" />
@@ -358,7 +408,11 @@ export default function UsersPage() {
         }}
         title={title}
         description={
-          sheet.open && sheet.mode !== "create" ? sheet.user.username : "Tài khoản đăng nhập SYS"
+          sheet.open && (sheet.mode === "view" || sheet.mode === "edit")
+            ? sheet.user.username
+            : sheet.open && sheet.mode === "invite"
+              ? "Gửi OTP kích hoạt qua Email/SMS (không cần mật khẩu tạm)"
+              : "Tài khoản đăng nhập SYS"
         }
         widthClassName="max-w-lg"
         footer={
@@ -377,7 +431,11 @@ export default function UsersPage() {
                 disabled={saving}
                 className="h-9 rounded-md bg-brand px-4 text-body font-semibold text-brand-foreground hover:bg-brand-hover disabled:opacity-60"
               >
-                {saving ? "Đang lưu…" : "Lưu (kèm vai trò)"}
+                {saving
+                  ? "Đang lưu…"
+                  : sheet.open && sheet.mode === "invite"
+                    ? "Gửi lời mời"
+                    : "Lưu (kèm vai trò)"}
               </button>
             </div>
           ) : (
@@ -418,7 +476,7 @@ export default function UsersPage() {
               <span className="text-muted-foreground">Username</span>
               <input
                 required
-                disabled={sheet.open && sheet.mode !== "create"}
+                disabled={sheet.open && sheet.mode !== "create" && sheet.mode !== "invite"}
                 className="h-9 w-full rounded-md border border-border bg-background px-2 disabled:opacity-60"
                 value={form.username}
                 onChange={(e) => setForm((f) => ({ ...f, username: e.target.value }))}
@@ -441,6 +499,15 @@ export default function UsersPage() {
               />
             </label>
             <label className="space-y-1 text-body">
+              <span className="text-muted-foreground">SĐT</span>
+              <input
+                className="h-9 w-full rounded-md border border-border bg-background px-2"
+                value={form.phone}
+                onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+              />
+            </label>
+            {!(sheet.open && sheet.mode === "invite") && (
+            <label className="space-y-1 text-body">
               <span className="text-muted-foreground">
                 Mật khẩu{sheet.open && sheet.mode !== "create" ? " (để trống = giữ)" : ""}
               </span>
@@ -452,6 +519,7 @@ export default function UsersPage() {
                 onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
               />
             </label>
+            )}
             <label className="space-y-1 text-body">
               <span className="text-muted-foreground">Đơn vị</span>
               <select

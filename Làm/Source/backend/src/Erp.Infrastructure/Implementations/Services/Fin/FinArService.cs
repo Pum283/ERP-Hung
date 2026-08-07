@@ -107,23 +107,28 @@ public sealed class FinArService : IFinArService
                                       && x.IsActive && !x.IsDeleted, ct);
         inv.CreditLimitWarned = limit is not null && limit.CreditLimit > 0 && projected > limit.CreditLimit;
 
-        if (inv.ArAccountId is Guid arId && inv.RevenueAccountId is Guid revId && inv.PeriodId is Guid periodId)
+        // UC_FIN_030: luôn tạo JE Nợ 131 / Có 511 (auto-resolve nếu thiếu TK/kỳ).
+        var periodId = await _fin.ResolveOpenPeriodIdAsync(tenantId, inv.PeriodId, inv.InvoiceDate, ct);
+        inv.PeriodId = periodId;
+        var arId = inv.ArAccountId
+            ?? await _fin.ResolvePostableAccountIdAsync(tenantId, ["131"], "TK phải thu (131*)", ct);
+        var revId = inv.RevenueAccountId
+            ?? await _fin.ResolvePostableAccountIdAsync(tenantId, ["511", "515"], "TK doanh thu (511*)", ct);
+        inv.ArAccountId = arId;
+        inv.RevenueAccountId = revId;
+
+        var customer = await RequireCustomer(tenantId, inv.CustomerId, ct);
+        var lines = new List<FinJournalLineUpsertRequest>
         {
-            var period = await RequirePeriod(tenantId, periodId, ct);
-            if (period.Status == "Locked") throw new AppException("Kỳ đã khóa sổ.");
-            var customer = await RequireCustomer(tenantId, inv.CustomerId, ct);
-            var lines = new List<FinJournalLineUpsertRequest>
-            {
-                new(null, arId, inv.TotalAmount, 0, customer.Code, null, "Phải thu KH"),
-                new(null, revId, 0, inv.TotalAmount, customer.Code, null, "Doanh thu AR"),
-            };
-            var je = await _fin.CreateAutoJournalAsync(tenantId, userId, new FinJournalUpsertRequest(
-                null, null, periodId, inv.InvoiceDate, $"AR {inv.Code}: {inv.CustomerInvoiceNo ?? inv.Code}",
-                customer.Code, null, "Auto", lines), ct);
-            je = await _fin.PostJournalAsync(tenantId, userId, je.Id, ct);
-            inv.FinJournalId = je.Id;
-            inv.FinJournalCode = je.Code;
-        }
+            new(null, arId, inv.TotalAmount, 0, customer.Code, null, "Phải thu KH"),
+            new(null, revId, 0, inv.TotalAmount, customer.Code, null, "Doanh thu AR"),
+        };
+        var je = await _fin.CreateAutoJournalAsync(tenantId, userId, new FinJournalUpsertRequest(
+            null, null, periodId, inv.InvoiceDate, $"AR {inv.Code}: {inv.CustomerInvoiceNo ?? inv.Code}",
+            customer.Code, null, "Auto", lines), ct);
+        je = await _fin.PostJournalAsync(tenantId, userId, je.Id, ct);
+        inv.FinJournalId = je.Id;
+        inv.FinJournalCode = je.Code;
 
         inv.Status = "Open";
         inv.PostedAt = DateTimeOffset.UtcNow;

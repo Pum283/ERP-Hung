@@ -104,23 +104,28 @@ public sealed class FinApService : IFinApService
         if (inv.Status != "Draft") throw new AppException("Chỉ ghi sổ HĐ Draft.");
         if (inv.TotalAmount <= 0) throw new AppException("Tổng HĐ phải > 0.");
 
-        if (inv.ApAccountId is Guid apId && inv.ExpenseAccountId is Guid exId && inv.PeriodId is Guid periodId)
+        // UC_FIN_039: luôn tạo JE Nợ chi phí / Có 331 (auto-resolve nếu thiếu TK/kỳ).
+        var periodId = await _fin.ResolveOpenPeriodIdAsync(tenantId, inv.PeriodId, inv.InvoiceDate, ct);
+        inv.PeriodId = periodId;
+        var apId = inv.ApAccountId
+            ?? await _fin.ResolvePostableAccountIdAsync(tenantId, ["331"], "TK phải trả (331*)", ct);
+        var exId = inv.ExpenseAccountId
+            ?? await _fin.ResolvePostableAccountIdAsync(tenantId, ["156", "152", "642", "627"], "TK chi phí/hàng mua AP", ct);
+        inv.ApAccountId = apId;
+        inv.ExpenseAccountId = exId;
+
+        var vendor = await RequireVendor(tenantId, inv.VendorId, ct);
+        var lines = new List<FinJournalLineUpsertRequest>
         {
-            var period = await RequirePeriod(tenantId, periodId, ct);
-            if (period.Status == "Locked") throw new AppException("Kỳ đã khóa sổ.");
-            var vendor = await RequireVendor(tenantId, inv.VendorId, ct);
-            var lines = new List<FinJournalLineUpsertRequest>
-            {
-                new(null, exId, inv.TotalAmount, 0, vendor.Code, null, "Chi phí/Hàng mua AP"),
-                new(null, apId, 0, inv.TotalAmount, vendor.Code, null, "Phải trả NCC"),
-            };
-            var je = await _fin.CreateAutoJournalAsync(tenantId, userId, new FinJournalUpsertRequest(
-                null, null, periodId, inv.InvoiceDate, $"AP {inv.Code}: {inv.VendorInvoiceNo ?? inv.Code}",
-                vendor.Code, null, "Auto", lines), ct);
-            je = await _fin.PostJournalAsync(tenantId, userId, je.Id, ct);
-            inv.FinJournalId = je.Id;
-            inv.FinJournalCode = je.Code;
-        }
+            new(null, exId, inv.TotalAmount, 0, vendor.Code, null, "Chi phí/Hàng mua AP"),
+            new(null, apId, 0, inv.TotalAmount, vendor.Code, null, "Phải trả NCC"),
+        };
+        var je = await _fin.CreateAutoJournalAsync(tenantId, userId, new FinJournalUpsertRequest(
+            null, null, periodId, inv.InvoiceDate, $"AP {inv.Code}: {inv.VendorInvoiceNo ?? inv.Code}",
+            vendor.Code, null, "Auto", lines), ct);
+        je = await _fin.PostJournalAsync(tenantId, userId, je.Id, ct);
+        inv.FinJournalId = je.Id;
+        inv.FinJournalCode = je.Code;
 
         inv.Status = "Open";
         inv.PostedAt = DateTimeOffset.UtcNow;

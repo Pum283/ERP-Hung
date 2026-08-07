@@ -111,8 +111,8 @@
   },
   "UC_BI_002": {
     "done": true,
-    "note": "L2 · refresh stub + BiDatasetRefresh log",
-    "pct": 85
+    "note": "Cap-2 · RefreshDataset đếm nguồn module thật (FIN/POS/CRM/…) + log BiDatasetRefresh · FE flash rows · BiAnalyticsPolishTests + bi-helpers",
+    "pct": 95
   },
   "UC_BI_003": {
     "done": true,
@@ -131,8 +131,8 @@
   },
   "UC_BI_008": {
     "done": true,
-    "note": "L2 · BiWidget Revenue/Profit stub",
-    "pct": 85
+    "note": "Cap-2 · widget Revenue/Profit live từ FinRevenueDocument (fallback JE 511/632) · Custom giữ stub · FE Live FIN hint · BiAnalyticsPolishTests",
+    "pct": 95
   },
   "UC_BI_010": {
     "done": true,
@@ -146,8 +146,8 @@
   },
   "UC_BI_014": {
     "done": true,
-    "note": "L2 · chạy BC với filter JSON stub",
-    "pct": 85
+    "note": "Cap-2 · RunReport aggregate thật theo module + filter from/to · preview JSON · FE buildBiReportFilterJson · BiAnalyticsPolishTests",
+    "pct": 95
   },
   "UC_BI_015": {
     "done": true,
@@ -156,8 +156,8 @@
   },
   "UC_BI_016": {
     "done": true,
-    "note": "L2 · xuất Excel/PDF stub (metadata file)",
-    "pct": 80
+    "note": "Cap-2 · DownloadRunExport CSV/text thật GET /api/bi/reports/runs/{id}/export · FE tải blob · BiAnalyticsPolishTests + bi-helpers",
+    "pct": 95
   },
   "UC_BI_018": {
     "done": true,
@@ -316,8 +316,8 @@
   },
   "UC_CRM_050": {
     "done": true,
-    "note": "L2 · auto-intake website stub",
-    "pct": 85
+    "note": "L2 · auto-intake website thật (dedup SĐT/Email, nguồn WEBSITE, activity, round-robin owner)",
+    "pct": 90
   },
   "UC_CRM_051": {
     "done": true,
@@ -586,8 +586,8 @@
   },
   "UC_FIN_019": {
     "done": true,
-    "note": "L2 · phiếu thu Receipt Draft→Post→Void + JE stub",
-    "pct": 90
+    "note": "L2 · phiếu thu Receipt Draft→Post→Void + JE Auto thật (auto TK đối ứng 131*/511* + kỳ Open)",
+    "pct": 95
   },
   "UC_FIN_020": {
     "done": true,
@@ -606,8 +606,8 @@
   },
   "UC_FIN_025": {
     "done": true,
-    "note": "L2 · giấy báo Credit/Debit Draft→Post→Void + JE stub",
-    "pct": 90
+    "note": "L2 · giấy báo Credit/Debit Draft→Post→Void + JE Auto thật (auto TK đối ứng + kỳ Open)",
+    "pct": 95
   },
   "UC_FIN_026": {
     "done": true,
@@ -626,8 +626,8 @@
   },
   "UC_FIN_030": {
     "done": true,
-    "note": "L2 · FinArInvoice Draft→Open + JE stub",
-    "pct": 90
+    "note": "L2 · FinArInvoice Draft→Open + JE Auto thật Nợ 131/Có 511 (auto-resolve TK/kỳ)",
+    "pct": 95
   },
   "UC_FIN_031": {
     "done": true,
@@ -651,8 +651,8 @@
   },
   "UC_FIN_039": {
     "done": true,
-    "note": "L2 · FinApInvoice Draft→Open + JE stub",
-    "pct": 90
+    "note": "L2 · FinApInvoice Draft→Open + JE Auto thật Nợ CP/Có 331 (auto-resolve TK/kỳ)",
+    "pct": 95
   },
   "UC_FIN_040": {
     "done": true,
@@ -1461,8 +1461,8 @@
   },
   "UC_HRM_118": {
     "done": true,
-    "note": "L2 · sync máy stub",
-    "pct": 70
+    "note": "L2 · sync máy thật (in/out→AttendanceRecord, đếm synced/unknown/locked/dup/invalid, chống trùng batch)",
+    "pct": 90
   },
   "UC_HRM_119": {
     "done": true,
@@ -3076,8 +3076,8 @@
   },
   "UC_SYS_004": {
     "done": true,
-    "note": "N2 · forgot OTP stub log",
-    "pct": 90
+    "note": "Cap-2 · ForgotPassword gửi OTP qua Email/SMS stub (IntegrationCallLog+outbox) · FE login quên MK · SysChannelPolishTests",
+    "pct": 95
   },
   "UC_SYS_005": {
     "done": true,
@@ -3141,8 +3141,8 @@
   },
   "UC_SYS_019": {
     "done": true,
-    "note": "N2 · invite via forgot stub",
-    "pct": 70
+    "note": "Cap-2 · POST /api/sys/users/invite tạo TK+OTP+gửi USER_INVITE Email/SMS · FE Mời (OTP) · SysChannelPolishTests",
+    "pct": 95
   },
   "UC_SYS_020": {
     "done": true,
@@ -3336,13 +3336,13 @@
   },
   "UC_SYS_060": {
     "done": true,
-    "note": "N2 · email stub via message_template",
-    "pct": 60
+    "note": "Cap-2 · SendChannelMessage Email: MessageTemplate+ExternalIntegration+IntegrationCallLog+outbox · POST /integrations/send · SysChannelPolishTests",
+    "pct": 90
   },
   "UC_SYS_061": {
     "done": true,
-    "note": "N2 · SMS stub channel",
-    "pct": 60
+    "note": "Cap-2 · SendChannelMessage SMS cùng pipeline stub (không gọi gateway) · SysChannelPolishTests + sys-channel-helpers",
+    "pct": 90
   },
   "UC_SYS_063": {
     "done": true,

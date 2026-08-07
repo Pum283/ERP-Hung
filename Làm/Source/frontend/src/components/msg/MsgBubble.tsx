@@ -49,7 +49,7 @@ export function MsgBubble({
     [m.reactions, myId],
   );
 
-  const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+  const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:1111";
   const showChrome = canAct && !m.recalled && (hovered || pickerOpen || menuOpen);
 
   useEffect(() => {

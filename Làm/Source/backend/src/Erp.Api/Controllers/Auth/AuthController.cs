@@ -54,7 +54,11 @@ public sealed class AuthController : ControllerBase
     public async Task<ActionResult<ApiResponse<object>>> Forgot([FromBody] ForgotPasswordRequest req, CancellationToken ct)
     {
         await _auth.ForgotPasswordAsync(req, ct);
-        return Ok(ApiResponse<object>.Ok(new { ok = true, message = "Nếu tài khoản tồn tại, OTP đã được gửi (Dev: xem log API)." }));
+        return Ok(ApiResponse<object>.Ok(new
+        {
+            ok = true,
+            message = "Nếu tài khoản tồn tại, OTP đã được gửi qua Email/SMS (stub: xem IntegrationCallLog).",
+        }));
     }
 
     [HttpPost("reset-password")]

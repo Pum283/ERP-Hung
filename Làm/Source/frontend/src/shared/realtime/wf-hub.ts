@@ -7,7 +7,7 @@ import {
   LogLevel,
 } from "@microsoft/signalr";
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+const baseURL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:1111";
 
 export type InboxChangedPayload = {
   reason: string;

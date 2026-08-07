@@ -228,7 +228,7 @@ export default function FinCashPage() {
                       <td className={td}>
                         {canManage && v.status === "Draft" && (
                           <div className="flex gap-1">
-                            <button type="button" className={btn.ghost} onClick={() => void run(() => postFinCashVoucher(v.id), "Đã ghi sổ phiếu")}>
+                            <button type="button" className={btn.ghost} onClick={() => void run(() => postFinCashVoucher(v.id), "Đã ghi sổ phiếu + JE Auto (auto TK/kỳ).")}>
                               Ghi sổ
                             </button>
                             <button type="button" className={btn.ghost} onClick={() => void run(() => voidFinCashVoucher(v.id, "Hủy"), "Đã hủy phiếu")}>

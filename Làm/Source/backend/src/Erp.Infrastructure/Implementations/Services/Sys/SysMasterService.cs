@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using Erp.Application.Common.Exceptions;
 using Erp.Application.DTOs.Sys;
 using Erp.Application.Interfaces.Services.Auth;
@@ -486,6 +488,97 @@ public sealed class SysMasterService : ISysMasterService
         user.UpdatedBy = actorId;
         await _db.SaveChangesAsync(ct);
         return new ResetPasswordResultDto(temp);
+    }
+
+    public async Task<InviteUserResultDto> InviteUserAsync(
+        Guid tenantId, Guid actorId, InviteUserRequest req, CancellationToken ct = default)
+    {
+        var username = (req.Username ?? "").Trim();
+        if (string.IsNullOrEmpty(username)) throw new AppException("Username bắt buộc.");
+        var email = string.IsNullOrWhiteSpace(req.Email) ? null : req.Email.Trim();
+        var phone = string.IsNullOrWhiteSpace(req.Phone) ? null : req.Phone.Trim();
+        if (email is null && phone is null)
+            throw new AppException("Cần Email hoặc SĐT để gửi lời mời.");
+
+        await _platform.EnsureMaxUsersAsync(tenantId, ct);
+
+        var user = await _db.Users.FirstOrDefaultAsync(
+            x => x.TenantId == tenantId && x.Username == username && !x.IsDeleted, ct);
+        if (user is null)
+        {
+            var temp = "!Inv" + Guid.NewGuid().ToString("N")[..8];
+            user = new AppUser
+            {
+                TenantId = tenantId,
+                Username = username,
+                DisplayName = string.IsNullOrWhiteSpace(req.DisplayName) ? username : req.DisplayName.Trim(),
+                Email = email,
+                Phone = phone,
+                PasswordHash = PasswordHasher.Hash(temp),
+                MustChangePassword = true,
+                Status = UserStatus.Active,
+                PrimaryOrgUnitId = req.PrimaryOrgUnitId,
+                DepartmentId = req.DepartmentId,
+                JobLevelId = req.JobLevelId,
+                CreatedBy = actorId,
+            };
+            _db.Users.Add(user);
+        }
+        else
+        {
+            if (!string.IsNullOrWhiteSpace(req.DisplayName)) user.DisplayName = req.DisplayName.Trim();
+            if (email is not null) user.Email = email;
+            if (phone is not null) user.Phone = phone;
+            user.MustChangePassword = true;
+            user.Status = UserStatus.Active;
+            user.UpdatedBy = actorId;
+            if (req.PrimaryOrgUnitId is Guid org) user.PrimaryOrgUnitId = org;
+            if (req.DepartmentId is Guid dept) user.DepartmentId = dept;
+            if (req.JobLevelId is Guid lvl) user.JobLevelId = lvl;
+        }
+
+        await _db.SaveChangesAsync(ct);
+
+        var otp = RandomNumberGenerator.GetInt32(100000, 999999).ToString();
+        _db.PasswordResetTokens.Add(new PasswordResetToken
+        {
+            TenantId = tenantId,
+            UserId = user.Id,
+            OtpCode = otp,
+            TokenHash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(otp))),
+            ExpiresAt = DateTimeOffset.UtcNow.AddMinutes(15),
+            CreatedBy = actorId,
+        });
+        await _db.SaveChangesAsync(ct);
+
+        var vars = new Dictionary<string, string>
+        {
+            ["otp"] = otp,
+            ["username"] = user.Username,
+            ["displayName"] = user.DisplayName ?? user.Username,
+            ["expiresMinutes"] = "15",
+        };
+        ChannelSendResultDto sent;
+        string channel;
+        string target;
+        if (!string.IsNullOrWhiteSpace(user.Email))
+        {
+            channel = "Email";
+            target = user.Email!;
+            sent = await _platform.SendChannelMessageAsync(tenantId, actorId, new ChannelSendRequest(
+                "Email", "USER_INVITE", target, vars, "sys.auth.invite"), ct);
+        }
+        else
+        {
+            channel = "SMS";
+            target = user.Phone!;
+            sent = await _platform.SendChannelMessageAsync(tenantId, actorId, new ChannelSendRequest(
+                "SMS", "USER_INVITE", target, vars, "sys.auth.invite"), ct);
+        }
+
+        return new InviteUserResultDto(
+            user.Id, user.Username, channel, target, sent.LogId,
+            $"Đã gửi lời mời qua {channel} tới {target}.");
     }
 
     public async Task<RoleDto> CopyRoleAsync(Guid tenantId, Guid roleId, Guid? actorId, string newCode, string newName, CancellationToken ct = default)

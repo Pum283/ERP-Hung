@@ -286,6 +286,11 @@ public sealed record AttendanceDeviceSyncItem(
 
 public sealed record AttendanceDeviceSyncRequest(IReadOnlyList<AttendanceDeviceSyncItem> Items);
 
+/// <summary>UC_HRM_118 — kết quả đồng bộ máy chấm công (áp dụng / bỏ qua).</summary>
+public sealed record AttendanceDeviceSyncResult(
+    int Synced, int SkippedUnknownEmployee, int SkippedLocked, int SkippedDuplicate,
+    int SkippedInvalidType, int Total);
+
 public sealed record AttendanceMissingAlertDto(
     Guid EmployeeId, string EmployeeCode, string EmployeeName, Guid OrgUnitId,
     string OrgUnitName, DateOnly WorkDate, string AlertType);

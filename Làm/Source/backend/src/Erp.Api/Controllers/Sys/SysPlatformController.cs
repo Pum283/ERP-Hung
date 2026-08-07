@@ -350,6 +350,13 @@ public sealed class SysPlatformController : ControllerBase
     public async Task<ActionResult<ApiResponse<ExternalIntegrationDto>>> UpsertIntegration([FromBody] ExternalIntegrationDto req, CancellationToken ct)
         => Ok(ApiResponse<ExternalIntegrationDto>.Ok(await _svc.UpsertIntegrationAsync(TenantId, UserId, req, ct)));
 
+    /// <summary>UC_SYS_060/061 — gửi thử Email/SMS stub (ghi IntegrationCallLog).</summary>
+    [HttpPost("integrations/send")]
+    [AuthorizePermission("sys.license.manage")]
+    public async Task<ActionResult<ApiResponse<ChannelSendResultDto>>> SendChannel(
+        [FromBody] ChannelSendRequest req, CancellationToken ct)
+        => Ok(ApiResponse<ChannelSendResultDto>.Ok(await _svc.SendChannelMessageAsync(TenantId, UserId, req, ct)));
+
     [HttpGet("locales")]
     public async Task<ActionResult<ApiResponse<IReadOnlyList<LocalePackDto>>>> Locales(CancellationToken ct)
         => Ok(ApiResponse<IReadOnlyList<LocalePackDto>>.Ok(await _svc.ListLocalePacksAsync(TenantId, ct)));

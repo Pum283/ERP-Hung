@@ -41,7 +41,7 @@ cd backend
 dotnet run --project src/Erp.Api
 ```
 
-- Swagger: https://localhost:7000/swagger  
+- Swagger: http://localhost:1111/swagger  
 - Health: `GET /api/sys/health`  
 - Login: `POST /api/auth/login` body `{ "username":"admin", "password":"!Abc123" }`  
 - Seed tự chạy khi DB trống (tenant `DEMO`) — tạo DB `erp_modular` trên SQL Server trước (hoặc để EF tạo nếu quyền đủ).
@@ -55,7 +55,7 @@ pnpm install
 pnpm dev
 ```
 
-Mở http://localhost:3000
+Mở http://localhost:2222
 
 ## Phân quyền (chốt)
 

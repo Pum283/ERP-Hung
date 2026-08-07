@@ -171,7 +171,38 @@ public sealed class AuthService : IAuthService
             ExpiresAt = DateTimeOffset.UtcNow.AddMinutes(15)
         });
         await _db.SaveChangesAsync(ct);
-        _log.LogWarning("DEV stub OTP quên MK cho {User}: {Otp}", user.Username, otp);
+
+        // UC_SYS_004/060/061 — gửi OTP qua channel stub (Email ưu tiên, SMS nếu có SĐT).
+        var vars = new Dictionary<string, string>
+        {
+            ["otp"] = otp,
+            ["username"] = user.Username,
+            ["displayName"] = user.DisplayName ?? user.Username,
+            ["expiresMinutes"] = "15",
+        };
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(user.Email))
+            {
+                await _platform.SendChannelMessageAsync(user.TenantId, user.Id, new ChannelSendRequest(
+                    "Email", "FORGOT_PASSWORD", user.Email.Trim(), vars, "sys.auth.forgot_password"), ct);
+            }
+            else if (!string.IsNullOrWhiteSpace(user.Phone))
+            {
+                await _platform.SendChannelMessageAsync(user.TenantId, user.Id, new ChannelSendRequest(
+                    "SMS", "FORGOT_PASSWORD", user.Phone.Trim(), vars, "sys.auth.forgot_password"), ct);
+            }
+            else
+            {
+                _log.LogWarning(
+                    "Forgot password: user {User} không có email/SĐT — OTP chỉ lưu DB (không gửi channel).",
+                    user.Username);
+            }
+        }
+        catch (Exception ex)
+        {
+            _log.LogError(ex, "Forgot password: gửi channel thất bại cho {User}", user.Username);
+        }
     }
 
     public async Task ResetPasswordWithOtpAsync(ResetPasswordWithOtpRequest req, CancellationToken ct = default)

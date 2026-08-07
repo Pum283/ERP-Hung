@@ -151,17 +151,56 @@ public sealed class CrmLeadService : ICrmLeadService
     public async Task<CrmLeadDto> AutoIntakeAsync(
         Guid tenantId, Guid userId, CrmLeadAutoIntakeRequest req, CancellationToken ct = default)
     {
-        Guid? sourceId = null;
-        if (!string.IsNullOrWhiteSpace(req.SourceCode))
+        var name = (req.Name ?? "").Trim();
+        if (name.Length is < 1 or > 200) throw new AppException("Tên lead 1–200 ký tự.");
+        var phone = string.IsNullOrWhiteSpace(req.Phone) ? null : req.Phone.Trim();
+        var email = string.IsNullOrWhiteSpace(req.Email) ? null : req.Email.Trim().ToLowerInvariant();
+        if (phone is null && email is null)
+            throw new AppException("Auto-intake cần SĐT hoặc Email.");
+
+        // UC_CRM_050: dedup theo SĐT/Email — lead mở (chưa Converted/Lost) thì ghi nhận lại, không tạo trùng.
+        CrmLead? existing = null;
+        if (phone is not null)
         {
-            var code = NormCode(req.SourceCode);
+            existing = await _db.CrmLeads.FirstOrDefaultAsync(
+                x => x.TenantId == tenantId && !x.IsDeleted && x.Phone == phone
+                     && x.PipelineStatus != "Converted" && x.PipelineStatus != "Lost", ct);
+        }
+        if (existing is null && email is not null)
+        {
+            existing = await _db.CrmLeads.FirstOrDefaultAsync(
+                x => x.TenantId == tenantId && !x.IsDeleted && x.Email == email
+                     && x.PipelineStatus != "Converted" && x.PipelineStatus != "Lost", ct);
+        }
+        if (existing is not null)
+        {
+            if (!string.IsNullOrWhiteSpace(req.Note))
+                existing.Note = string.IsNullOrWhiteSpace(existing.Note)
+                    ? req.Note.Trim()
+                    : $"{existing.Note}\n{req.Note.Trim()}";
+            if (req.OwnerUserId is Guid oid && existing.OwnerUserId is null)
+            {
+                await EnsureUserAsync(tenantId, oid, ct);
+                existing.OwnerUserId = oid;
+            }
+            existing.UpdatedBy = userId;
+            await _db.SaveChangesAsync(ct);
+            await AddActivityInternal(tenantId, userId, existing.Id, "Note",
+                $"Re-intake website: {name}" + (phone is not null ? $" · {phone}" : "") + (email is not null ? $" · {email}" : ""),
+                ct);
+            return (await MapLeadsAsync(tenantId, [existing], ct))[0];
+        }
+
+        Guid? sourceId = null;
+        var sourceCode = string.IsNullOrWhiteSpace(req.SourceCode) ? "WEBSITE" : NormCode(req.SourceCode);
+        {
             var src = await _db.CrmLeadSources
-                .FirstOrDefaultAsync(x => x.TenantId == tenantId && x.Code == code && !x.IsDeleted, ct);
+                .FirstOrDefaultAsync(x => x.TenantId == tenantId && x.Code == sourceCode && !x.IsDeleted, ct);
             if (src is null)
             {
                 src = new CrmLeadSource
                 {
-                    TenantId = tenantId, Code = code, Name = code,
+                    TenantId = tenantId, Code = sourceCode, Name = sourceCode,
                     ChannelType = "Website", Status = "Active", CreatedBy = userId
                 };
                 _db.CrmLeadSources.Add(src);
@@ -170,9 +209,28 @@ public sealed class CrmLeadService : ICrmLeadService
             sourceId = src.Id;
         }
 
-        return await UpsertLeadAsync(tenantId, userId, new CrmLeadUpsertRequest(
-            null, null, req.Name, req.Phone, req.Email, req.CompanyName,
-            sourceId, req.OwnerUserId, null, "New", 10, null, req.Note, "Auto"), ct);
+        Guid? ownerId = req.OwnerUserId;
+        if (ownerId is null)
+        {
+            // Round-robin nhẹ: sales đang phụ trách ít lead New/Contacted nhất.
+            ownerId = await _db.CrmLeads.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.OwnerUserId != null
+                            && (x.PipelineStatus == "New" || x.PipelineStatus == "Contacted"))
+                .GroupBy(x => x.OwnerUserId!.Value)
+                .Select(g => new { OwnerId = g.Key, C = g.Count() })
+                .OrderBy(x => x.C)
+                .Select(x => (Guid?)x.OwnerId)
+                .FirstOrDefaultAsync(ct);
+        }
+
+        var lead = await UpsertLeadAsync(tenantId, userId, new CrmLeadUpsertRequest(
+            null, null, name, phone, email, req.CompanyName,
+            sourceId, ownerId, null, "New", 10, null, req.Note, "Auto"), ct);
+
+        await AddActivityInternal(tenantId, userId, lead.Id, "Note",
+            $"Auto-intake website · nguồn {sourceCode}" + (ownerId is Guid o ? $" · owner {o:N}" : " · chưa phân bổ"),
+            ct);
+        return lead;
     }
 
     public async Task<CrmLeadDto> AssignAsync(

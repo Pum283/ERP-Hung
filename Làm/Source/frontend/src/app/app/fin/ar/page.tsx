@@ -211,7 +211,7 @@ export default function FinArPage() {
                       <td className={td}>
                         {canManage && i.status === "Draft" && (
                           <div className="flex gap-1">
-                            <button type="button" className={btn.ghost} onClick={() => void run(() => postFinArInvoice(i.id), "Đã ghi sổ HĐ")}>Ghi sổ</button>
+                            <button type="button" className={btn.ghost} onClick={() => void run(() => postFinArInvoice(i.id), "Đã ghi sổ HĐ + JE Nợ 131/Có 511.")}>Ghi sổ</button>
                             <button type="button" className={btn.ghost} onClick={() => void run(() => voidFinArInvoice(i.id, "Hủy"), "Đã hủy")}>Hủy</button>
                           </div>
                         )}

@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using Erp.Application.Common.Exceptions;
 using Erp.Application.DTOs.Sys;
+using Erp.Application.Interfaces.Realtime;
 using Erp.Application.Interfaces.Services.Sys;
 using Erp.Domain.Base;
 using Erp.Domain.Entities.Sys;
@@ -28,8 +29,13 @@ public sealed class SysPlatformService : ISysPlatformService
     ];
 
     private readonly AppDbContext _db;
+    private readonly IOutboxWriter _outbox;
 
-    public SysPlatformService(AppDbContext db) => _db = db;
+    public SysPlatformService(AppDbContext db, IOutboxWriter outbox)
+    {
+        _db = db;
+        _outbox = outbox;
+    }
 
     public async Task<PasswordPolicyDto> GetPasswordPolicyAsync(Guid tenantId, CancellationToken ct = default)
     {
@@ -590,6 +596,127 @@ public sealed class SysPlatformService : ISysPlatformService
         e.Code = req.Code.Trim(); e.Name = req.Name.Trim(); e.Kind = req.Kind; e.ConfigJson = req.ConfigJson; e.IsActive = req.IsActive;
         await _db.SaveChangesAsync(ct);
         return new ExternalIntegrationDto(e.Id, e.Code, e.Name, e.Kind, e.ConfigJson, e.IsActive);
+    }
+
+    public async Task<ChannelSendResultDto> SendChannelMessageAsync(
+        Guid tenantId, Guid? actorId, ChannelSendRequest req, CancellationToken ct = default)
+    {
+        var channel = (req.Channel ?? "").Trim();
+        if (!channel.Equals("Email", StringComparison.OrdinalIgnoreCase)
+            && !channel.Equals("SMS", StringComparison.OrdinalIgnoreCase))
+            throw new AppException("Channel phải là Email hoặc SMS.");
+        channel = channel.Equals("SMS", StringComparison.OrdinalIgnoreCase) ? "SMS" : "Email";
+
+        var templateCode = (req.TemplateCode ?? "").Trim();
+        if (string.IsNullOrEmpty(templateCode)) throw new AppException("TemplateCode bắt buộc.");
+        var target = (req.Target ?? "").Trim();
+        if (string.IsNullOrEmpty(target)) throw new AppException("Target (email/SĐT) bắt buộc.");
+
+        var tpl = await EnsureMessageTemplateAsync(tenantId, actorId, templateCode, channel, ct);
+        var integ = await EnsureChannelIntegrationAsync(tenantId, actorId, channel, ct);
+
+        var subject = RenderTemplate(tpl.Subject, req.Vars);
+        var body = RenderTemplate(tpl.Body, req.Vars);
+        var eventType = string.IsNullOrWhiteSpace(req.EventType) ? $"sys.message.{channel.ToLowerInvariant()}" : req.EventType.Trim();
+
+        var log = new IntegrationCallLog
+        {
+            TenantId = tenantId,
+            Kind = channel,
+            Target = target,
+            StatusCode = 200,
+            RequestSummary = $"[{templateCode}] {subject}".Trim(),
+            ResponseSummary = body.Length > 2000 ? body[..2000] : body,
+            CalledAt = DateTimeOffset.UtcNow,
+            CreatedBy = actorId,
+        };
+        _db.IntegrationCallLogs.Add(log);
+
+        await _outbox.EnqueueAsync(tenantId, eventType, "SYS", new
+        {
+            channel,
+            templateCode,
+            target,
+            subject,
+            bodyPreview = body.Length > 240 ? body[..240] : body,
+            integrationCode = integ.Code,
+        }, ct: ct);
+
+        await _db.SaveChangesAsync(ct);
+        return new ChannelSendResultDto(
+            log.Id, channel, target, templateCode, subject, body, "Logged", integ.Id, integ.Code);
+    }
+
+    private async Task<MessageTemplate> EnsureMessageTemplateAsync(
+        Guid tenantId, Guid? actorId, string code, string channel, CancellationToken ct)
+    {
+        var existing = await _db.MessageTemplates
+            .FirstOrDefaultAsync(x =>
+                x.TenantId == tenantId && !x.IsDeleted && x.IsActive
+                && x.Code == code && x.Channel == channel, ct);
+        if (existing is not null) return existing;
+
+        var (subject, body) = DefaultTemplateContent(code, channel);
+        var created = new MessageTemplate
+        {
+            TenantId = tenantId, Code = code, Channel = channel,
+            Subject = subject, Body = body, IsActive = true, CreatedBy = actorId,
+        };
+        _db.MessageTemplates.Add(created);
+        await _db.SaveChangesAsync(ct);
+        return created;
+    }
+
+    private async Task<ExternalIntegration> EnsureChannelIntegrationAsync(
+        Guid tenantId, Guid? actorId, string channel, CancellationToken ct)
+    {
+        var existing = await _db.ExternalIntegrations
+            .FirstOrDefaultAsync(x =>
+                x.TenantId == tenantId && !x.IsDeleted && x.IsActive && x.Kind == channel, ct);
+        if (existing is not null) return existing;
+
+        var code = channel == "SMS" ? "SMS_STUB" : "EMAIL_STUB";
+        var created = new ExternalIntegration
+        {
+            TenantId = tenantId, Code = code,
+            Name = channel == "SMS" ? "SMS stub (log)" : "Email stub (log)",
+            Kind = channel,
+            ConfigJson = """{"mode":"stub","provider":"log"}""",
+            IsActive = true, CreatedBy = actorId,
+        };
+        _db.ExternalIntegrations.Add(created);
+        await _db.SaveChangesAsync(ct);
+        return created;
+    }
+
+    private static (string Subject, string Body) DefaultTemplateContent(string code, string channel)
+    {
+        if (code.Equals("FORGOT_PASSWORD", StringComparison.OrdinalIgnoreCase))
+        {
+            return channel == "SMS"
+                ? ("", "Ma OTP dat lai MK Pum's ERP: {otp}. Het han {expiresMinutes} phut.")
+                : ("[Pum's ERP] Ma OTP dat lai mat khau",
+                    "Xin chao {displayName},\n\nMa OTP dat lai mat khau: {otp}\nHet han sau {expiresMinutes} phut.\n\nNeu ban khong yeu cau, hay bo qua email nay.");
+        }
+        if (code.Equals("USER_INVITE", StringComparison.OrdinalIgnoreCase))
+        {
+            return channel == "SMS"
+                ? ("", "Moi vao Pum's ERP. User: {username}. OTP kich hoat: {otp} (het han {expiresMinutes}p).")
+                : ("[Pum's ERP] Loi moi tai khoan",
+                    "Xin chao {displayName},\n\nBan duoc moi vao he thong Pum's ERP.\nUsername: {username}\nOTP kich hoat / dat MK: {otp}\nHet han: {expiresMinutes} phut.\n\nDang nhap roi doi mat khau ngay.");
+        }
+        return channel == "SMS"
+            ? ("", "Thong bao Pum's ERP: {message}")
+            : ("[Pum's ERP] Thong bao", "Xin chao {displayName},\n\n{message}");
+    }
+
+    private static string RenderTemplate(string template, IReadOnlyDictionary<string, string>? vars)
+    {
+        var s = template ?? "";
+        if (vars is null) return s;
+        foreach (var kv in vars)
+            s = s.Replace("{" + kv.Key + "}", kv.Value ?? "", StringComparison.OrdinalIgnoreCase);
+        return s;
     }
 
     public async Task<IReadOnlyList<LocalePackDto>> ListLocalePacksAsync(Guid tenantId, CancellationToken ct = default)

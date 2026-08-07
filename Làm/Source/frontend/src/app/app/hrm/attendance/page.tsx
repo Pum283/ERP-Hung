@@ -34,6 +34,7 @@ import {
   type AttendanceRecordDto,
   type EmployeeDto,
 } from "@/shared/api/hrm-api";
+import { formatDeviceSyncFlash } from "@/shared/api/crm-hrm-intake-helpers";
 import { fetchOrgUnits, type OrgUnitDto } from "@/shared/api/sys-api";
 import { usePermissions } from "@/shared/hooks/use-permissions";
 import { btn } from "@/shared/ui/btn";
@@ -318,7 +319,7 @@ export default function AttendancePage() {
                           deviceCode: devices[0]?.code,
                         },
                       ]);
-                      setOk(`Đồng bộ máy: ${r.synced}`);
+                      setOk(formatDeviceSyncFlash(r));
                       await load();
                     } catch {
                       setError("Đồng bộ thất bại.");

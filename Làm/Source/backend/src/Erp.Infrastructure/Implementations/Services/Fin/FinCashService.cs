@@ -154,31 +154,36 @@ public sealed class FinCashService : IFinCashService
                 throw new AppException($"Quỹ không đủ tiền (số dư {book:N0}).");
         }
 
-        if (v.CounterAccountId is Guid counterId && v.PeriodId is Guid periodId)
-        {
-            var period = await RequirePeriod(tenantId, periodId, ct);
-            if (period.Status == "Locked") throw new AppException("Kỳ đã khóa sổ.");
+        // UC_FIN_019: luôn tạo JE thật (auto-resolve TK đối ứng + kỳ Open nếu thiếu).
+        var periodId = await _fin.ResolveOpenPeriodIdAsync(tenantId, v.PeriodId, v.DocDate, ct);
+        v.PeriodId = periodId;
+        var cashId = fund.CashAccountId;
+        var counterId = v.CounterAccountId
+            ?? await _fin.ResolvePostableAccountIdAsync(
+                tenantId,
+                v.VoucherType == "Receipt" ? ["131", "511"] : ["331", "642", "156"],
+                v.VoucherType == "Receipt" ? "TK đối ứng thu (131*/511*)" : "TK đối ứng chi (331*/642*)",
+                ct);
+        v.CounterAccountId = counterId;
 
-            var cashId = fund.CashAccountId;
-            var lines = v.VoucherType == "Receipt"
-                ? new List<FinJournalLineUpsertRequest>
-                {
-                    new(null, cashId, v.Amount, 0, v.PartnerCode, null, "Thu quỹ"),
-                    new(null, counterId, 0, v.Amount, v.PartnerCode, null, "Đối ứng thu"),
-                }
-                : new List<FinJournalLineUpsertRequest>
-                {
-                    new(null, counterId, v.Amount, 0, v.PartnerCode, null, "Đối ứng chi"),
-                    new(null, cashId, 0, v.Amount, v.PartnerCode, null, "Chi quỹ"),
-                };
+        var lines = v.VoucherType == "Receipt"
+            ? new List<FinJournalLineUpsertRequest>
+            {
+                new(null, cashId, v.Amount, 0, v.PartnerCode, null, "Thu quỹ"),
+                new(null, counterId, 0, v.Amount, v.PartnerCode, null, "Đối ứng thu"),
+            }
+            : new List<FinJournalLineUpsertRequest>
+            {
+                new(null, counterId, v.Amount, 0, v.PartnerCode, null, "Đối ứng chi"),
+                new(null, cashId, 0, v.Amount, v.PartnerCode, null, "Chi quỹ"),
+            };
 
-            var je = await _fin.CreateAutoJournalAsync(tenantId, userId, new FinJournalUpsertRequest(
-                null, null, periodId, v.DocDate, $"{v.VoucherType} {v.Code}: {v.Description}",
-                v.PartnerCode, null, "Auto", lines), ct);
-            je = await _fin.PostJournalAsync(tenantId, userId, je.Id, ct);
-            v.FinJournalId = je.Id;
-            v.FinJournalCode = je.Code;
-        }
+        var je = await _fin.CreateAutoJournalAsync(tenantId, userId, new FinJournalUpsertRequest(
+            null, null, periodId, v.DocDate, $"{v.VoucherType} {v.Code}: {v.Description}",
+            v.PartnerCode, null, "Auto", lines), ct);
+        je = await _fin.PostJournalAsync(tenantId, userId, je.Id, ct);
+        v.FinJournalId = je.Id;
+        v.FinJournalCode = je.Code;
 
         v.Status = "Posted";
         v.PostedAt = DateTimeOffset.UtcNow;

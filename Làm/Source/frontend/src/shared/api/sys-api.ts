@@ -78,3 +78,16 @@ export async function fetchPermissions() {
   const { data } = await api.get<Envelope<PermissionDto[]>>("/api/sys/permissions");
   return data.data;
 }
+
+export type InviteUserResult = {
+  userId: string; username: string; channel: string; target: string; logId: string; message: string;
+};
+
+/** UC_SYS_019 — mời user + gửi OTP qua Email/SMS stub. */
+export async function inviteUser(body: {
+  username: string; displayName?: string | null; email?: string | null; phone?: string | null;
+  primaryOrgUnitId?: string | null; departmentId?: string | null; jobLevelId?: string | null;
+}) {
+  const { data } = await api.post<Envelope<InviteUserResult>>("/api/sys/users/invite", body);
+  return data.data;
+}

@@ -32,6 +32,12 @@ public interface IFinAccountingService
     /// <summary>UC_FIN_015 — tạo bút toán tự động (Source=Auto) từ phân hệ khác.</summary>
     Task<FinJournalDto> CreateAutoJournalAsync(Guid tenantId, Guid userId, FinJournalUpsertRequest req, CancellationToken ct = default);
 
+    /// <summary>Resolve TK postable Active theo tiền tố mã (vd 131, 511).</summary>
+    Task<Guid> ResolvePostableAccountIdAsync(Guid tenantId, IReadOnlyList<string> codePrefixes, string label, CancellationToken ct = default);
+
+    /// <summary>Resolve kỳ Open: periodId nếu có, không thì khớp tháng của asOf.</summary>
+    Task<Guid> ResolveOpenPeriodIdAsync(Guid tenantId, Guid? periodId, DateTimeOffset asOf, CancellationToken ct = default);
+
     Task<IReadOnlyList<FinLedgerRowDto>> GetLedgerAsync(Guid tenantId, FinLedgerQuery query, CancellationToken ct = default);
     Task<IReadOnlyList<FinDetailLedgerRowDto>> GetDetailLedgerAsync(Guid tenantId, FinLedgerQuery query, CancellationToken ct = default);
 

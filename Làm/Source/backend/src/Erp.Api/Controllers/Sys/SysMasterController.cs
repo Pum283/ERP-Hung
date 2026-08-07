@@ -126,6 +126,13 @@ public sealed class SysMasterController : ControllerBase
     public async Task<ActionResult<ApiResponse<ResetPasswordResultDto>>> ResetPassword(Guid userId, CancellationToken ct)
         => Ok(ApiResponse<ResetPasswordResultDto>.Ok(await _svc.AdminResetPasswordAsync(TenantId, userId, UserId, ct)));
 
+    /// <summary>UC_SYS_019 — mời user + gửi OTP qua Email/SMS stub.</summary>
+    [HttpPost("users/invite")]
+    [AuthorizePermission("sys.user.manage")]
+    public async Task<ActionResult<ApiResponse<InviteUserResultDto>>> InviteUser(
+        [FromBody] InviteUserRequest req, CancellationToken ct)
+        => Ok(ApiResponse<InviteUserResultDto>.Ok(await _svc.InviteUserAsync(TenantId, UserId, req, ct)));
+
     [HttpPost("roles/{roleId:guid}/copy")]
     [AuthorizePermission("sys.role.update")]
     public async Task<ActionResult<ApiResponse<RoleDto>>> CopyRole(Guid roleId, [FromBody] RoleUpsertRequest req, CancellationToken ct)

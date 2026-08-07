@@ -10,7 +10,7 @@ import urllib.request
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-BASE = "http://localhost:5000"
+BASE = "http://localhost:1111"
 
 
 def req(method: str, path: str, token: str | None = None, body: dict | None = None):

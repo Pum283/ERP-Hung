@@ -1225,9 +1225,10 @@ export async function syncAttendanceDevice(items: {
   punchType: string;
   deviceCode?: string | null;
 }[]) {
-  const { data } = await api.post<Envelope<{ synced: number }>>("/api/hrm/attendance/sync-device", {
-    items,
-  });
+  const { data } = await api.post<Envelope<{
+    synced: number; skippedUnknownEmployee: number; skippedLocked: number;
+    skippedDuplicate: number; skippedInvalidType: number; total: number;
+  }>>("/api/hrm/attendance/sync-device", { items });
   return data.data;
 }
 

@@ -13,6 +13,7 @@ import {
   type BiDashboardDto,
   type BiDatasetDto,
 } from "@/shared/api/bi-api";
+import { formatDatasetRefreshFlash, isLiveBiMetric, widgetValueHint } from "@/shared/api/bi-helpers";
 import { usePermissions } from "@/shared/hooks/use-permissions";
 import { btn } from "@/shared/ui/btn";
 import { field, panel, statusPill, tableWrap, td, th } from "@/shared/ui/field";
@@ -82,7 +83,7 @@ export default function BiCatalogPage() {
       <div>
         <h1 className="text-xl font-semibold tracking-tight">Dataset / Dashboard</h1>
         <p className="mt-1 text-sm text-[var(--muted)]">
-          Dataset · refresh · DB lãnh đạo/module · widget DT–LN (UC_BI_001–002, 006–008)
+          Dataset · refresh nguồn module · DB lãnh đạo/module · widget DT–LN live FIN (UC_BI_001–002, 006–008)
         </p>
       </div>
       {error && <div className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>}
@@ -128,7 +129,14 @@ export default function BiCatalogPage() {
                     <td className={td}>
                       {canManage && (
                         <button type="button" className={btn.ghost}
-                          onClick={() => void run(() => refreshBiDataset(d.id, "Manual refresh"), "Đã refresh")}>
+                          onClick={() => void (async () => {
+                            try {
+                              const r = await refreshBiDataset(d.id, "Manual refresh");
+                              await load();
+                              if (selectedDashId) setDashDetail(await fetchBiDashboardDetail(selectedDashId));
+                              flash(formatDatasetRefreshFlash(r));
+                            } catch (err) { setError((err as Error).message); }
+                          })()}>
                           Refresh
                         </button>
                       )}
@@ -180,7 +188,9 @@ export default function BiCatalogPage() {
               <div className="grid gap-2 sm:grid-cols-2">
                 {dashDetail.widgets.map((w) => (
                   <div key={w.id} className="rounded-md border border-black/10 p-3">
-                    <div className="text-xs text-[var(--muted)]">{w.metricKey} · {w.widgetType}</div>
+                    <div className="text-xs text-[var(--muted)]">
+                      {w.metricKey} · {w.widgetType} · {widgetValueHint(w.metricKey)}
+                    </div>
                     <div className="font-medium">{w.title}</div>
                     <div className="text-lg tracking-tight">
                       {w.stubValue.toLocaleString()} <span className="text-xs">{w.unit}</span>
@@ -204,7 +214,10 @@ export default function BiCatalogPage() {
                     <option value="Profit">Profit</option>
                     <option value="Custom">Custom</option>
                   </select>
-                  <input className={field} placeholder="Giá trị stub" value={wValue} onChange={(e) => setWValue(e.target.value)} />
+                  {!isLiveBiMetric(wMetric) && (
+                    <input className={field} placeholder="Giá trị Custom" value={wValue}
+                      onChange={(e) => setWValue(e.target.value)} />
+                  )}
                   <button className={btn.primary} type="submit">Thêm widget</button>
                 </form>
               )}

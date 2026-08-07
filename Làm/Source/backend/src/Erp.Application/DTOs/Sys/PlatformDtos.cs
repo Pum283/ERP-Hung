@@ -64,6 +64,22 @@ public sealed record FileObjectDto(Guid Id, string StorageKey, string FileName, 
 
 public sealed record ExternalIntegrationDto(Guid Id, string Code, string Name, string Kind, string ConfigJson, bool IsActive);
 
+/// <summary>UC_SYS_060/061 — gửi Email/SMS qua template (stub log + outbox, không gọi gateway thật).</summary>
+public sealed record ChannelSendRequest(
+    string Channel, string TemplateCode, string Target,
+    IReadOnlyDictionary<string, string>? Vars = null, string? EventType = null);
+
+public sealed record ChannelSendResultDto(
+    Guid LogId, string Channel, string Target, string TemplateCode,
+    string Subject, string Body, string Status, Guid? IntegrationId, string? IntegrationCode);
+
+public sealed record InviteUserRequest(
+    string Username, string? DisplayName, string? Email, string? Phone,
+    Guid? PrimaryOrgUnitId = null, Guid? DepartmentId = null, Guid? JobLevelId = null);
+
+public sealed record InviteUserResultDto(
+    Guid UserId, string Username, string Channel, string Target, Guid LogId, string Message);
+
 public sealed record OrgNodeDto(Guid Id, string Code, string Name, Guid? ParentId, string UnitType);
 
 public sealed record RoleMatrixRowDto(Guid RoleId, string RoleCode, string RoleName, IReadOnlyList<string> PermissionCodes);

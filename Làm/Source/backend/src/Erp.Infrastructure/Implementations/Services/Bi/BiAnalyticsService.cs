@@ -90,21 +90,38 @@ public sealed class BiAnalyticsService : IBiAnalyticsService
         _db.BiDatasetRefreshes.Add(log);
         await _db.SaveChangesAsync(ct);
 
-        // Cap-1 stub: không ETL thật — giả lập refresh
-        var rows = Random.Shared.Next(50, 5000);
-        log.Status = "Succeeded";
-        log.FinishedAt = DateTimeOffset.UtcNow;
-        log.RowsAffected = rows;
-        log.Note ??= "Refresh stub thành công";
-        log.UpdatedBy = userId;
+        try
+        {
+            // UC_BI_002: đếm hàng nguồn thật theo ModuleCode (ETL nhẹ — không random).
+            var (rows, sourceNote) = await CountModuleSourceRowsAsync(tenantId, ds.ModuleCode, ct);
+            log.Status = "Succeeded";
+            log.FinishedAt = DateTimeOffset.UtcNow;
+            log.RowsAffected = rows;
+            log.Note = string.IsNullOrWhiteSpace(log.Note)
+                ? $"Refresh từ {sourceNote}"
+                : $"{log.Note.Trim()} · {sourceNote}";
+            log.UpdatedBy = userId;
 
-        ds.Status = "Ready";
-        ds.LastRefreshedAt = log.FinishedAt;
-        ds.LastRefreshNote = log.Note;
-        ds.RowCountEstimate = rows;
-        ds.UpdatedBy = userId;
-        await _db.SaveChangesAsync(ct);
-        return MapDataset(ds);
+            ds.Status = "Ready";
+            ds.LastRefreshedAt = log.FinishedAt;
+            ds.LastRefreshNote = log.Note;
+            ds.RowCountEstimate = rows;
+            ds.UpdatedBy = userId;
+            await _db.SaveChangesAsync(ct);
+            return MapDataset(ds);
+        }
+        catch (Exception ex)
+        {
+            log.Status = "Failed";
+            log.FinishedAt = DateTimeOffset.UtcNow;
+            log.Note = $"Lỗi refresh: {ex.Message}";
+            log.UpdatedBy = userId;
+            ds.Status = "Error";
+            ds.LastRefreshNote = log.Note;
+            ds.UpdatedBy = userId;
+            await _db.SaveChangesAsync(ct);
+            throw new AppException($"Refresh dataset thất bại: {ex.Message}");
+        }
     }
 
     public async Task<IReadOnlyList<BiDatasetRefreshDto>> ListRefreshesAsync(
@@ -230,7 +247,22 @@ public sealed class BiAnalyticsService : IBiAnalyticsService
             .OrderBy(x => x.SortOrder).ThenBy(x => x.Code).ToListAsync(ct);
         var dto = new BiDashboardDto(
             d.Id, d.Code, d.Name, d.DashboardType, d.ModuleCode, d.Status, d.Note, d.SortOrder, widgets.Count);
-        return new BiDashboardDetailDto(dto, widgets.Select(MapWidget).ToList());
+
+        // UC_BI_008: widget Revenue/Profit lấy số thật từ FIN (DTO value), Custom giữ StubValue.
+        var (revenue, profit) = await ComputeFinMetricsAsync(tenantId, ct);
+        var mapped = widgets.Select(w =>
+        {
+            var value = w.MetricKey switch
+            {
+                "Revenue" => revenue,
+                "Profit" => profit,
+                _ => w.StubValue,
+            };
+            return new BiWidgetDto(
+                w.Id, w.DashboardId, w.Code, w.Title, w.WidgetType, w.MetricKey,
+                value, w.Unit, w.SortOrder, w.Status);
+        }).ToList();
+        return new BiDashboardDetailDto(dto, mapped);
     }
 
     public async Task<BiDashboardDto> UpsertDashboardAsync(
@@ -318,35 +350,35 @@ public sealed class BiAnalyticsService : IBiAnalyticsService
         if (!ExportFormats.Contains(export)) throw new AppException("Export: None|Excel|Pdf.");
         export = ExportFormats.First(x => x.Equals(export, StringComparison.OrdinalIgnoreCase));
 
-        // Stub rows from dataset estimate or random
-        var rows = 25;
-        if (report.DatasetId is Guid did)
-        {
-            var ds = await _db.BiDatasets.AsNoTracking()
-                .FirstOrDefaultAsync(x => x.Id == did && x.TenantId == tenantId && !x.IsDeleted, ct);
-            if (ds is not null) rows = Math.Min(100, Math.Max(5, ds.RowCountEstimate / 10));
-        }
+        var filterJson = NullIfEmpty(req.FilterJson) ?? "{}";
+        var (from, to) = ParseDateFilter(filterJson);
 
-        var preview = JsonSerializer.Serialize(new[]
-        {
-            new Dictionary<string, object?> { ["label"] = "Tổng", ["value"] = rows * 1_000_000 },
-            new Dictionary<string, object?> { ["label"] = "Số dòng", ["value"] = rows },
-            new Dictionary<string, object?> { ["label"] = "Module", ["value"] = report.ModuleCode },
-        });
+        // UC_BI_014: chạy BC thật — aggregate theo module + filter from/to.
+        var (rows, previewRows, sourceNote) = await BuildReportRowsAsync(
+            tenantId, report.ModuleCode, from, to, ct);
+        var preview = JsonSerializer.Serialize(previewRows);
 
-        var fileName = export == "None"
+        var ext = export switch
+        {
+            "Excel" => "csv",
+            "Pdf" => "txt",
+            _ => null,
+        };
+        var fileName = ext is null
             ? null
-            : $"{report.Code}_{DateTime.UtcNow:yyyyMMdd_HHmmss}.{(export == "Excel" ? "xlsx" : "pdf")}";
+            : $"{report.Code}_{DateTime.UtcNow:yyyyMMdd_HHmmss}.{ext}";
 
         var run = new BiReportRun
         {
             TenantId = tenantId, ReportId = reportId,
             RunAt = DateTimeOffset.UtcNow, RunByUserId = userId,
-            FilterJson = NullIfEmpty(req.FilterJson) ?? "{}",
+            FilterJson = filterJson,
             Status = "Succeeded", RowCount = rows,
             ExportFormat = export, ExportFileName = fileName,
             ResultPreviewJson = preview,
-            Note = export == "None" ? "Chạy stub" : $"Xuất {export} stub (file metadata only)",
+            Note = export == "None"
+                ? $"Chạy thật · {sourceNote}"
+                : $"Xuất {export} thật · {sourceNote}",
             CreatedBy = userId
         };
         _db.BiReportRuns.Add(run);
@@ -355,6 +387,54 @@ public sealed class BiAnalyticsService : IBiAnalyticsService
             run.Id, run.ReportId, report.Code, report.Name, run.RunAt, run.Status,
             run.RowCount, run.ExportFormat, run.ExportFileName, run.FilterJson,
             run.ResultPreviewJson, run.Note);
+    }
+
+    public async Task<(string FileName, string ContentType, string Content)> DownloadRunExportAsync(
+        Guid tenantId, Guid runId, CancellationToken ct = default)
+    {
+        var run = await _db.BiReportRuns
+            .FirstOrDefaultAsync(x => x.Id == runId && x.TenantId == tenantId && !x.IsDeleted, ct)
+            ?? throw new AppException("Không tìm thấy lần chạy BC.", 404);
+        if (run.ExportFormat is not ("Excel" or "Pdf"))
+            throw new AppException("Lần chạy không có file xuất.");
+
+        var report = await RequireAsync(_db.BiReports, tenantId, run.ReportId, "báo cáo", ct);
+        var (from, to) = ParseDateFilter(run.FilterJson ?? "{}");
+        var (_, previewRows, _) = await BuildReportRowsAsync(tenantId, report.ModuleCode, from, to, ct);
+
+        if (run.ExportFormat == "Excel")
+        {
+            var sb = new System.Text.StringBuilder();
+            sb.Append('\uFEFF');
+            sb.AppendLine("Label,Value");
+            foreach (var row in previewRows)
+            {
+                var label = row.GetValueOrDefault("label")?.ToString() ?? "";
+                var value = row.GetValueOrDefault("value")?.ToString() ?? "";
+                sb.AppendLine($"{CsvCell(label)},{CsvCell(value)}");
+            }
+            var name = run.ExportFileName ?? $"{report.Code}.csv";
+            if (name.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
+                name = Path.ChangeExtension(name, ".csv");
+            return (name, "text/csv; charset=utf-8", sb.ToString());
+        }
+
+        // Pdf = text report (in được / lưu .txt)
+        var text = new System.Text.StringBuilder();
+        text.AppendLine($"BÁO CÁO {report.Code} — {report.Name}");
+        text.AppendLine($"Module: {report.ModuleCode}");
+        text.AppendLine($"Chạy lúc: {run.RunAt.ToLocalTime():dd/MM/yyyy HH:mm}");
+        if (from is not null || to is not null)
+            text.AppendLine($"Lọc: {from?.ToString("dd/MM/yyyy") ?? "…"} → {to?.ToString("dd/MM/yyyy") ?? "…"}");
+        text.AppendLine(new string('-', 48));
+        foreach (var row in previewRows)
+            text.AppendLine($"{row.GetValueOrDefault("label"),-28} {row.GetValueOrDefault("value"),18}");
+        text.AppendLine(new string('-', 48));
+        text.AppendLine($"Số dòng nguồn: {run.RowCount}");
+        var pdfName = run.ExportFileName ?? $"{report.Code}.txt";
+        if (pdfName.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+            pdfName = Path.ChangeExtension(pdfName, ".txt");
+        return (pdfName, "text/plain; charset=utf-8", text.ToString());
     }
 
     public async Task<IReadOnlyList<BiReportRunDto>> ListRunsAsync(
@@ -619,6 +699,166 @@ public sealed class BiAnalyticsService : IBiAnalyticsService
     private static BiWidgetDto MapWidget(BiWidget w) =>
         new(w.Id, w.DashboardId, w.Code, w.Title, w.WidgetType, w.MetricKey,
             w.StubValue, w.Unit, w.SortOrder, w.Status);
+
+    private async Task<(int Rows, string Note)> CountModuleSourceRowsAsync(
+        Guid tenantId, string moduleCode, CancellationToken ct)
+    {
+        var mod = (moduleCode ?? "").Trim().ToUpperInvariant();
+        return mod switch
+        {
+            "FIN" => (await _db.FinJournals.CountAsync(x => x.TenantId == tenantId && !x.IsDeleted, ct),
+                "FIN.FinJournals"),
+            "POS" => (await _db.PosSales.CountAsync(x => x.TenantId == tenantId && !x.IsDeleted, ct),
+                "POS.PosSales"),
+            "CRM" => (await _db.CrmSalesOrders.CountAsync(x => x.TenantId == tenantId && !x.IsDeleted, ct),
+                "CRM.CrmSalesOrders"),
+            "HRM" => (await _db.Employees.CountAsync(x => x.TenantId == tenantId && !x.IsDeleted, ct),
+                "HRM.Employees"),
+            "INV" => (await _db.InvStockBalances.CountAsync(x => x.TenantId == tenantId && !x.IsDeleted, ct),
+                "INV.InvStockBalances"),
+            "PUR" => (await _db.PurPurchaseOrders.CountAsync(x => x.TenantId == tenantId && !x.IsDeleted, ct),
+                "PUR.PurPurchaseOrders"),
+            "MFG" => (await _db.MfgWorkOrders.CountAsync(x => x.TenantId == tenantId && !x.IsDeleted, ct),
+                "MFG.MfgWorkOrders"),
+            "AST" => (await _db.AstAssets.CountAsync(x => x.TenantId == tenantId && !x.IsDeleted, ct),
+                "AST.AstAssets"),
+            _ => (await _db.BiReportRuns.CountAsync(x => x.TenantId == tenantId && !x.IsDeleted, ct),
+                $"BI.BiReportRuns (module {mod})"),
+        };
+    }
+
+    private async Task<(decimal Revenue, decimal Profit)> ComputeFinMetricsAsync(
+        Guid tenantId, CancellationToken ct)
+    {
+        // Ưu tiên chứng từ DT FIN; fallback tổng Có TK 511* từ JE Posted.
+        var revenueOnly = await _db.FinRevenueDocuments.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Status != "Void"
+                        && x.Kind != "Cogs")
+            .SumAsync(x => (decimal?)x.RevenueAmount, ct) ?? 0m;
+        if (revenueOnly > 0)
+        {
+            var cogs = await _db.FinRevenueDocuments.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Status != "Void")
+                .SumAsync(x => (decimal?)x.CogsAmount, ct) ?? 0m;
+            var cogsKind = await _db.FinRevenueDocuments.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Status != "Void"
+                            && x.Kind == "Cogs")
+                .SumAsync(x => (decimal?)x.TotalAmount, ct) ?? 0m;
+            var totalCogs = cogs + cogsKind;
+            return (decimal.Round(revenueOnly, 0), decimal.Round(revenueOnly - totalCogs, 0));
+        }
+
+        var revAccountIds = await _db.FinAccounts.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Code.StartsWith("511"))
+            .Select(x => x.Id).ToListAsync(ct);
+        var expAccountIds = await _db.FinAccounts.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted
+                        && (x.Code.StartsWith("632") || x.Code.StartsWith("641") || x.Code.StartsWith("642")))
+            .Select(x => x.Id).ToListAsync(ct);
+
+        var postedJeIds = await _db.FinJournals.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Status == "Posted")
+            .Select(x => x.Id).ToListAsync(ct);
+
+        var revenue = revAccountIds.Count == 0 || postedJeIds.Count == 0
+            ? 0m
+            : await _db.FinJournalLines.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && !x.IsDeleted
+                            && postedJeIds.Contains(x.JournalId) && revAccountIds.Contains(x.AccountId))
+                .SumAsync(x => (decimal?)x.Credit - x.Debit, ct) ?? 0m;
+        var expense = expAccountIds.Count == 0 || postedJeIds.Count == 0
+            ? 0m
+            : await _db.FinJournalLines.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && !x.IsDeleted
+                            && postedJeIds.Contains(x.JournalId) && expAccountIds.Contains(x.AccountId))
+                .SumAsync(x => (decimal?)x.Debit - x.Credit, ct) ?? 0m;
+        return (decimal.Round(revenue, 0), decimal.Round(revenue - expense, 0));
+    }
+
+    private static (DateTimeOffset? From, DateTimeOffset? To) ParseDateFilter(string filterJson)
+    {
+        try
+        {
+            using var doc = JsonDocument.Parse(string.IsNullOrWhiteSpace(filterJson) ? "{}" : filterJson);
+            DateTimeOffset? from = null, to = null;
+            if (doc.RootElement.TryGetProperty("from", out var f) && f.ValueKind == JsonValueKind.String
+                && DateOnly.TryParse(f.GetString(), out var fd))
+                from = new DateTimeOffset(fd.ToDateTime(TimeOnly.MinValue), TimeSpan.Zero);
+            if (doc.RootElement.TryGetProperty("to", out var t) && t.ValueKind == JsonValueKind.String
+                && DateOnly.TryParse(t.GetString(), out var td))
+                to = new DateTimeOffset(td.ToDateTime(TimeOnly.MaxValue), TimeSpan.Zero);
+            return (from, to);
+        }
+        catch (JsonException)
+        {
+            throw new AppException("FilterJson không hợp lệ.");
+        }
+    }
+
+    private async Task<(int RowCount, List<Dictionary<string, object?>> Preview, string Note)> BuildReportRowsAsync(
+        Guid tenantId, string moduleCode, DateTimeOffset? from, DateTimeOffset? to, CancellationToken ct)
+    {
+        var mod = (moduleCode ?? "").Trim().ToUpperInvariant();
+        var preview = new List<Dictionary<string, object?>>();
+
+        switch (mod)
+        {
+            case "FIN":
+            {
+                var q = _db.FinJournals.AsNoTracking().Where(x => x.TenantId == tenantId && !x.IsDeleted);
+                if (from is DateTimeOffset f) q = q.Where(x => x.EntryDate >= f);
+                if (to is DateTimeOffset t) q = q.Where(x => x.EntryDate <= t);
+                var list = await q.ToListAsync(ct);
+                var posted = list.Count(x => x.Status == "Posted");
+                var draft = list.Count(x => x.Status == "Draft");
+                preview.Add(new() { ["label"] = "Số BT", ["value"] = list.Count });
+                preview.Add(new() { ["label"] = "Posted", ["value"] = posted });
+                preview.Add(new() { ["label"] = "Draft", ["value"] = draft });
+                preview.Add(new() { ["label"] = "Module", ["value"] = "FIN" });
+                return (list.Count, preview, "FIN journals theo kỳ lọc");
+            }
+            case "POS":
+            {
+                var q = _db.PosSales.AsNoTracking().Where(x => x.TenantId == tenantId && !x.IsDeleted);
+                if (from is DateTimeOffset f) q = q.Where(x => x.CreatedAt >= f);
+                if (to is DateTimeOffset t) q = q.Where(x => x.CreatedAt <= t);
+                var list = await q.ToListAsync(ct);
+                var paid = list.Where(x => x.Status is "Paid" or "Returned").ToList();
+                preview.Add(new() { ["label"] = "Số đơn", ["value"] = list.Count });
+                preview.Add(new() { ["label"] = "Đã TT", ["value"] = paid.Count });
+                preview.Add(new() { ["label"] = "Doanh thu", ["value"] = paid.Sum(x => x.TotalAmount) });
+                preview.Add(new() { ["label"] = "Module", ["value"] = "POS" });
+                return (list.Count, preview, "POS sales theo kỳ lọc");
+            }
+            case "CRM":
+            {
+                var q = _db.CrmSalesOrders.AsNoTracking().Where(x => x.TenantId == tenantId && !x.IsDeleted);
+                if (from is DateTimeOffset f) q = q.Where(x => x.OrderDate >= f);
+                if (to is DateTimeOffset t) q = q.Where(x => x.OrderDate <= t);
+                var list = await q.ToListAsync(ct);
+                preview.Add(new() { ["label"] = "Số đơn", ["value"] = list.Count });
+                preview.Add(new() { ["label"] = "Tổng GT", ["value"] = list.Sum(x => x.TotalAmount) });
+                preview.Add(new() { ["label"] = "Module", ["value"] = "CRM" });
+                return (list.Count, preview, "CRM orders theo kỳ lọc");
+            }
+            default:
+            {
+                var (rows, note) = await CountModuleSourceRowsAsync(tenantId, mod, ct);
+                preview.Add(new() { ["label"] = "Số dòng nguồn", ["value"] = rows });
+                preview.Add(new() { ["label"] = "Module", ["value"] = mod });
+                preview.Add(new() { ["label"] = "Nguồn", ["value"] = note });
+                return (rows, preview, note);
+            }
+        }
+    }
+
+    private static string CsvCell(string? s)
+    {
+        var v = s ?? "";
+        if (v.Contains('"') || v.Contains(',') || v.Contains('\n'))
+            return $"\"{v.Replace("\"", "\"\"")}\"";
+        return v;
+    }
 
     private static async Task<T> RequireAsync<T>(
         DbSet<T> set, Guid tenantId, Guid id, string label, CancellationToken ct)

@@ -32,3 +32,17 @@ export async function logoutApi() {
 export async function changePassword(currentPassword: string, newPassword: string) {
   await api.post("/api/auth/change-password", { currentPassword, newPassword });
 }
+
+/** UC_SYS_004 — quên MK → OTP qua Email/SMS stub. */
+export async function forgotPassword(usernameOrEmail: string) {
+  const { data } = await api.post<Envelope<{ ok: boolean; message?: string }>>(
+    "/api/auth/forgot-password",
+    { usernameOrEmail },
+  );
+  return data.data;
+}
+
+/** UC_SYS_005 — đặt lại MK bằng OTP. */
+export async function resetPasswordWithOtp(usernameOrEmail: string, otp: string, newPassword: string) {
+  await api.post("/api/auth/reset-password", { usernameOrEmail, otp, newPassword });
+}
