@@ -23,10 +23,13 @@ public sealed record PrtOrderUpsertRequest(
     IReadOnlyList<PrtOrderLineUpsertRequest>? Lines);
 public sealed record PrtOrderLineUpsertRequest(string ItemCode, string ItemName, decimal Quantity, decimal UnitPrice);
 
-public sealed record PrtArSummaryDto(Guid AccountId, decimal OpenAmount, int OpenInvoiceCount, decimal PaidYtd);
+public sealed record PrtArSummaryDto(
+    Guid AccountId, decimal OpenAmount, int OpenInvoiceCount, decimal PaidYtd,
+    decimal OverdueAmount = 0m, int OverdueInvoiceCount = 0);
 public sealed record PrtInvoiceDto(
     Guid Id, Guid AccountId, string Code, DateTimeOffset InvoiceDate, DateTimeOffset? DueDate,
-    decimal Amount, decimal PaidAmount, decimal OpenAmount, string Status);
+    decimal Amount, decimal PaidAmount, decimal OpenAmount, string Status,
+    int OverdueDays = 0, bool IsOverdue = false);
 public sealed record PrtInvoiceUpsertRequest(
     Guid? Id, Guid AccountId, string? Code, DateTimeOffset? InvoiceDate, DateTimeOffset? DueDate,
     decimal Amount, decimal? PaidAmount, string? Status);

@@ -93,7 +93,7 @@ public sealed class PrtPortalPolishTests
         var userId = Guid.NewGuid();
 
         var acc = await svc.UpsertAccountAsync(tenantId, userId, new PrtAccountUpsertRequest(
-            null, "PRT-004", "ar@portal.local", "AR User", "Pass123", "CUST-AR-99", "Cust AR 99", "Active"));
+            null, "PRT-004", "ar@portal.local", "AR User", "Pass123!", "CUST-AR-99", "Cust AR 99", "Active"));
 
         // Prt Invoice open = 1000
         await svc.UpsertInvoiceAsync(tenantId, userId, new PrtInvoiceUpsertRequest(
@@ -115,5 +115,93 @@ public sealed class PrtPortalPolishTests
         var summary = await svc.GetArSummaryAsync(tenantId, acc.Id);
         Assert.Equal(3500, summary.OpenAmount); // 1000 + 2500
         Assert.Equal(2, summary.OpenInvoiceCount); // 1 PRT + 1 FIN
+    }
+
+    [Fact]
+    public async Task Register_WeakPassword_ThrowsAppException()
+    {
+        using var db = CreateDb(nameof(Register_WeakPassword_ThrowsAppException));
+        var svc = new PrtPortalService(db);
+        var tenantId = Guid.NewGuid();
+        var userId = Guid.NewGuid();
+
+        var ex = await Assert.ThrowsAsync<Erp.Application.Common.Exceptions.AppException>(
+            () => svc.RegisterAsync(tenantId, userId, new PrtRegisterRequest("weak@portal.local", "Weak User", "12345", null)));
+        Assert.Contains("Mật khẩu tối thiểu 8 ký tự", ex.Message);
+    }
+
+    [Fact]
+    public async Task BruteForceLockout_LocksAccount_After5FailedAttempts()
+    {
+        using var db = CreateDb(nameof(BruteForceLockout_LocksAccount_After5FailedAttempts));
+        var svc = new PrtPortalService(db);
+        var tenantId = Guid.NewGuid();
+        var userId = Guid.NewGuid();
+
+        await svc.RegisterAsync(tenantId, userId, new PrtRegisterRequest("lockme@portal.local", "Lock Me", "StrongPass123!", null));
+
+        for (int i = 0; i < 5; i++)
+        {
+            await Assert.ThrowsAsync<Erp.Application.Common.Exceptions.AppException>(
+                () => svc.LoginAsync(tenantId, new PrtLoginRequest("lockme@portal.local", "WrongPass")));
+        }
+
+        var ex = await Assert.ThrowsAsync<Erp.Application.Common.Exceptions.AppException>(
+            () => svc.LoginAsync(tenantId, new PrtLoginRequest("lockme@portal.local", "StrongPass123!")));
+        Assert.Contains("khóa", ex.Message, StringComparison.OrdinalIgnoreCase);
+
+        var lockLog = await db.IntegrationCallLogs.FirstOrDefaultAsync(x => x.TenantId == tenantId && x.Kind == "PRT_ACCOUNT_LOCKED");
+        Assert.NotNull(lockLog);
+    }
+
+    [Fact]
+    public async Task ResetPassword_ExpiredToken_ThrowsAppException()
+    {
+        using var db = CreateDb(nameof(ResetPassword_ExpiredToken_ThrowsAppException));
+        var svc = new PrtPortalService(db);
+        var tenantId = Guid.NewGuid();
+
+        db.PrtAccounts.Add(new PrtAccount
+        {
+            TenantId = tenantId,
+            Code = "PRT-EXP",
+            Email = "expired@portal.local",
+            DisplayName = "Expired User",
+            PasswordHash = "OldHash",
+            ResetTokenStub = "EXPIRED_TOKEN",
+            ResetTokenExpiresAt = DateTimeOffset.UtcNow.AddHours(-1),
+            Status = "Active"
+        });
+        await db.SaveChangesAsync();
+
+        var ex = await Assert.ThrowsAsync<Erp.Application.Common.Exceptions.AppException>(
+            () => svc.ResetPasswordAsync(tenantId, new PrtResetPasswordRequest("expired@portal.local", "EXPIRED_TOKEN", "NewStrong123!")));
+        Assert.Contains("hết hạn", ex.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public async Task GetArSummary_CalculatesOverdueAmounts_AndCounts()
+    {
+        using var db = CreateDb(nameof(GetArSummary_CalculatesOverdueAmounts_AndCounts));
+        var svc = new PrtPortalService(db);
+        var tenantId = Guid.NewGuid();
+        var userId = Guid.NewGuid();
+
+        var acc = await svc.UpsertAccountAsync(tenantId, userId, new PrtAccountUpsertRequest(
+            null, "PRT-OVERDUE", "overdue@portal.local", "Overdue User", "Pass123!", "CUST-OD", "Cust OD", "Active"));
+
+        // PRT Overdue invoice (Due 5 days ago)
+        await svc.UpsertInvoiceAsync(tenantId, userId, new PrtInvoiceUpsertRequest(
+            null, acc.Id, "INV-OD-01", DateTimeOffset.UtcNow.AddDays(-10), DateTimeOffset.UtcNow.AddDays(-5), 2000, 500, "Open"));
+
+        var summary = await svc.GetArSummaryAsync(tenantId, acc.Id);
+        Assert.Equal(1500, summary.OpenAmount);
+        Assert.Equal(1500, summary.OverdueAmount);
+        Assert.Equal(1, summary.OverdueInvoiceCount);
+
+        var invoices = await svc.ListInvoicesAsync(tenantId, acc.Id, true);
+        Assert.Single(invoices);
+        Assert.True(invoices[0].IsOverdue);
+        Assert.True(invoices[0].OverdueDays >= 4);
     }
 }

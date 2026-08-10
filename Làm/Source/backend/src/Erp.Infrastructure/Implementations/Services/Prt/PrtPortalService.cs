@@ -60,7 +60,11 @@ public sealed class PrtPortalService : IPrtPortalService
         entity.Email = email; entity.DisplayName = name;
         entity.CustomerCode = NullIfEmpty(req.CustomerCode)?.ToUpperInvariant();
         entity.CustomerName = NullIfEmpty(req.CustomerName);
-        if (!string.IsNullOrWhiteSpace(req.Password)) entity.PasswordHash = Hash(req.Password);
+        if (!string.IsNullOrWhiteSpace(req.Password))
+        {
+            ValidatePasswordPolicy(req.Password);
+            entity.PasswordHash = Hash(req.Password);
+        }
         if (!string.IsNullOrWhiteSpace(req.Status))
         {
             var s = req.Status.Trim();
@@ -77,6 +81,18 @@ public sealed class PrtPortalService : IPrtPortalService
         => UpsertAccountAsync(tenantId, userId, new PrtAccountUpsertRequest(
             null, null, req.Email, req.DisplayName, req.Password, req.CustomerCode, null, "Pending"), ct);
 
+    private static void ValidatePasswordPolicy(string password)
+    {
+        if (string.IsNullOrWhiteSpace(password) || password.Length < 8)
+            throw new AppException("Mật khẩu tối thiểu 8 ký tự.");
+        if (!password.Any(char.IsUpper))
+            throw new AppException("Mật khẩu phải chứa ít nhất 1 chữ hoa (A-Z).");
+        if (!password.Any(char.IsLower))
+            throw new AppException("Mật khẩu phải chứa ít nhất 1 chữ thường (a-z).");
+        if (!password.Any(char.IsDigit))
+            throw new AppException("Mật khẩu phải chứa ít nhất 1 chữ số (0-9).");
+    }
+
     public async Task<PrtLoginResultDto> LoginAsync(
         Guid tenantId, PrtLoginRequest req, CancellationToken ct = default)
     {
@@ -84,11 +100,48 @@ public sealed class PrtPortalService : IPrtPortalService
         var acc = await _db.PrtAccounts
             .FirstOrDefaultAsync(x => x.TenantId == tenantId && x.Email == email && !x.IsDeleted, ct)
             ?? throw new AppException("Email hoặc mật khẩu không đúng.", 401);
-        if (acc.Status == "Locked") throw new AppException("Tài khoản bị khóa.");
+
+        if (acc.Status == "Locked")
+            throw new AppException("Tài khoản đã bị khóa do vi phạm hoặc thử sai mật khẩu nhiều lần.", 401);
+
+        var failedCount = await _db.IntegrationCallLogs.AsNoTracking()
+            .CountAsync(x => x.TenantId == tenantId && x.Kind == "PRT_LOGIN_FAILED" && x.Target == email && x.CalledAt > DateTimeOffset.UtcNow.AddMinutes(-15), ct);
+
+        if (failedCount >= 5)
+        {
+            acc.Status = "Locked";
+            _db.IntegrationCallLogs.Add(new IntegrationCallLog
+            {
+                TenantId = tenantId, Kind = "PRT_ACCOUNT_LOCKED", Target = email,
+                RequestSummary = "Auto-locked due to 5 consecutive failed login attempts",
+                ResponseSummary = "Account status updated to Locked", StatusCode = 403, CalledAt = DateTimeOffset.UtcNow
+            });
+            await _db.SaveChangesAsync(ct);
+            throw new AppException("Tài khoản bị tạm khóa do nhập sai mật khẩu quá 5 lần trong 15 phút.", 401);
+        }
+
         if (acc.PasswordHash != Hash(req.Password ?? ""))
+        {
+            _db.IntegrationCallLogs.Add(new IntegrationCallLog
+            {
+                TenantId = tenantId, Kind = "PRT_LOGIN_FAILED", Target = email,
+                RequestSummary = $"Failed attempt #{failedCount + 1}",
+                ResponseSummary = "Invalid password hash match", StatusCode = 401, CalledAt = DateTimeOffset.UtcNow
+            });
+            await _db.SaveChangesAsync(ct);
             throw new AppException("Email hoặc mật khẩu không đúng.", 401);
+        }
+
         acc.LastLoginAt = DateTimeOffset.UtcNow;
         if (acc.Status == "Pending") acc.Status = "Active";
+
+        _db.IntegrationCallLogs.Add(new IntegrationCallLog
+        {
+            TenantId = tenantId, Kind = "PRT_LOGIN_SUCCESS", Target = email,
+            RequestSummary = "User authentication successful",
+            ResponseSummary = "JWT Session Token Issued", StatusCode = 200, CalledAt = DateTimeOffset.UtcNow
+        });
+
         await _db.SaveChangesAsync(ct);
         var token = $"prt_token_{acc.Id:N}_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
         var dto = (await MapAccountsAsync(tenantId, [acc], ct))[0];
@@ -105,7 +158,11 @@ public sealed class PrtPortalService : IPrtPortalService
         var email = NormEmail(req.Email);
         var acc = await _db.PrtAccounts
             .FirstOrDefaultAsync(x => x.TenantId == tenantId && x.Email == email && !x.IsDeleted, ct)
-            ?? throw new AppException("Không tìm thấy email.", 404);
+            ?? throw new AppException("Không tìm thấy email đăng ký portal.", 404);
+
+        if (acc.Status == "Locked")
+            throw new AppException("Tài khoản đang bị khóa, vui lòng liên hệ quản trị viên.", 400);
+
         var token = Convert.ToHexString(RandomNumberGenerator.GetBytes(8));
         acc.ResetTokenStub = token;
         acc.ResetTokenExpiresAt = DateTimeOffset.UtcNow.AddHours(2);
@@ -116,7 +173,7 @@ public sealed class PrtPortalService : IPrtPortalService
             Kind = "PRT_RESET_PASSWORD",
             Target = acc.Email,
             RequestSummary = $"Token:{token}",
-            ResponseSummary = "Reset token generated and logged",
+            ResponseSummary = "Reset token generated and valid for 2 hours",
             StatusCode = 200,
             CalledAt = DateTimeOffset.UtcNow
         });
@@ -136,21 +193,33 @@ public sealed class PrtPortalService : IPrtPortalService
         var token = (req.ResetToken ?? "").Trim();
         var pass = (req.NewPassword ?? "").Trim();
         if (string.IsNullOrEmpty(token)) throw new AppException("Token không được để trống.");
-        if (pass.Length < 6) throw new AppException("Mật khẩu mới tối thiểu 6 ký tự.");
+        
+        ValidatePasswordPolicy(pass);
 
         var acc = await _db.PrtAccounts
             .FirstOrDefaultAsync(x => x.TenantId == tenantId && x.Email == email && !x.IsDeleted, ct)
             ?? throw new AppException("Không tìm thấy tài khoản.", 404);
 
         if (string.IsNullOrEmpty(acc.ResetTokenStub) || !string.Equals(acc.ResetTokenStub, token, StringComparison.OrdinalIgnoreCase))
-            throw new AppException("Reset token không hợp lệ.");
+            throw new AppException("Reset token không hợp lệ hoặc đã được sử dụng.");
         if (acc.ResetTokenExpiresAt is DateTimeOffset exp && exp < DateTimeOffset.UtcNow)
-            throw new AppException("Reset token đã hết hạn.");
+            throw new AppException("Reset token đã hết hạn (chỉ có hiệu lực trong 2 giờ).");
 
         acc.PasswordHash = Hash(pass);
         acc.ResetTokenStub = null;
         acc.ResetTokenExpiresAt = null;
         if (acc.Status is "Pending" or "Locked") acc.Status = "Active";
+
+        _db.IntegrationCallLogs.Add(new IntegrationCallLog
+        {
+            TenantId = tenantId,
+            Kind = "PRT_RESET_PASSWORD_SUCCESS",
+            Target = acc.Email,
+            RequestSummary = "Password successfully reset via token",
+            ResponseSummary = "Account status updated to Active and token cleared",
+            StatusCode = 200,
+            CalledAt = DateTimeOffset.UtcNow
+        });
 
         await _db.SaveChangesAsync(ct);
         return (await MapAccountsAsync(tenantId, [acc], ct))[0];
@@ -250,6 +319,7 @@ public sealed class PrtPortalService : IPrtPortalService
         Guid tenantId, Guid accountId, CancellationToken ct = default)
     {
         var acc = await RequireAsync(_db.PrtAccounts, tenantId, accountId, "tài khoản portal", ct);
+        var now = DateTimeOffset.UtcNow;
         var openPrt = await _db.PrtInvoices.AsNoTracking()
             .Where(x => x.TenantId == tenantId && x.AccountId == accountId && !x.IsDeleted && x.OpenAmount > 0)
             .ToListAsync(ct);
@@ -261,6 +331,8 @@ public sealed class PrtPortalService : IPrtPortalService
         decimal finOpenAmount = 0;
         int finOpenCount = 0;
         decimal finPaidYtd = 0;
+        decimal finOverdueAmount = 0;
+        int finOverdueCount = 0;
 
         if (!string.IsNullOrWhiteSpace(acc.CustomerCode))
         {
@@ -269,20 +341,28 @@ public sealed class PrtPortalService : IPrtPortalService
                 .Where(x => x.TenantId == tenantId && !x.IsDeleted && (x.CustomerId == accountId || x.CustomerInvoiceNo == custCode))
                 .ToListAsync(ct);
 
-            finOpenAmount = finInvoices.Where(x => x.Status != "Paid" && x.Status != "Void")
-                .Sum(x => x.TotalAmount - x.ReceivedAmount);
-            finOpenCount = finInvoices.Count(x => x.Status != "Paid" && x.Status != "Void" && (x.TotalAmount - x.ReceivedAmount > 0));
+            var openFinInvoices = finInvoices.Where(x => x.Status != "Paid" && x.Status != "Void" && (x.TotalAmount - x.ReceivedAmount > 0)).ToList();
+            finOpenAmount = openFinInvoices.Sum(x => x.TotalAmount - x.ReceivedAmount);
+            finOpenCount = openFinInvoices.Count;
+
+            var overdueFin = openFinInvoices.Where(x => x.DueDate < now).ToList();
+            finOverdueAmount = overdueFin.Sum(x => x.TotalAmount - x.ReceivedAmount);
+            finOverdueCount = overdueFin.Count;
 
             finPaidYtd = await _db.FinArReceipts.AsNoTracking()
                 .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.CustomerId == accountId && x.ReceiptDate.Year == year && x.Status != "Void")
                 .SumAsync(x => (decimal?)x.Amount, ct) ?? 0;
         }
 
+        var overduePrt = openPrt.Where(x => x.DueDate.HasValue && x.DueDate.Value < now).ToList();
+        var totalOverdueAmount = overduePrt.Sum(x => x.OpenAmount) + finOverdueAmount;
+        var totalOverdueCount = overduePrt.Count + finOverdueCount;
+
         var totalOpenAmount = openPrt.Sum(x => x.OpenAmount) + finOpenAmount;
         var totalOpenCount = openPrt.Count + finOpenCount;
         var totalPaidYtd = paidYtdPrt + finPaidYtd;
 
-        return new PrtArSummaryDto(accountId, totalOpenAmount, totalOpenCount, totalPaidYtd);
+        return new PrtArSummaryDto(accountId, totalOpenAmount, totalOpenCount, totalPaidYtd, totalOverdueAmount, totalOverdueCount);
     }
 
     public async Task<IReadOnlyList<PrtInvoiceDto>> ListInvoicesAsync(
@@ -468,8 +548,12 @@ public sealed class PrtPortalService : IPrtPortalService
             o.Status, o.TotalAmount, o.ShippingAddress, o.Note, lineCounts.GetValueOrDefault(o.Id))).ToList();
     }
 
-    private static PrtInvoiceDto MapInvoice(PrtInvoice i) =>
-        new(i.Id, i.AccountId, i.Code, i.InvoiceDate, i.DueDate, i.Amount, i.PaidAmount, i.OpenAmount, i.Status);
+    private static PrtInvoiceDto MapInvoice(PrtInvoice i)
+    {
+        var isOverdue = i.OpenAmount > 0 && i.DueDate.HasValue && i.DueDate.Value < DateTimeOffset.UtcNow;
+        var overdueDays = isOverdue ? (int)Math.Max(0, (DateTimeOffset.UtcNow - i.DueDate!.Value).TotalDays) : 0;
+        return new(i.Id, i.AccountId, i.Code, i.InvoiceDate, i.DueDate, i.Amount, i.PaidAmount, i.OpenAmount, i.Status, overdueDays, isOverdue);
+    }
 
     private async Task<string> NextCodeAsync(Guid tenantId, string prefix, CancellationToken ct)
     {

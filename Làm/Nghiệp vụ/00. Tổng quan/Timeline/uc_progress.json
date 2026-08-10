@@ -236,18 +236,18 @@
   },
   "UC_CRM_016": {
     "done": true,
-    "pct": 90,
-    "note": "L2 · CrmCampaignService Upsert + FE /crm/campaigns · 12 BE + 10 FE tests"
+    "note": "L2 · CrmCampaignService Upsert + FE /crm/campaigns · 12 BE + 10 FE tests",
+    "pct": 90
   },
   "UC_CRM_019": {
     "done": true,
-    "pct": 90,
-    "note": "L2 · Campaign expense + SpentAmount sync · FE tab Chi phí"
+    "note": "L2 · Campaign expense + SpentAmount sync · FE tab Chi phí",
+    "pct": 90
   },
   "UC_CRM_023": {
     "done": true,
-    "pct": 90,
-    "note": "L2 · Close campaign snapshot metrics · FE đóng"
+    "note": "L2 · Close campaign snapshot metrics · FE đóng",
+    "pct": 90
   },
   "UC_CRM_024": {
     "done": true,
@@ -256,53 +256,53 @@
   },
   "UC_CRM_026": {
     "done": true,
-    "pct": 90,
-    "note": "L2 · SyncWebLead → CrmLead + UTM · FE tab Web lead"
+    "note": "L2 · SyncWebLead → CrmLead + UTM · FE tab Web lead",
+    "pct": 90
   },
   "UC_CRM_029": {
     "done": true,
-    "pct": 90,
-    "note": "L2 · CPL/CAC/ROAS/ROI GetMetrics · FE dashboard"
+    "note": "L2 · CPL/CAC/ROAS/ROI GetMetrics · FE dashboard",
+    "pct": 90
   },
   "UC_CRM_031": {
     "done": true,
-    "pct": 90,
-    "note": "L2 · Marketing dashboard aggregate · FE dashboard"
+    "note": "L2 · Marketing dashboard aggregate · FE dashboard",
+    "pct": 90
   },
   "UC_CRM_032": {
     "done": true,
-    "pct": 90,
-    "note": "L2 · CrmPromotionService Upsert + FE /crm/promotions"
+    "note": "L2 · CrmPromotionService Upsert + FE /crm/promotions",
+    "pct": 90
   },
   "UC_CRM_033": {
     "done": true,
-    "pct": 90,
-    "note": "L2 · PromotionCondition replace-on-upsert · FE điều kiện"
+    "note": "L2 · PromotionCondition replace-on-upsert · FE điều kiện",
+    "pct": 90
   },
   "UC_CRM_034": {
     "done": true,
-    "pct": 90,
-    "note": "L2 · GenerateVouchers batch unique codes · FE sinh mã"
+    "note": "L2 · GenerateVouchers batch unique codes · FE sinh mã",
+    "pct": 90
   },
   "UC_CRM_035": {
     "done": true,
-    "pct": 90,
-    "note": "L2 · MaxUsageTotal/PerCustomer + voucher MaxUsage · redeem guard"
+    "note": "L2 · MaxUsageTotal/PerCustomer + voucher MaxUsage · redeem guard",
+    "pct": 90
   },
   "UC_CRM_036": {
     "done": true,
-    "pct": 90,
-    "note": "L2 · SyncToPos PosPromotion/Voucher · FE nút sync · 8 BE + helpers FE"
+    "note": "L2 · SyncToPos PosPromotion/Voucher · FE nút sync · 8 BE + helpers FE",
+    "pct": 90
   },
   "UC_CRM_037": {
     "done": true,
-    "pct": 90,
-    "note": "L2 · ApplyOnQuote DiscountAmount/Total · FE áp báo giá"
+    "note": "L2 · ApplyOnQuote DiscountAmount/Total · FE áp báo giá",
+    "pct": 90
   },
   "UC_CRM_038": {
     "done": true,
-    "pct": 90,
-    "note": "L2 · GET voucher-usage-report · FE BC sử dụng · filter promo/ngày"
+    "note": "L2 · GET voucher-usage-report · FE BC sử dụng · filter promo/ngày",
+    "pct": 90
   },
   "UC_CRM_047": {
     "done": true,
@@ -2796,18 +2796,18 @@
   },
   "UC_POS_054": {
     "done": true,
-    "pct": 90,
-    "note": "L2 · PaySale trừ tồn INV Issue theo BOM · Ref POS · 8 BE + 6 FE tests"
+    "note": "L2 · PaySale trừ tồn INV Issue theo BOM · Ref POS · 8 BE + 6 FE tests",
+    "pct": 90
   },
   "UC_POS_055": {
     "done": true,
-    "pct": 90,
-    "note": "L2 · GET /api/pos/stock-alerts BelowMin/NearReorder/OutOfStock · FE banner sell"
+    "note": "L2 · GET /api/pos/stock-alerts BelowMin/NearReorder/OutOfStock · FE banner sell",
+    "pct": 90
   },
   "UC_POS_059": {
     "done": true,
-    "pct": 90,
-    "note": "L2 · CloseShift + SyncShiftRevenueToFin RecognizeFromPos · FE sync-fin · 7 BE + helpers FE"
+    "note": "L2 · CloseShift + SyncShiftRevenueToFin RecognizeFromPos · FE sync-fin · 7 BE + helpers FE",
+    "pct": 90
   },
   "UC_POS_061": {
     "done": true,
@@ -2831,18 +2831,18 @@
   },
   "UC_POS_065": {
     "done": true,
-    "pct": 90,
-    "note": "L2 · cost-variance BOM×StdCost vs INV Issue POS · FE tab + CSV"
+    "note": "L2 · cost-variance BOM×StdCost vs INV Issue POS · FE tab + CSV",
+    "pct": 90
   },
   "UC_POS_066": {
     "done": true,
-    "pct": 90,
-    "note": "L2 · top-products qty|revenue top N · FE tab + CSV"
+    "note": "L2 · top-products qty|revenue top N · FE tab + CSV",
+    "pct": 90
   },
   "UC_POS_067": {
     "done": true,
-    "pct": 90,
-    "note": "L2 · store-compare DT/share/avg ticket · FE tab + CSV"
+    "note": "L2 · store-compare DT/share/avg ticket · FE tab + CSV",
+    "pct": 90
   },
   "UC_POS_068": {
     "done": true,
@@ -2851,8 +2851,8 @@
   },
   "UC_POS_069": {
     "done": true,
-    "pct": 90,
-    "note": "L2 · chain-live DT hôm nay/tháng vs target + ca mở · FE tab poll 30s"
+    "note": "L2 · chain-live DT hôm nay/tháng vs target + ca mở · FE tab poll 30s",
+    "pct": 90
   },
   "UC_POS_070": {
     "done": true,
@@ -2866,8 +2866,8 @@
   },
   "UC_POS_072": {
     "done": true,
-    "pct": 90,
-    "note": "L2 · MonthlyRevenueTarget trên store + migration · FE set target + attainment"
+    "note": "L2 · MonthlyRevenueTarget trên store + migration · FE set target + attainment",
+    "pct": 90
   },
   "UC_PRT_001": {
     "done": true,
@@ -2876,8 +2876,8 @@
   },
   "UC_PRT_002": {
     "done": true,
-    "note": "L2 · login/forgot password stub",
-    "pct": 80
+    "note": "Hoàn thiện Cap-2: Auth JWT/Token + Password policy (min 8 chars, mixed case, digit) + Brute-force lockout (5 sai -> Locked & IntegrationCallLog) + Single-use token reset. Test 8/8 pass.",
+    "pct": 95
   },
   "UC_PRT_003": {
     "done": true,
@@ -2896,8 +2896,8 @@
   },
   "UC_PRT_014": {
     "done": true,
-    "note": "L2 · AR summary stub",
-    "pct": 85
+    "note": "Hoàn thiện Cap-2: AR Summary hợp nhất Portal Invoices + FinArInvoices live, tính toán OverdueAmount, OverdueInvoiceCount, OverdueDays & IsOverdue flag. Test pass.",
+    "pct": 95
   },
   "UC_PRT_015": {
     "done": true,
