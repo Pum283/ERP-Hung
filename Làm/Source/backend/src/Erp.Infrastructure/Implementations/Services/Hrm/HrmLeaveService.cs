@@ -448,29 +448,46 @@ public sealed class HrmContractService : IHrmContractService
 
     public async Task<ContractDto> UpsertAsync(Guid tenantId, Guid? actorId, ContractUpsertRequest req, CancellationToken ct = default)
     {
+        if (string.IsNullOrWhiteSpace(req.ContractNo))
+            throw new AppException("Số hợp đồng (ContractNo) không được để trống.", 400);
+
+        if (req.BaseSalary.HasValue && req.BaseSalary.Value < 0)
+            throw new AppException("Lương cơ bản không được nhỏ hơn 0.", 400);
+
+        var cType = string.IsNullOrWhiteSpace(req.ContractType) ? "Indefinite" : req.ContractType.Trim();
+        if (cType != "Indefinite" && !req.EndDate.HasValue)
+            throw new AppException("Hợp đồng có thời hạn bắt buộc phải có Ngày kết thúc.", 400);
+
+        if (req.EndDate.HasValue && req.EndDate.Value <= req.StartDate)
+            throw new AppException("Ngày kết thúc hợp đồng phải sau ngày bắt đầu.", 400);
+
         _ = await _db.Employees.FirstOrDefaultAsync(x => x.Id == req.EmployeeId && x.TenantId == tenantId && !x.IsDeleted, ct)
             ?? throw new AppException("Nhân viên không tồn tại.", 404);
 
+        var contractNo = req.ContractNo.Trim().ToUpperInvariant();
         Contract entity;
         if (req.Id is Guid id)
         {
             entity = await _db.Contracts.FirstOrDefaultAsync(x => x.Id == id && x.TenantId == tenantId && !x.IsDeleted, ct)
                      ?? throw new AppException("Hợp đồng không tồn tại.", 404);
+
+            if (await _db.Contracts.AnyAsync(x => x.TenantId == tenantId && x.ContractNo == contractNo && x.Id != id && !x.IsDeleted, ct))
+                throw new AppException("Số HĐ đã tồn tại trong hệ thống.", 400);
         }
         else
         {
-            if (await _db.Contracts.AnyAsync(x => x.TenantId == tenantId && x.ContractNo == req.ContractNo.Trim() && !x.IsDeleted, ct))
-                throw new AppException("Số HĐ đã tồn tại.");
+            if (await _db.Contracts.AnyAsync(x => x.TenantId == tenantId && x.ContractNo == contractNo && !x.IsDeleted, ct))
+                throw new AppException("Số HĐ đã tồn tại trong hệ thống.", 400);
             entity = new Contract { TenantId = tenantId, CreatedBy = actorId };
             _db.Contracts.Add(entity);
         }
 
         entity.EmployeeId = req.EmployeeId;
-        entity.ContractNo = req.ContractNo.Trim();
-        entity.ContractType = req.ContractType;
+        entity.ContractNo = contractNo;
+        entity.ContractType = cType;
         entity.StartDate = req.StartDate;
         entity.EndDate = req.EndDate;
-        entity.Status = req.Status;
+        entity.Status = string.IsNullOrWhiteSpace(req.Status) ? "Active" : req.Status.Trim();
         entity.ParentContractId = req.ParentContractId;
         entity.BaseSalary = req.BaseSalary;
         entity.ScanFileId = req.ScanFileId;
@@ -484,6 +501,9 @@ public sealed class HrmContractService : IHrmContractService
     {
         var entity = await _db.Contracts.FirstOrDefaultAsync(x => x.Id == id && x.TenantId == tenantId && !x.IsDeleted, ct)
                      ?? throw new AppException("Hợp đồng không tồn tại.", 404);
+        if (req.NewEndDate <= entity.StartDate)
+            throw new AppException("Ngày kết thúc gia hạn phải sau ngày bắt đầu hợp đồng.", 400);
+
         entity.EndDate = req.NewEndDate;
         if (req.BaseSalary is decimal s) entity.BaseSalary = s;
         entity.Status = "Active";
@@ -516,9 +536,115 @@ public sealed class HrmContractService : IHrmContractService
         return await q.ToListAsync(ct);
     }
 
+    // ─── UC_HRM_039 — Tạo phụ lục hợp đồng ───
+
+    public async Task<ContractDto> CreateAnnexAsync(Guid tenantId, Guid? actorId, ContractAnnexCreateRequest req, CancellationToken ct = default)
+    {
+        var parent = await _db.Contracts.FirstOrDefaultAsync(x => x.Id == req.ParentContractId && x.TenantId == tenantId && !x.IsDeleted, ct)
+                     ?? throw new AppException("Hợp đồng gốc không tồn tại.", 404);
+
+        if (parent.Status is "Terminated" or "Expired")
+            throw new AppException("Không thể tạo phụ lục cho hợp đồng đã bị chấm dứt hoặc hết hạn.", 400);
+
+        if (req.EndDate.HasValue && req.EndDate.Value <= req.StartDate)
+            throw new AppException("Ngày kết thúc phụ lục hợp đồng phải sau ngày bắt đầu.", 400);
+
+        // Root contract tracking (prevent annex chaining)
+        var rootId = parent.ParentContractId ?? parent.Id;
+
+        var existingAnnexCount = await _db.Contracts.CountAsync(x => x.TenantId == tenantId && x.ParentContractId == rootId && !x.IsDeleted, ct);
+        var annexNo = string.IsNullOrWhiteSpace(req.ContractNo)
+            ? $"{parent.ContractNo}-PL{existingAnnexCount + 1}"
+            : req.ContractNo.Trim().ToUpperInvariant();
+
+        if (await _db.Contracts.AnyAsync(x => x.TenantId == tenantId && x.ContractNo == annexNo && !x.IsDeleted, ct))
+            throw new AppException($"Số phụ lục '{annexNo}' đã tồn tại trong hệ thống.", 400);
+
+        var entity = new Contract
+        {
+            TenantId = tenantId,
+            EmployeeId = parent.EmployeeId,
+            ContractNo = annexNo,
+            ContractType = "Annex",
+            StartDate = req.StartDate,
+            EndDate = req.EndDate,
+            Status = "Active",
+            ParentContractId = rootId,
+            BaseSalary = req.BaseSalary ?? parent.BaseSalary,
+            ScanFileId = req.ScanFileId,
+            CreatedBy = actorId
+        };
+
+        _db.Contracts.Add(entity);
+
+        // If annex updates base salary, update parent base salary too
+        if (req.BaseSalary.HasValue)
+        {
+            parent.BaseSalary = req.BaseSalary.Value;
+            parent.UpdatedBy = actorId;
+        }
+
+        await _db.SaveChangesAsync(ct);
+        return await MapAsync(entity, ct);
+    }
+
+    // ─── UC_HRM_043 — Cảnh báo hết hạn hợp đồng chi tiết ───
+
+    public async Task<IReadOnlyList<ExpiringContractDto>> ListExpiringDetailedAsync(
+        Guid tenantId, int withinDays = 30, CancellationToken ct = default)
+    {
+        if (withinDays <= 0) withinDays = 30;
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var thresholdDate = today.AddDays(withinDays);
+
+        var list = await (
+            from c in _db.Contracts.AsNoTracking()
+            join e in _db.Employees.AsNoTracking() on c.EmployeeId equals e.Id
+            join o in _db.OrgUnits.AsNoTracking() on e.OrgUnitId equals o.Id into oj from o in oj.DefaultIfEmpty()
+            join d in _db.Departments.AsNoTracking() on e.DepartmentId equals d.Id into dj from d in dj.DefaultIfEmpty()
+            where c.TenantId == tenantId && !c.IsDeleted && c.Status == "Active"
+                  && c.EndDate != null && c.EndDate >= today && c.EndDate <= thresholdDate
+            orderby c.EndDate
+            select new ExpiringContractDto(
+                c.Id, c.EmployeeId, e.EmployeeCode, e.FullName, c.ContractNo, c.ContractType,
+                c.StartDate, c.EndDate.Value, c.EndDate.Value.DayNumber - today.DayNumber,
+                c.BaseSalary, o != null ? o.Name : null, d != null ? d.Name : null)
+        ).ToListAsync(ct);
+
+        return list;
+    }
+
+    // ─── UC_HRM_046 — Lịch sử hợp đồng theo nhân sự ───
+
+    public async Task<IReadOnlyList<ContractDetailDto>> ListContractHistoryAsync(
+        Guid tenantId, Guid employeeId, CancellationToken ct = default)
+    {
+        var contracts = await _db.Contracts.AsNoTracking()
+            .Where(x => x.TenantId == tenantId && x.EmployeeId == employeeId && !x.IsDeleted)
+            .OrderByDescending(x => x.StartDate)
+            .ToListAsync(ct);
+
+        var empName = await _db.Employees.AsNoTracking()
+            .Where(x => x.Id == employeeId && x.TenantId == tenantId)
+            .Select(x => x.FullName)
+            .FirstOrDefaultAsync(ct) ?? "";
+
+        var parentIds = contracts.Where(x => x.ParentContractId.HasValue).Select(x => x.ParentContractId!.Value).Distinct().ToList();
+        var parentDict = await _db.Contracts.AsNoTracking()
+            .Where(x => parentIds.Contains(x.Id))
+            .ToDictionaryAsync(x => x.Id, x => x.ContractNo, ct);
+
+        return contracts.Select(c => new ContractDetailDto(
+            c.Id, c.EmployeeId, empName, c.ContractNo, c.ContractType, c.StartDate, c.EndDate,
+            c.Status, c.ParentContractId,
+            c.ParentContractId.HasValue && parentDict.TryGetValue(c.ParentContractId.Value, out var parentNo) ? parentNo : null,
+            c.BaseSalary, c.ScanFileId, c.CreatedAt)).ToList();
+    }
+
     private async Task<ContractDto> MapAsync(Contract entity, CancellationToken ct)
     {
         var name = await _db.Employees.Where(x => x.Id == entity.EmployeeId).Select(x => x.FullName).FirstAsync(ct);
         return new ContractDto(entity.Id, entity.EmployeeId, name, entity.ContractNo, entity.ContractType, entity.StartDate, entity.EndDate, entity.Status, entity.ParentContractId, entity.BaseSalary, entity.ScanFileId);
     }
 }
+

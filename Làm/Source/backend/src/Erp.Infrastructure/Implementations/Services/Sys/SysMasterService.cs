@@ -38,11 +38,18 @@ public sealed class SysMasterService : ISysMasterService
 
     public async Task<OrgUnitDto> UpsertOrgUnitAsync(Guid tenantId, Guid? userId, OrgUnitUpsertRequest req, CancellationToken ct = default)
     {
+        var codeTrim = req.Code.Trim();
+        if (string.IsNullOrWhiteSpace(codeTrim))
+            throw new AppException("Mã chi nhánh không được để trống.", 400);
+
         OrgUnit entity;
         if (req.Id is Guid id)
         {
             entity = await _db.OrgUnits.FirstOrDefaultAsync(x => x.Id == id && x.TenantId == tenantId && !x.IsDeleted, ct)
-                     ?? throw new AppException("OrgUnit không tồn tại.", 404);
+                     ?? throw new AppException("Chi nhánh không tồn tại.", 404);
+
+            if (req.ParentId == id)
+                throw new AppException("Chi nhánh không thể làm đơn vị cấp trên của chính nó.", 400);
         }
         else
         {
@@ -51,18 +58,48 @@ public sealed class SysMasterService : ISysMasterService
             _db.OrgUnits.Add(entity);
         }
 
-        entity.Code = req.Code.Trim();
+        var dupCode = await _db.OrgUnits.AnyAsync(x => x.TenantId == tenantId && x.Id != entity.Id && !x.IsDeleted && x.Code == codeTrim, ct);
+        if (dupCode)
+            throw new AppException($"Mã chi nhánh '{codeTrim}' đã tồn tại trong hệ thống.", 400);
+
+        if (req.ParentId is Guid pid)
+        {
+            var parent = await _db.OrgUnits.FirstOrDefaultAsync(x => x.Id == pid && x.TenantId == tenantId && !x.IsDeleted, ct)
+                         ?? throw new AppException("Đơn vị cấp trên không tồn tại.", 400);
+            if (!string.IsNullOrEmpty(parent.Path) && parent.Path.Contains(entity.Id.ToString("N")))
+                throw new AppException("Không thể chọn đơn vị cấp dưới làm đơn vị cấp trên (lỗi vòng lặp phân cấp).", 400);
+        }
+
+        entity.Code = codeTrim;
         entity.Name = req.Name.Trim();
         entity.ParentId = req.ParentId;
         entity.UnitType = req.UnitType;
         entity.IsActive = req.IsActive;
         await _db.SaveChangesAsync(ct);
 
-        var parentPath = req.ParentId is Guid pid
-            ? await _db.OrgUnits.Where(x => x.Id == pid).Select(x => x.Path).FirstAsync(ct)
+        var oldPath = entity.Path;
+        var parentPath = req.ParentId is Guid pId
+            ? await _db.OrgUnits.Where(x => x.Id == pId).Select(x => x.Path).FirstAsync(ct)
             : "/";
-        entity.Path = parentPath == "/" ? $"/{entity.Id:N}/" : parentPath + $"{entity.Id:N}/";
-        await _db.SaveChangesAsync(ct);
+        var newPath = parentPath == "/" ? $"/{entity.Id:N}/" : parentPath + $"{entity.Id:N}/";
+
+        if (oldPath != newPath)
+        {
+            entity.Path = newPath;
+            await _db.SaveChangesAsync(ct);
+
+            // Recursively update descendants path if oldPath was established
+            if (!string.IsNullOrEmpty(oldPath) && oldPath != "/")
+            {
+                var children = await _db.OrgUnits.Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Path.StartsWith(oldPath)).ToListAsync(ct);
+                foreach (var child in children)
+                {
+                    if (child.Id == entity.Id) continue;
+                    child.Path = newPath + child.Path[oldPath.Length..];
+                }
+                if (children.Count > 0) await _db.SaveChangesAsync(ct);
+            }
+        }
 
         return new OrgUnitDto(entity.Id, entity.Code, entity.Name, entity.ParentId, entity.UnitType, entity.IsActive);
     }
@@ -78,19 +115,45 @@ public sealed class SysMasterService : ISysMasterService
 
     public async Task<DepartmentDto> UpsertDepartmentAsync(Guid tenantId, Guid? userId, DepartmentUpsertRequest req, CancellationToken ct = default)
     {
+        var codeTrim = req.Code.Trim();
+        if (string.IsNullOrWhiteSpace(codeTrim))
+            throw new AppException("Mã phòng ban không được để trống.", 400);
+
         Department entity;
         if (req.Id is Guid id)
         {
             entity = await _db.Departments.FirstOrDefaultAsync(x => x.Id == id && x.TenantId == tenantId && !x.IsDeleted, ct)
-                     ?? throw new AppException("Department không tồn tại.", 404);
+                     ?? throw new AppException("Phòng ban không tồn tại.", 404);
+
+            if (req.ParentId == id)
+                throw new AppException("Phòng ban không thể chọn chính nó làm đơn vị cấp trên.", 400);
         }
         else
         {
-            entity = new Department { TenantId = tenantId, CreatedBy = userId };
+            entity = new Department { TenantId = tenantId, CreatedBy = userId, Path = "/" };
             _db.Departments.Add(entity);
         }
 
-        entity.Code = req.Code.Trim();
+        var dupCode = await _db.Departments.AnyAsync(x => x.TenantId == tenantId && x.Id != entity.Id && !x.IsDeleted && x.Code == codeTrim, ct);
+        if (dupCode)
+            throw new AppException($"Mã phòng ban '{codeTrim}' đã tồn tại trong hệ thống.", 400);
+
+        if (req.OrgUnitId is Guid orgId)
+        {
+            var orgExists = await _db.OrgUnits.AnyAsync(x => x.Id == orgId && x.TenantId == tenantId && !x.IsDeleted, ct);
+            if (!orgExists)
+                throw new AppException("Chi nhánh gán vào phòng ban không tồn tại.", 400);
+        }
+
+        if (req.ParentId is Guid pid)
+        {
+            var parent = await _db.Departments.FirstOrDefaultAsync(x => x.Id == pid && x.TenantId == tenantId && !x.IsDeleted, ct)
+                         ?? throw new AppException("Phòng ban cấp trên không tồn tại.", 400);
+            if (!string.IsNullOrEmpty(parent.Path) && parent.Path.Contains(entity.Id.ToString("N")))
+                throw new AppException("Không thể chọn phòng ban con làm đơn vị cấp trên (lỗi vòng lặp phân cấp).", 400);
+        }
+
+        entity.Code = codeTrim;
         entity.Name = req.Name.Trim();
         entity.ParentId = req.ParentId;
         entity.OrgUnitId = req.OrgUnitId;
@@ -98,10 +161,29 @@ public sealed class SysMasterService : ISysMasterService
         entity.IsActive = req.IsActive;
         await _db.SaveChangesAsync(ct);
 
-        entity.Path = req.ParentId is Guid pid
-            ? (await _db.Departments.Where(x => x.Id == pid).Select(x => x.Path).FirstAsync(ct)) + $"{entity.Id:N}/"
-            : $"/{entity.Id:N}/";
-        await _db.SaveChangesAsync(ct);
+        var oldPath = entity.Path;
+        var parentPath = req.ParentId is Guid pId
+            ? await _db.Departments.Where(x => x.Id == pId).Select(x => x.Path).FirstAsync(ct)
+            : "/";
+        var newPath = parentPath == "/" ? $"/{entity.Id:N}/" : parentPath + $"{entity.Id:N}/";
+
+        if (oldPath != newPath)
+        {
+            entity.Path = newPath;
+            await _db.SaveChangesAsync(ct);
+
+            // Recursively update descendants path if oldPath was established
+            if (!string.IsNullOrEmpty(oldPath) && oldPath != "/")
+            {
+                var children = await _db.Departments.Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Path.StartsWith(oldPath)).ToListAsync(ct);
+                foreach (var child in children)
+                {
+                    if (child.Id == entity.Id) continue;
+                    child.Path = newPath + child.Path[oldPath.Length..];
+                }
+                if (children.Count > 0) await _db.SaveChangesAsync(ct);
+            }
+        }
 
         return new DepartmentDto(entity.Id, entity.Code, entity.Name, entity.ParentId, entity.OrgUnitId, entity.ManagerUserId, entity.IsActive);
     }
@@ -117,11 +199,18 @@ public sealed class SysMasterService : ISysMasterService
 
     public async Task<JobLevelDto> UpsertJobLevelAsync(Guid tenantId, Guid? userId, JobLevelUpsertRequest req, CancellationToken ct = default)
     {
+        var codeTrim = req.Code.Trim();
+        if (string.IsNullOrWhiteSpace(codeTrim))
+            throw new AppException("Mã chức danh không được để trống.", 400);
+
+        if (req.LevelOrder < 0)
+            throw new AppException("Thứ tự cấp bậc phải lớn hơn hoặc bằng 0.", 400);
+
         JobLevel entity;
         if (req.Id is Guid id)
         {
             entity = await _db.JobLevels.FirstOrDefaultAsync(x => x.Id == id && x.TenantId == tenantId && !x.IsDeleted, ct)
-                     ?? throw new AppException("JobLevel không tồn tại.", 404);
+                     ?? throw new AppException("Chức danh không tồn tại.", 404);
         }
         else
         {
@@ -129,7 +218,11 @@ public sealed class SysMasterService : ISysMasterService
             _db.JobLevels.Add(entity);
         }
 
-        entity.Code = req.Code.Trim();
+        var dupCode = await _db.JobLevels.AnyAsync(x => x.TenantId == tenantId && x.Id != entity.Id && !x.IsDeleted && x.Code == codeTrim, ct);
+        if (dupCode)
+            throw new AppException($"Mã chức danh '{codeTrim}' đã tồn tại trong hệ thống.", 400);
+
+        entity.Code = codeTrim;
         entity.Name = req.Name.Trim();
         entity.LevelOrder = req.LevelOrder;
         entity.DefaultScopeType = req.DefaultScopeType;
@@ -377,12 +470,15 @@ public sealed class SysMasterService : ISysMasterService
     {
         var ids = users.Select(u => u.Id).ToList();
         var now = DateTimeOffset.UtcNow;
-        var roles = await _db.UserRoles.AsNoTracking()
+        var userRolesList = await _db.UserRoles.AsNoTracking()
             .Where(x => ids.Contains(x.UserId) && x.IsActive && !x.IsDeleted && x.RevokedAt == null
                         && (x.ValidFrom == null || x.ValidFrom <= now)
                         && (x.ValidTo == null || x.ValidTo >= now))
+            .ToListAsync(ct);
+
+        var roles = userRolesList
             .GroupBy(x => x.UserId)
-            .ToDictionaryAsync(g => g.Key, g => (IReadOnlyList<Guid>)g.Select(x => x.RoleId).ToList(), ct);
+            .ToDictionary(g => g.Key, g => (IReadOnlyList<Guid>)g.Select(x => x.RoleId).ToList());
 
         var udRows = await (
             from ud in _db.UserDepartments.AsNoTracking()

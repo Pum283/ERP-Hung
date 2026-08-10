@@ -4,6 +4,7 @@ using Erp.Application.Interfaces.Services.Hrm;
 using Erp.Application.Interfaces.Services.Wf;
 using Erp.Domain.Entities.Hrm;
 using Erp.Domain.Entities.Sys;
+using Erp.Domain.Entities.Wf;
 using Erp.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -39,6 +40,7 @@ public sealed class HrmRecruitService : IHrmRecruitService
             throw new AppException("Số lượng tuyển phải từ 1–999.");
         var reason = (req.Reason ?? "").Trim();
         if (reason.Length == 0) throw new AppException("Nhập lý do tuyển dụng.");
+        if (reason.Length < 5) throw new AppException("Lý do tuyển dụng quá ngắn (tối thiểu 5 ký tự).");
         if (reason.Length > 1000) throw new AppException("Lý do tối đa 1000 ký tự.");
 
         _ = await _db.JobTitles.AsNoTracking()
@@ -92,6 +94,12 @@ public sealed class HrmRecruitService : IHrmRecruitService
         if (entity.RequestedByUserId != userId && !await HasPermAsync(tenantId, userId, "hrm.recruit.manage", ct))
             throw new ForbiddenException("Không có quyền đóng/hủy phiếu này.");
 
+        if (entity.Status == "Pending")
+            throw new AppException("Phiếu đang chờ duyệt, vui lòng rút lại hoặc chờ xử lý trước khi đóng/hủy.", 400);
+
+        if (entity.Status is "Closed" or "Cancelled")
+            throw new AppException("Phiếu đề xuất này đã được đóng hoặc hủy từ trước.", 400);
+
         entity.Status = entity.Status switch
         {
             "Draft" => "Cancelled",
@@ -103,6 +111,85 @@ public sealed class HrmRecruitService : IHrmRecruitService
         await _db.SaveChangesAsync(ct);
         return (await MapManyAsync(tenantId, new[] { entity }, ct))[0];
     }
+
+    // ─── UC_HRM_051 — Duyệt / từ chối đề xuất ───
+
+    public async Task<RecruitmentRequestDto> ApproveOrRejectAsync(
+        Guid tenantId, Guid userId, Guid id, ApproveRecruitmentRequest req, CancellationToken ct = default)
+    {
+        var entity = await _db.RecruitmentRequests.FirstOrDefaultAsync(
+            x => x.Id == id && x.TenantId == tenantId && !x.IsDeleted, ct)
+            ?? throw new AppException("Phiếu đề xuất không tồn tại.", 404);
+
+        if (entity.Status != "Pending")
+            throw new AppException("Chỉ có thể duyệt hoặc từ chối phiếu đang ở trạng thái Chờ duyệt (Pending).", 400);
+
+        var action = (req.Action ?? "").Trim().ToUpperInvariant();
+        if (action != "APPROVE" && action != "REJECT")
+            throw new AppException("Hành động phê duyệt không hợp lệ (chỉ chấp nhận Approve hoặc Reject).", 400);
+
+        if (action == "REJECT" && string.IsNullOrWhiteSpace(req.Comment))
+            throw new AppException("Vui lòng nhập lý do khi từ chối phiếu đề xuất.", 400);
+
+        entity.Status = action == "APPROVE" ? "Approved" : "Rejected";
+        entity.UpdatedBy = userId;
+
+        if (entity.WfInstanceId is Guid wfId)
+        {
+            var task = await _db.WfTasks.FirstOrDefaultAsync(t => t.InstanceId == wfId && t.TenantId == tenantId && !t.IsDeleted, ct);
+            if (task is null)
+            {
+                task = new WfTask
+                {
+                    TenantId = tenantId,
+                    InstanceId = wfId,
+                    NodeId = Guid.NewGuid(),
+                    AssigneeUserId = userId,
+                    Status = "Completed"
+                };
+                _db.WfTasks.Add(task);
+                await _db.SaveChangesAsync(ct);
+            }
+
+            var act = new WfTaskAction
+            {
+                TenantId = tenantId,
+                TaskId = task.Id,
+                ActorUserId = userId,
+                Action = action == "APPROVE" ? "Approved" : "Rejected",
+                Comment = req.Comment?.Trim(),
+                CreatedBy = userId
+            };
+            _db.WfTaskActions.Add(act);
+        }
+
+        await _db.SaveChangesAsync(ct);
+        return (await MapManyAsync(tenantId, new[] { entity }, ct))[0];
+    }
+
+    // ─── UC_HRM_052 — Xem lịch sử duyệt đề xuất ───
+
+    public async Task<IReadOnlyList<RecruitmentApprovalStepDto>> GetApprovalHistoryAsync(
+        Guid tenantId, Guid id, CancellationToken ct = default)
+    {
+        var entity = await _db.RecruitmentRequests.AsNoTracking().FirstOrDefaultAsync(
+            x => x.Id == id && x.TenantId == tenantId && !x.IsDeleted, ct)
+            ?? throw new AppException("Phiếu đề xuất không tồn tại.", 404);
+
+        if (entity.WfInstanceId is not Guid instanceId)
+            return Array.Empty<RecruitmentApprovalStepDto>();
+
+        return await (
+            from a in _db.WfTaskActions.AsNoTracking()
+            join t in _db.WfTasks.AsNoTracking() on a.TaskId equals t.Id
+            join u in _db.Users.AsNoTracking() on a.ActorUserId equals u.Id
+            where a.TenantId == tenantId && t.InstanceId == instanceId && !a.IsDeleted
+            orderby a.CreatedAt
+            select new RecruitmentApprovalStepDto(
+                a.Id, a.ActorUserId, u.DisplayName ?? u.Username, a.Action, a.Comment, a.CreatedAt)
+        ).ToListAsync(ct);
+    }
+
 
     private async Task SubmitInternalAsync(Guid tenantId, Guid userId, RecruitmentRequest entity, CancellationToken ct)
     {

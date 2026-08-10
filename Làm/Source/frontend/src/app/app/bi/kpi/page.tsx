@@ -175,26 +175,46 @@ export default function BiKpiPage() {
             </thead>
             <tbody>
               {board.length === 0 ? (
-                <tr><td className={td} colSpan={7}>Chưa có KPI kỳ này — tạo ở tab Mục tiêu.</td></tr>
-              ) : board.map((r) => (
-                <tr key={r.targetId}>
-                  <td className={td}>{r.code} · {r.name}</td>
-                  <td className={td}>{r.metricKey}</td>
-                  <td className={td}>{money(r.targetValue)}</td>
-                  <td className={td}>{money(r.actualValue)}</td>
-                  <td className={td}>{money(r.variance)}</td>
-                  <td className={td}>{r.variancePercent}%</td>
-                  <td className={td}>
-                    {r.breached ? (
-                      <span className={statusPill(r.breachSeverity === "Critical" ? "danger" : "warning")}>
-                        {r.breachSeverity} · {r.breachNote}
-                      </span>
-                    ) : (
-                      <span className={statusPill("success")}>OK</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
+                <tr><td className={td} colSpan={7}>Chưa có KPI kỳ này — chọn kỳ khác hoặc tạo ở tab Mục tiêu.</td></tr>
+              ) : board.map((r) => {
+                const attain = r.targetValue > 0 ? Math.round((r.actualValue / r.targetValue) * 100) : 0;
+                const isPass = r.actualValue >= r.targetValue;
+                return (
+                  <tr key={r.targetId} className="hover:bg-slate-50/80">
+                    <td className={`${td} font-medium`}>
+                      <div className="font-semibold text-slate-900">{r.name}</div>
+                      <div className="text-xs text-slate-500">{r.code} · Module {r.moduleCode}</div>
+                    </td>
+                    <td className={td}><span className="rounded bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700">{r.metricKey}</span></td>
+                    <td className={`${td} font-semibold text-slate-800`}>{money(r.targetValue)} ₫</td>
+                    <td className={`${td} font-bold ${isPass ? "text-emerald-700" : "text-amber-700"}`}>{money(r.actualValue)} ₫</td>
+                    <td className={`${td} ${r.variance >= 0 ? "text-emerald-600 font-medium" : "text-red-600 font-medium"}`}>
+                      {r.variance >= 0 ? "+" : ""}{money(r.variance)} ₫
+                    </td>
+                    <td className={td}>
+                      <div className="flex items-center gap-2">
+                        <span className={`font-semibold ${r.variancePercent >= 0 ? "text-emerald-600" : "text-red-600"}`}>
+                          {r.variancePercent >= 0 ? "+" : ""}{r.variancePercent}%
+                        </span>
+                        <div className="h-2 w-16 rounded-full bg-slate-200 overflow-hidden">
+                          <div className={`h-full ${isPass ? "bg-emerald-500" : "bg-amber-500"}`} style={{ width: `${Math.min(attain, 100)}%` }} />
+                        </div>
+                      </div>
+                    </td>
+                    <td className={td}>
+                      {r.breached ? (
+                        <span className="inline-flex items-center gap-1 rounded bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700">
+                          ⚠️ {r.breachSeverity} · {r.breachNote}
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 rounded bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700">
+                          ✓ Đạt chỉ tiêu ({attain}%)
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

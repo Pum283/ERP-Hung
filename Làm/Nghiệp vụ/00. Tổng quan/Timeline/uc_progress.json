@@ -1461,8 +1461,8 @@
   },
   "UC_HRM_118": {
     "done": true,
-    "note": "L2 · sync máy thật (in/out→AttendanceRecord, đếm synced/unknown/locked/dup/invalid, chống trùng batch)",
-    "pct": 90
+    "pct": 100,
+    "note": "Production-ready · Sync máy chấm công chi tiết (in/out -> AttendanceRecord, đếm synced/unknown/locked/dup/invalid, chống trùng batch) · HrmUnitTestSuite"
   },
   "UC_HRM_119": {
     "done": true,
@@ -3076,13 +3076,13 @@
   },
   "UC_SYS_004": {
     "done": true,
-    "note": "Cap-2 · ForgotPassword gửi OTP qua Email/SMS stub (IntegrationCallLog+outbox) · FE login quên MK · SysChannelPolishTests",
-    "pct": 95
+    "pct": 100,
+    "note": "Production-ready · ForgotPassword gửi OTP qua Email/SMS Channel + Outbox · FE login quên MK wired API · SysChannelPolishTests"
   },
   "UC_SYS_005": {
     "done": true,
-    "note": "N2 · reset with OTP",
-    "pct": 90
+    "pct": 100,
+    "note": "Production-ready · ResetPasswordWithOtp validation, OTP token expiration, password strength policy & clear lock status · SysUserManagementPolishTests"
   },
   "UC_SYS_006": {
     "done": true,
@@ -3096,33 +3096,33 @@
   },
   "UC_SYS_008": {
     "done": true,
-    "note": "N2 · 2FA begin/confirm Dev",
-    "pct": 80
+    "pct": 100,
+    "note": "Production-ready · 2FA TOTP xác thực 2 bước (begin, confirm, login TOTP verification, disable, backup code) · Auth2FaPolishTests"
   },
   "UC_SYS_010": {
     "done": true,
-    "note": "N2 · user_session list",
-    "pct": 90
+    "pct": 100,
+    "note": "Production-ready · Danh sách phiên đăng nhập UserSession thực tế live (/api/auth/sessions + UI trusted-devices) · SysSessionPolishTests & sys-session-helpers"
   },
   "UC_SYS_011": {
     "done": true,
-    "note": "N2 · max 5 sessions",
-    "pct": 90
+    "pct": 100,
+    "note": "Production-ready · Giới hạn tối đa 5 phiên hoạt động đồng thời (tự động thu hồi phiên cũ nhất + thu hồi phiên chỉ định) · SysSessionPolishTests & sys-session-helpers"
   },
   "UC_SYS_013": {
     "done": true,
-    "note": "M1 · upsert + multi-dept/job level",
-    "pct": 90
+    "pct": 100,
+    "note": "Production-ready · Create user, primary OrgUnit validation, license limit check, multi-dept job level assignment · SysUserManagementPolishTests"
   },
   "UC_SYS_014": {
     "done": true,
-    "note": "M1 · upsert + multi-dept/job level",
-    "pct": 90
+    "pct": 100,
+    "note": "Production-ready · Update user profile, email/phone/display name, department sync · SysUserManagementPolishTests"
   },
   "UC_SYS_015": {
     "done": true,
-    "note": "M1 · status Locked/Disabled trên SideSheet",
-    "pct": 70
+    "pct": 100,
+    "note": "Production-ready · Lock and unlock user status (UserStatus.Locked <-> Active) · SysUserManagementPolishTests"
   },
   "UC_SYS_016": {
     "done": true,
@@ -3623,5 +3623,10 @@
     "done": true,
     "note": "L2 · dashboard WF",
     "pct": 80
+  },
+  "UC_SYS_012": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready · Quản lý Thiết bị Tin cậy (SysTrustedDevice, bỏ qua 2FA trong 30 ngày) · SysTrustedDevicePolishTests & sys-device-helpers"
   }
 }

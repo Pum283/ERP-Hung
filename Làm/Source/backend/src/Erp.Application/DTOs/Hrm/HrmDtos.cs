@@ -119,6 +119,8 @@ public sealed record RecruitmentApprovalStepDto(
 public sealed record RecruitmentRequestCreateRequest(
     Guid JobTitleId, int Headcount, string Reason, Guid OrgUnitId, bool Submit);
 
+public sealed record ApproveRecruitmentRequest(string Action, string? Comment);
+
 public sealed record JobPostingDto(
     Guid Id, Guid RecruitmentRequestId, string RequestDocNo, string Title, string Channel,
     string Status, string JobTitleName, int Headcount, DateTimeOffset CreatedAt);
@@ -431,4 +433,26 @@ public sealed record HrmDashboardBundleDto(
     IReadOnlyList<HeadcountCompareRowDto> HeadcountVsPlan);
 
 public sealed record ChangeEmployeeStatusRequest(string Status, string? Note);
+
+// ─── UC_HRM_032 / 033 / 034 / 036 — Nghỉ việc, Lịch sử biến động, Điều chuyển & Cảnh báo thử việc ───
+
+public sealed record EmployeeTransferRequest(
+    Guid? OrgUnitId, Guid? DepartmentId, Guid? JobTitleId, Guid? JobLevelId, DateOnly? EffectiveDate, string? Reason);
+
+public sealed record ProbationExpiringEmployeeDto(
+    Guid Id, string EmployeeCode, string FullName, DateOnly HireDate, DateOnly ProbationEndDate, int DaysRemaining,
+    string? OrgUnitName, string? DepartmentName, string? JobTitleName);
+
+// ─── UC_HRM_038 / 039 / 043 / 046 — Hợp đồng lao động, Phụ lục & Cảnh báo hết hạn ───
+
+public sealed record ContractAnnexCreateRequest(
+    Guid ParentContractId, string? ContractNo, DateOnly StartDate, DateOnly? EndDate, decimal? BaseSalary, string? Note, Guid? ScanFileId);
+
+public sealed record ExpiringContractDto(
+    Guid Id, Guid EmployeeId, string EmployeeCode, string EmployeeName, string ContractNo, string ContractType,
+    DateOnly StartDate, DateOnly EndDate, int DaysRemaining, decimal? BaseSalary, string? OrgUnitName, string? DepartmentName);
+
+public sealed record ContractDetailDto(
+    Guid Id, Guid EmployeeId, string EmployeeName, string ContractNo, string ContractType, DateOnly StartDate, DateOnly? EndDate,
+    string Status, Guid? ParentContractId, string? ParentContractNo, decimal? BaseSalary, Guid? ScanFileId, DateTimeOffset CreatedAt);
 

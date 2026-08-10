@@ -80,6 +80,7 @@ export async function fetchBiRuns(reportId?: string) {
   const { data } = await api.get<Envelope<BiReportRunDto[]>>("/api/bi/reports/runs", { params: { reportId } });
   return data.data;
 }
+export const fetchBiReportRuns = fetchBiRuns;
 
 /** UC_BI_016 — tải nội dung xuất thật (CSV / text) của lần chạy. */
 export async function downloadBiRunExport(runId: string): Promise<Blob> {

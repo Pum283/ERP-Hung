@@ -69,6 +69,7 @@ public sealed class AppDbContext : DbContext
     public DbSet<FileObject> FileObjects => Set<FileObject>();
     public DbSet<FileFolder> FileFolders => Set<FileFolder>();
     public DbSet<ExternalIntegration> ExternalIntegrations => Set<ExternalIntegration>();
+    public DbSet<ImportExportJob> ImportExportJobs => Set<ImportExportJob>();
 
     public DbSet<JobTitle> JobTitles => Set<JobTitle>();
     public DbSet<EmployeeType> EmployeeTypes => Set<EmployeeType>();

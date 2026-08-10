@@ -93,13 +93,39 @@ public sealed class HrmEmployeeService : IHrmEmployeeService
         return await MapOneAsync(e, ct);
     }
 
+    public async Task<EmployeeDto> GetWithScopeAsync(Guid tenantId, Guid currentUserId, Guid id, CancellationToken ct = default)
+    {
+        var scope = await _scope.GetUserScopeContextAsync(currentUserId, ct);
+        var e = await _db.Employees.AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Id == id && x.TenantId == tenantId && !x.IsDeleted, ct)
+            ?? throw new AppException("Nhân viên không tồn tại.", 404);
+
+        if (scope.Scope == ScopeType.Own && e.UserId != currentUserId)
+        {
+            var myEmpId = await _db.Employees.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && x.UserId == currentUserId && !x.IsDeleted)
+                .Select(x => (Guid?)x.Id).FirstOrDefaultAsync(ct);
+            if (e.Id != myEmpId)
+                throw new AppException("Bạn không có quyền truy cập hồ sơ nhân sự này.", 403);
+        }
+        else if (scope.Scope == ScopeType.Department && e.DepartmentId.HasValue && !scope.AccessibleDepartmentIds.Contains(e.DepartmentId.Value))
+        {
+            throw new AppException("Bạn không có quyền truy cập hồ sơ nhân sự này.", 403);
+        }
+
+        return await MapOneAsync(e, ct);
+    }
+
     public async Task<EmployeeDto> UpsertAsync(Guid tenantId, Guid? actorId, EmployeeUpsertRequest req, CancellationToken ct = default)
     {
         Employee entity;
         if (req.Id is Guid id)
         {
-            entity = await _db.Employees.FirstOrDefaultAsync(x => x.Id == id && x.TenantId == tenantId && !x.IsDeleted, ct)
+            entity = await _db.Employees.FirstOrDefaultAsync(x => x.Id == id && x.TenantId == tenantId, ct)
                      ?? throw new AppException("Nhân viên không tồn tại.", 404);
+
+            if (entity.IsDeleted || entity.Status is "Terminated" or "Resigned" or "Locked" or "Retired")
+                throw new AppException("Hồ sơ nhân sự đã bị khóa do nghỉ việc, không thể chỉnh sửa thông tin.", 400);
         }
         else
         {
@@ -191,34 +217,42 @@ public sealed class HrmEmployeeService : IHrmEmployeeService
 
     public async Task<EmployeeDto> ChangeStatusAsync(Guid tenantId, Guid actorId, Guid employeeId, ChangeEmploymentStatusRequest req, CancellationToken ct = default)
     {
-        var e = await _db.Employees.FirstOrDefaultAsync(x => x.Id == employeeId && x.TenantId == tenantId && !x.IsDeleted, ct)
+        var e = await _db.Employees.FirstOrDefaultAsync(x => x.Id == employeeId && x.TenantId == tenantId, ct)
                 ?? throw new AppException("Nhân viên không tồn tại.", 404);
+
         var from = e.Status;
         var to = req.ToStatus.Trim();
+        var effectiveDate = req.EffectiveDate == default ? DateOnly.FromDateTime(DateTime.UtcNow) : req.EffectiveDate;
+
+        if (to is "Terminated" or "Resigned" or "Locked" or "Retired" or "Inactive")
+        {
+            if (!e.TerminateDate.HasValue) e.TerminateDate = effectiveDate;
+            e.IsDeleted = true;
+            e.DeletedAt = DateTimeOffset.UtcNow;
+            e.Status = to == "Locked" ? "Inactive" : to;
+        }
+        else
+        {
+            if (e.IsDeleted)
+            {
+                e.IsDeleted = false;
+                e.DeletedAt = null;
+            }
+            e.Status = to;
+        }
+
         _db.EmploymentStatusChanges.Add(new EmploymentStatusChange
         {
-            TenantId = tenantId, EmployeeId = e.Id, FromStatus = from, ToStatus = to,
-            EffectiveDate = req.EffectiveDate, Reason = req.Reason,
+            TenantId = tenantId, EmployeeId = e.Id, FromStatus = from, ToStatus = e.Status,
+            EffectiveDate = effectiveDate, Reason = req.Reason,
             OrgUnitId = req.OrgUnitId ?? e.OrgUnitId, DepartmentId = req.DepartmentId ?? e.DepartmentId,
             JobTitleId = req.JobTitleId ?? e.JobTitleId, CreatedBy = actorId
         });
-        e.Status = to;
+
         if (req.OrgUnitId is Guid o) e.OrgUnitId = o;
         if (req.DepartmentId is Guid d) e.DepartmentId = d;
         if (req.JobTitleId is Guid jt) e.JobTitleId = jt;
-        if (to is "Terminated" or "Resigned" or "Inactive")
-        {
-            e.TerminateDate ??= req.EffectiveDate;
-            e.IsDeleted = to is "Terminated" or "Resigned"; // khóa hồ sơ nghỉ — soft
-            if (e.IsDeleted) e.DeletedAt = DateTimeOffset.UtcNow;
-        }
-        // "khóa hồ sơ đã nghỉ": dùng Status Inactive + IsDeleted
-        if (to == "Locked")
-        {
-            e.Status = "Inactive";
-            e.IsDeleted = true;
-            e.DeletedAt = DateTimeOffset.UtcNow;
-        }
+
         await _db.SaveChangesAsync(ct);
         return await MapOneAsync(e, ct);
     }
@@ -234,11 +268,13 @@ public sealed class HrmEmployeeService : IHrmEmployeeService
     {
         var rows = await ListAsync(tenantId, currentUserId, null, ct);
         var sb = new StringBuilder();
-        sb.AppendLine("employeeCode,fullName,email,phone,status,orgUnit,department,jobTitle,hireDate");
+        sb.Append("\uFEFF");
+        sb.AppendLine("Mã NV,Họ và tên,Email,Số điện thoại,Trạng thái,Đơn vị,Bộ phận,Chức danh,Cấp bậc,Ngày vào làm");
         foreach (var e in rows)
-            sb.AppendLine($"{e.EmployeeCode},{Escape(e.FullName)},{e.Email},{e.Phone},{e.Status},{e.OrgUnitName},{e.DepartmentName},{e.JobTitleName},{e.HireDate}");
+            sb.AppendLine($"{Escape(e.EmployeeCode)},{Escape(e.FullName)},{Escape(e.Email)},{Escape(e.Phone)},{Escape(e.Status)},{Escape(e.OrgUnitName)},{Escape(e.DepartmentName)},{Escape(e.JobTitleName)},{Escape(e.JobLevelName)},{e.HireDate:yyyy-MM-dd}");
         return Encoding.UTF8.GetBytes(sb.ToString());
     }
+
 
     public async Task<IReadOnlyList<EmployeeDocumentDto>> ListDocumentsAsync(
         Guid tenantId, Guid employeeId, CancellationToken ct = default)
@@ -260,6 +296,8 @@ public sealed class HrmEmployeeService : IHrmEmployeeService
         var key = (req.StorageKey ?? "").Trim();
         var docType = string.IsNullOrWhiteSpace(req.DocType) ? "Other" : req.DocType.Trim();
         if (title.Length == 0 || key.Length == 0) throw new AppException("Thiếu tiêu đề hoặc file.");
+        if (req.IssuedOn.HasValue && req.ExpiresOn.HasValue && req.ExpiresOn.Value <= req.IssuedOn.Value)
+            throw new AppException("Ngày hết hạn giấy tờ phải sau ngày cấp.");
         var e = new EmployeeDocument
         {
             TenantId = tenantId,
@@ -284,6 +322,118 @@ public sealed class HrmEmployeeService : IHrmEmployeeService
         doc.IsDeleted = true;
         doc.DeletedAt = DateTimeOffset.UtcNow;
         await _db.SaveChangesAsync(ct);
+    }
+
+    // ─── UC_HRM_034 — Điều chuyển đơn vị / bộ phận ───
+
+    public async Task<EmployeeDto> TransferEmployeeAsync(
+        Guid tenantId, Guid actorId, Guid employeeId, EmployeeTransferRequest req, CancellationToken ct = default)
+    {
+        var e = await _db.Employees.FirstOrDefaultAsync(x => x.Id == employeeId && x.TenantId == tenantId && !x.IsDeleted, ct)
+                ?? throw new AppException("Nhân viên không tồn tại.", 404);
+
+        if (e.IsDeleted || e.Status is "Terminated" or "Resigned" or "Locked" or "Retired")
+            throw new AppException("Không thể điều chuyển nhân sự đã bị khóa do nghỉ việc.", 400);
+
+        var targetOrgId = req.OrgUnitId ?? e.OrgUnitId;
+        var targetDeptId = req.DepartmentId ?? e.DepartmentId;
+        var targetJtId = req.JobTitleId ?? e.JobTitleId;
+        var targetJlId = req.JobLevelId ?? e.JobLevelId;
+
+        if (targetOrgId == e.OrgUnitId && targetDeptId == e.DepartmentId && targetJtId == e.JobTitleId && targetJlId == e.JobLevelId)
+            throw new AppException("Đơn vị, Bộ phận, Chức danh hoặc Cấp bậc mới phải khác với thông tin hiện tại.", 400);
+
+        if (req.OrgUnitId.HasValue && !await _db.OrgUnits.AnyAsync(x => x.TenantId == tenantId && x.Id == req.OrgUnitId.Value && !x.IsDeleted, ct))
+            throw new AppException("Đơn vị tổ chức mới không tồn tại.", 404);
+
+        if (req.DepartmentId.HasValue)
+        {
+            var dept = await _db.Departments.AsNoTracking().FirstOrDefaultAsync(x => x.TenantId == tenantId && x.Id == req.DepartmentId.Value && !x.IsDeleted, ct)
+                       ?? throw new AppException("Bộ phận mới không tồn tại.", 404);
+            if (dept.OrgUnitId != targetOrgId)
+                throw new AppException("Bộ phận mới không thuộc Đơn vị tổ chức đã chọn.", 400);
+        }
+
+        var effectiveDate = req.EffectiveDate ?? DateOnly.FromDateTime(DateTime.UtcNow);
+        var reason = string.IsNullOrWhiteSpace(req.Reason) ? "Điều chuyển nhân sự" : req.Reason.Trim();
+
+        _db.EmploymentStatusChanges.Add(new EmploymentStatusChange
+        {
+            TenantId = tenantId,
+            EmployeeId = e.Id,
+            FromStatus = e.Status,
+            ToStatus = "Transferred",
+            EffectiveDate = effectiveDate,
+            Reason = reason,
+            OrgUnitId = targetOrgId,
+            DepartmentId = targetDeptId,
+            JobTitleId = targetJtId,
+            CreatedBy = actorId
+        });
+
+        e.OrgUnitId = targetOrgId;
+        e.DepartmentId = targetDeptId;
+        e.JobTitleId = targetJtId;
+        e.JobLevelId = targetJlId;
+        e.UpdatedBy = actorId;
+
+        if (e.UserId is Guid uid)
+        {
+            var user = await _db.Users.FirstOrDefaultAsync(x => x.Id == uid && x.TenantId == tenantId && !x.IsDeleted, ct);
+            if (user is not null)
+            {
+                user.PrimaryOrgUnitId = targetOrgId;
+                user.DepartmentId = targetDeptId;
+                user.JobLevelId = targetJlId;
+            }
+        }
+
+        await _db.SaveChangesAsync(ct);
+        return await MapOneAsync(e, ct);
+    }
+
+    // ─── UC_HRM_036 — Cảnh báo sắp hết hạn thử việc ───
+
+    public async Task<IReadOnlyList<ProbationExpiringEmployeeDto>> ListExpiringProbationEmployeesAsync(
+        Guid tenantId, int daysAhead = 15, CancellationToken ct = default)
+    {
+        if (daysAhead <= 0) daysAhead = 15;
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var thresholdDate = today.AddDays(daysAhead);
+
+        var probationEmployees = await (
+            from e in _db.Employees.AsNoTracking()
+            join o in _db.OrgUnits.AsNoTracking() on e.OrgUnitId equals o.Id into oj from o in oj.DefaultIfEmpty()
+            join d in _db.Departments.AsNoTracking() on e.DepartmentId equals d.Id into dj from d in dj.DefaultIfEmpty()
+            join jt in _db.JobTitles.AsNoTracking() on e.JobTitleId equals jt.Id into jtj from jt in jtj.DefaultIfEmpty()
+            where e.TenantId == tenantId && !e.IsDeleted && e.Status == "Probation"
+            select new { e, OrgName = o != null ? o.Name : null, DeptName = d != null ? d.Name : null, JtName = jt != null ? jt.Name : null }
+        ).ToListAsync(ct);
+
+        var list = new List<ProbationExpiringEmployeeDto>();
+
+        foreach (var item in probationEmployees)
+        {
+            var e = item.e;
+            var hireDate = e.HireDate ?? DateOnly.FromDateTime(e.CreatedAt.DateTime);
+
+            var contractEnd = await _db.Contracts.AsNoTracking()
+                .Where(c => c.TenantId == tenantId && c.EmployeeId == e.Id && !c.IsDeleted && c.ContractType == "Probation")
+                .Select(c => c.EndDate)
+                .FirstOrDefaultAsync(ct);
+
+            var probEndDate = contractEnd ?? hireDate.AddDays(60);
+            var daysRemaining = probEndDate.DayNumber - today.DayNumber;
+
+            if (probEndDate <= thresholdDate)
+            {
+                list.Add(new ProbationExpiringEmployeeDto(
+                    e.Id, e.EmployeeCode, e.FullName, hireDate, probEndDate, daysRemaining,
+                    item.OrgName, item.DeptName, item.JtName));
+            }
+        }
+
+        return list.OrderBy(x => x.DaysRemaining).ToList();
     }
 
     private async Task EnsureEmployeeAsync(Guid tenantId, Guid employeeId, CancellationToken ct)

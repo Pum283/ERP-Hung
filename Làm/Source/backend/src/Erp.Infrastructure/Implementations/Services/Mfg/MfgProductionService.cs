@@ -548,8 +548,8 @@ public sealed class MfgProductionService : IMfgProductionService
         if (wo.Status is not ("Released" or "MaterialsIssued" or "Completed"))
             throw new AppException("Chỉ nhập TP khi lệnh đã phát hành / xuất NVL.");
         if (req.Qty <= 0) throw new AppException("SL nhập phải > 0.");
-        if (wo.QtyFgReceived + req.Qty > wo.Qty)
-            throw new AppException("Tổng nhập TP vượt SL lệnh.");
+        if (wo.QtyFgReceived + req.Qty > wo.Qty * 1.2m)
+            throw new AppException("Tổng nhập TP không vượt quá 120% SL lệnh sản xuất.");
 
         var item = await RequireItem(tenantId, wo.ItemId, ct);
         _db.MfgFgReceipts.Add(new MfgFgReceipt

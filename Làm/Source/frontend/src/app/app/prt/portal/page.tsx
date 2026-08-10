@@ -115,9 +115,22 @@ export default function PrtPortalPage() {
           {accounts.map((a) => <option key={a.id} value={a.id}>{a.email} ({a.customerCode ?? "—"})</option>)}
         </select>
         {ar && (
-          <div className="text-sm self-center">
-            Công nợ mở: <b>{ar.openAmount.toLocaleString()}</b> · {ar.openInvoiceCount} HĐ ·
-            Đã TT YTD: {ar.paidYtd.toLocaleString()}
+          <div className="flex flex-wrap items-center gap-3 rounded-lg border border-black/10 bg-black/[0.02] p-2.5 text-sm">
+            <div>Tổng dư nợ: <b className="font-semibold text-slate-900">{ar.openAmount.toLocaleString("vi-VN")} ₫</b></div>
+            <div className="h-4 w-px bg-black/10" />
+            <div>Số HĐ mở: <b className="font-medium text-slate-800">{ar.openInvoiceCount}</b></div>
+            <div className="h-4 w-px bg-black/10" />
+            {ar.overdueAmount > 0 ? (
+              <div className="flex items-center gap-1.5 font-medium text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded">
+                ⚠️ Nợ quá hạn ({ar.overdueInvoiceCount} HĐ): <b className="font-bold">{ar.overdueAmount.toLocaleString("vi-VN")} ₫</b>
+              </div>
+            ) : (
+              <div className="text-emerald-600 font-medium bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                ✓ Không có nợ quá hạn
+              </div>
+            )}
+            <div className="h-4 w-px bg-black/10" />
+            <div className="text-xs text-[var(--muted)]">Thanh toán YTD: {ar.paidYtd.toLocaleString("vi-VN")} ₫</div>
           </div>
         )}
       </div>
@@ -168,13 +181,22 @@ export default function PrtPortalPage() {
           <h2 className="mb-3 text-sm font-semibold">Công nợ & thanh toán</h2>
           <div className={tableWrap}>
             <table className="w-full text-sm">
-              <thead><tr><th className={th}>HĐ mở</th><th className={th}>Còn lại</th><th className={th}>TT</th></tr></thead>
+              <thead><tr><th className={th}>Mã HĐ</th><th className={th}>Nợ còn lại</th><th className={th}>Hạn TT</th><th className={th}>Trạng thái</th></tr></thead>
               <tbody>
                 {invoices.map((i) => (
-                  <tr key={i.id}>
-                    <td className={td}>{i.code}</td>
-                    <td className={td}>{i.openAmount.toLocaleString()}</td>
-                    <td className={td}>{i.status}</td>
+                  <tr key={i.id} className={i.isOverdue ? "bg-red-50/50" : ""}>
+                    <td className={`${td} font-medium`}>{i.code}</td>
+                    <td className={td}>{i.openAmount.toLocaleString("vi-VN")} ₫</td>
+                    <td className={td}>{i.dueDate ? new Date(i.dueDate).toLocaleDateString("vi-VN") : "—"}</td>
+                    <td className={td}>
+                      {i.isOverdue ? (
+                        <span className="inline-flex items-center gap-1 rounded bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700">
+                          Quá hạn ({i.overdueDays} ngày)
+                        </span>
+                      ) : (
+                        <span className={statusPill(i.status === "Paid" ? "success" : "brand")}>{i.status}</span>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>

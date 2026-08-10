@@ -413,6 +413,8 @@ public sealed class LogLogisticsService : ILogLogisticsService
             throw new AppException("Trạng thái cập nhật không hợp lệ.");
         if (order.Status is "Cancelled" or "Returned")
             throw new AppException("Lệnh đã đóng.");
+        if (order.Status is "Delivered" && status != "Delivered")
+            throw new AppException("Đơn giao hàng đã hoàn thành — không thể đổi trạng thái.");
 
         order.Status = status;
         if (status == "Delivered") order.DeliveredAt = DateTimeOffset.UtcNow;

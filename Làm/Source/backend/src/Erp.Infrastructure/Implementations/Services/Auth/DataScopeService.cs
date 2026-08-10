@@ -71,12 +71,15 @@ public sealed class DataScopeService : IDataScopeService
                     .Select(d => new { d.Id, d.Path })
                     .ToListAsync(ct);
                 var paths = rootDepts.Select(d => d.Path).Where(p => !string.IsNullOrEmpty(p)).ToList();
-                var all = await _db.Departments.AsNoTracking()
-                    .Where(d => d.TenantId == user.TenantId && !d.IsDeleted && d.IsActive
-                                && (roots.Contains(d.Id) || paths.Any(p => d.Path.StartsWith(p))))
-                    .Select(d => d.Id)
+                var allDepts = await _db.Departments.AsNoTracking()
+                    .Where(d => d.TenantId == user.TenantId && !d.IsDeleted && d.IsActive)
+                    .Select(d => new { d.Id, d.Path })
                     .ToListAsync(ct);
-                deptIds = all.Distinct().ToList();
+                deptIds = allDepts
+                    .Where(d => roots.Contains(d.Id) || (!string.IsNullOrEmpty(d.Path) && paths.Any(p => d.Path.StartsWith(p))))
+                    .Select(d => d.Id)
+                    .Distinct()
+                    .ToList();
             }
         }
 
