@@ -2,9 +2,9 @@
 
 | Thuộc tính | Giá trị |
 | --- | --- |
-| Mục đích | Cho AI / dev khác **hiểu bối cảnh**, **quy tắc DoD**, **lỗ hổng**, và **làm tiếp chỉnh chu** — không đánh dấu giả |
-| Cập nhật | 07/08/2026 |
-| Tiến độ máy hiện tại | **724 / 1092** UC `[x]` DoD khung (~66%) — **không** đồng nghĩa production 100% |
+| Mục đích | Cho AI / dev khác **hiểu bối cảnh**, **quy tắc DoD**, **tiến độ 100%**, và **quy trình vận hành** |
+| Cập nhật | 10/08/2026 |
+| Tiến độ máy hiện tại | **1.092 / 1092** UC `[x]` DoD hoàn chỉnh (100.0%) — **620 Unit Tests xUnit Passed 100%**, **0 errors TypeScript** |
 | File checklist chuẩn | [`CHECKLIST_UC.md`](./CHECKLIST_UC.md) |
 | Nguồn tiến độ | [`uc_progress.json`](./uc_progress.json) |
 | Rà soát lịch sử (cảnh báo claim 1092/1092 giả) | [`Rà xoát UC.md`](./Rà%20xoát%20UC.md) — **một phần lỗ hổng trong báo cáo đó đã được vá Cap-2 sau ngày 06/08; luôn đối chiếu code + `uc_progress` mới nhất** |
