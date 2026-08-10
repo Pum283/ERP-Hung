@@ -161,33 +161,33 @@
   },
   "UC_BI_018": {
     "done": true,
-    "note": "Cap-2 · BiKpiTarget so sánh kỳ + tính metrics thực tế live từ FIN (Doanh thu/Giá vốn) & POS/CRM theo kỳ · BiAnalyticsPolishTests",
-    "pct": 95
+    "note": "L2 · so sánh kỳ / mục tiêu BiKpiTarget + ComparePeriods",
+    "pct": 90
   },
   "UC_BI_019": {
     "done": true,
-    "note": "Cap-2 · BiAlertThreshold đánh giá ngưỡng tự động theo metrics thực tế · BiAnalyticsPolishTests",
-    "pct": 95
+    "note": "L2 · cấu hình ngưỡng BiAlertThreshold evaluate on-read",
+    "pct": 90
   },
   "UC_BI_021": {
     "done": true,
-    "note": "Cap-2 · Bảng Target vs Actual tích hợp chỉ số thực tế live + cảnh báo vi phạm ngưỡng theo kỳ · BiAnalyticsPolishTests",
-    "pct": 95
+    "note": "L2 · bảng Target vs Actual + breach flag",
+    "pct": 90
   },
   "UC_CRM_001": {
     "done": true,
-    "note": "Cap-2 · Quản lý Khách hàng Cá nhân (Person) · CrmCustomerPolishTests & /app/crm/customers",
-    "pct": 95
+    "note": "L2 · Person customer + /app/crm/customers",
+    "pct": 85
   },
   "UC_CRM_002": {
     "done": true,
-    "note": "Cap-2 · Quản lý Khách hàng Doanh nghiệp/Tổ chức (Organization + CompanyName + MST) · CrmCustomerPolishTests & /app/crm/customers",
-    "pct": 95
+    "note": "L2 · Organization + CompanyName",
+    "pct": 85
   },
   "UC_CRM_003": {
     "done": true,
-    "note": "Cap-2 · Thêm mới / Cập nhật Khách hàng + Kiểm tra trùng SĐT/MST + Phân loại tệp · CrmCustomerPolishTests & /app/crm/customers",
-    "pct": 95
+    "note": "L2 · upsert customer",
+    "pct": 85
   },
   "UC_CRM_004": {
     "done": true,
@@ -224,16 +224,6 @@
     "note": "L2 · CrmContact primary",
     "pct": 85
   },
-  "UC_CRM_012": {
-    "done": true,
-    "note": "Cap-2 · Lịch sử thay đổi dữ liệu Master Khách hàng (bàn giao / status log vết trong CrmCustomerHandover + Note) · CrmCustomerPolishTests",
-    "pct": 95
-  },
-  "UC_CRM_013": {
-    "done": true,
-    "note": "Cap-2 · Ngưng sử dụng / Blacklist khách hàng (Status Blacklisted/Inactive + lý do + log vết) · CrmCustomerPolishTests",
-    "pct": 95
-  },
   "UC_CRM_014": {
     "done": true,
     "note": "L2 · CSV import/export",
@@ -246,73 +236,33 @@
   },
   "UC_CRM_016": {
     "done": true,
-    "pct": 95,
-    "note": "Cap-2 · CrmCampaignService Upsert + FE /crm/campaigns · CrmMarketingServiceTests"
-  },
-  "UC_CRM_017": {
-    "done": true,
-    "pct": 95,
-    "note": "Cap-2 · Quản lý nhóm quảng cáo / kênh Marketing (Email|Social|SEM|Event|Other) · CrmMarketingServiceTests"
-  },
-  "UC_CRM_018": {
-    "done": true,
-    "pct": 95,
-    "note": "Cap-2 · Gắn sản phẩm / đối tượng mục tiêu theo chiến dịch Marketing · CrmMarketingServiceTests"
+    "pct": 90,
+    "note": "L2 · CrmCampaignService Upsert + FE /crm/campaigns · 12 BE + 10 FE tests"
   },
   "UC_CRM_019": {
     "done": true,
-    "pct": 95,
-    "note": "Cap-2 · Campaign expense + SpentAmount sync · FE tab Chi phí · CrmMarketingServiceTests"
-  },
-  "UC_CRM_020": {
-    "done": true,
-    "pct": 95,
-    "note": "Cap-2 · Gắn ngân sách & theo dõi chi phí thực tế (Budget vs Spent) · CrmMarketingServiceTests"
-  },
-  "UC_CRM_021": {
-    "done": true,
-    "pct": 95,
-    "note": "Cap-2 · Đánh giá hậu chiến dịch & snapshot chỉ số đóng (SpentAmount, LeadCount, Revenue) · CrmMarketingServiceTests"
+    "pct": 90,
+    "note": "L2 · Campaign expense + SpentAmount sync · FE tab Chi phí"
   },
   "UC_CRM_023": {
     "done": true,
-    "pct": 95,
-    "note": "Cap-2 · Close campaign snapshot metrics · FE đóng · CrmMarketingServiceTests"
+    "pct": 90,
+    "note": "L2 · Close campaign snapshot metrics · FE đóng"
   },
   "UC_CRM_024": {
     "done": true,
     "note": "L2 · CrmLeadSource catalog",
     "pct": 85
   },
-  "UC_CRM_025": {
-    "done": true,
-    "pct": 95,
-    "note": "Cap-2 · Tự động đồng bộ Lead từ Landing Page / Website (SyncWebLeadAsync) · CrmMarketingServiceTests"
-  },
   "UC_CRM_026": {
     "done": true,
     "pct": 90,
     "note": "L2 · SyncWebLead → CrmLead + UTM · FE tab Web lead"
   },
-  "UC_CRM_027": {
-    "done": true,
-    "pct": 95,
-    "note": "Cap-2 · Đồng bộ nguồn Lead từ các kênh tiếp nhận (IntakeChannel Auto) · CrmMarketingServiceTests"
-  },
-  "UC_CRM_028": {
-    "done": true,
-    "pct": 95,
-    "note": "Cap-2 · Phân bổ nguồn khách Attribution (UtmSource, UtmMedium, UtmCampaign) · CrmMarketingServiceTests"
-  },
   "UC_CRM_029": {
     "done": true,
     "pct": 90,
     "note": "L2 · CPL/CAC/ROAS/ROI GetMetrics · FE dashboard"
-  },
-  "UC_CRM_030": {
-    "done": true,
-    "pct": 95,
-    "note": "Cap-2 · Đo lường Funnel Marketing đến Doanh thu (Dashboard CPL, CAC, ROAS, ROI%) · CrmMarketingServiceTests"
   },
   "UC_CRM_031": {
     "done": true,
@@ -399,20 +349,10 @@
     "note": "L2 · convert lead → opportunity + KH",
     "pct": 85
   },
-  "UC_CRM_052": {
-    "done": true,
-    "pct": 95,
-    "note": "Cap-2 · Tự động chấm điểm Lead (CalculateLeadScoreAsync: Profile + Activities) · CrmLeadPolishTests"
-  },
   "UC_CRM_058": {
     "done": true,
     "note": "L2 · mark Lost + lý do",
     "pct": 85
-  },
-  "UC_CRM_059": {
-    "done": true,
-    "pct": 95,
-    "note": "Cap-2 · Gộp Lead trùng (MergeLeadsAsync: Chuyển Tasks/Activities, MergedIntoId, LostReason) · CrmLeadPolishTests"
   },
   "UC_CRM_060": {
     "done": true,
@@ -434,20 +374,10 @@
     "note": "L2 · pipeline stage cơ hội",
     "pct": 85
   },
-  "UC_CRM_064": {
-    "done": true,
-    "pct": 95,
-    "note": "Cap-2 · Dự báo doanh thu theo trọng số xác suất (GetRevenueForecastAsync: Total & Monthly Forecast) · CrmLeadPolishTests"
-  },
   "UC_CRM_065": {
     "done": true,
     "note": "L2 · dòng SP / estimated value",
     "pct": 85
-  },
-  "UC_CRM_066": {
-    "done": true,
-    "note": "Cap-2 · Ghi nhận Đối thủ & Ghi chú đàm phán (UpdateCompetitorInfoAsync: CompetitorName, NegotiationNotes) · CrmLeadPolishTests",
-    "pct": 95
   },
   "UC_CRM_067": {
     "done": true,
@@ -458,11 +388,6 @@
     "done": true,
     "note": "L2 · đóng Won/Lost",
     "pct": 85
-  },
-  "UC_CRM_069": {
-    "done": true,
-    "pct": 95,
-    "note": "Cap-2 · Báo cáo Win-Rate & phân tích lý do thua (GetWinRateReportAsync: Win/Loss %, LossReasons breakdown) · CrmLeadPolishTests"
   },
   "UC_CRM_070": {
     "done": true,
@@ -489,25 +414,10 @@
     "note": "L2 · xuất báo giá text thật + gửi Email (queue notification + nhật ký) / Pdf download",
     "pct": 90
   },
-  "UC_CRM_075": {
-    "done": true,
-    "pct": 95,
-    "note": "Cap-2 · Tạo phiên bản báo giá mới (CreateNewVersionAsync: Tăng Version, copy dòng & thông tin) · CrmQuoteSendTests"
-  },
-  "UC_CRM_076": {
-    "done": true,
-    "pct": 95,
-    "note": "Cap-2 · Hết hạn báo giá tự động (CheckAndExpireQuotesAsync: Chuyển Status Expired cho BG quá hạn ValidUntil) · CrmQuoteSendTests"
-  },
   "UC_CRM_077": {
     "done": true,
     "note": "L2 · chuyển báo giá → đơn",
     "pct": 90
-  },
-  "UC_CRM_078": {
-    "done": true,
-    "note": "Cap-2 · In & xuất mẫu Báo giá HTML/PDF (BuildQuotePdfHtmlAsync: Template HTML chuyên nghiệp) · CrmQuoteSendTests",
-    "pct": 95
   },
   "UC_CRM_079": {
     "done": true,
@@ -519,11 +429,6 @@
     "note": "L2 · cập nhật trạng thái đơn",
     "pct": 85
   },
-  "UC_CRM_083": {
-    "done": true,
-    "note": "Cap-2 · Tách & Gộp đơn hàng bán (SplitOrderAsync: Tách dòng hàng sang đơn mới; MergeOrdersAsync: Gộp dòng hàng vào đơn chính & hủy đơn phụ) · CrmOrderInvLogSyncTests",
-    "pct": 95
-  },
   "UC_CRM_082": {
     "done": true,
     "note": "L2 · giữ tồn INV reservation thật (Active+ATP, release khi hủy/đẩy kho, idempotent)",
@@ -533,16 +438,6 @@
     "done": true,
     "note": "L2 · hủy đơn có lý do",
     "pct": 85
-  },
-  "UC_CRM_085": {
-    "done": true,
-    "pct": 95,
-    "note": "Cap-2 · Trả hàng / điều chỉnh đơn (ReturnOrderAsync: Status Returned, lý do trả hàng, nhả giữ tồn) · CrmOrderInvLogSyncTests"
-  },
-  "UC_CRM_086": {
-    "done": true,
-    "pct": 95,
-    "note": "Cap-2 · Gắn hợp đồng bán (LinkContractAsync: Gắn ContractId vào đơn hàng) · CrmOrderInvLogSyncTests"
   },
   "UC_CRM_087": {
     "done": true,
@@ -2251,8 +2146,8 @@
   },
   "UC_LMS_031": {
     "done": true,
-    "note": "Cap-2 · Ghi danh khóa học & thanh toán qua Cổng thanh toán (tạo IntegrationCallLog PAYMENT_GATEWAY) · LmsEnrollmentPolishTests",
-    "pct": 95
+    "note": "L2 · enroll mock pay (chưa gateway)",
+    "pct": 80
   },
   "UC_LMS_032": {
     "done": true,
@@ -2586,8 +2481,8 @@
   },
   "UC_MFG_042": {
     "done": true,
-    "note": "Cap-2 · Sản lượng sản xuất theo ngày/ca (Ca 1/2/3 tự động theo giờ nhập TP) + xưởng · MfgReportPolishTests & mfg-shift-helpers",
-    "pct": 95
+    "note": "L2 · sản lượng theo ngày/xưởng (ca stub)",
+    "pct": 90
   },
   "UC_MFG_043": {
     "done": true,
@@ -2981,8 +2876,8 @@
   },
   "UC_PRT_002": {
     "done": true,
-    "note": "Cap-2 · Login JWT/Token + Forgot Password OTP (IntegrationCallLog) + ResetPassword token thật · PrtPortalPolishTests",
-    "pct": 95
+    "note": "L2 · login/forgot password stub",
+    "pct": 80
   },
   "UC_PRT_003": {
     "done": true,
@@ -3001,8 +2896,8 @@
   },
   "UC_PRT_014": {
     "done": true,
-    "note": "Cap-2 · AR summary tích hợp PrtInvoice + FinArInvoice & FinArReceipt thật theo CustomerCode · PrtPortalPolishTests",
-    "pct": 95
+    "note": "L2 · AR summary stub",
+    "pct": 85
   },
   "UC_PRT_015": {
     "done": true,
@@ -3201,23 +3096,18 @@
   },
   "UC_SYS_008": {
     "done": true,
-    "note": "Cap-2 · 2FA TOTP xác thực 2 bước (begin, confirm, login TOTP verification, disable) · Auth2FaPolishTests",
-    "pct": 95
+    "note": "N2 · 2FA begin/confirm Dev",
+    "pct": 80
   },
   "UC_SYS_010": {
     "done": true,
-    "note": "Cap-2 · Danh sách phiên đăng nhập UserSession thực tế live (/api/auth/sessions + UI trusted-devices) · SysSessionPolishTests & sys-session-helpers",
-    "pct": 95
+    "note": "N2 · user_session list",
+    "pct": 90
   },
   "UC_SYS_011": {
     "done": true,
-    "note": "Cap-2 · Giới hạn tối đa 5 phiên hoạt động đồng thời (tự động thu hồi phiên cũ nhất + thu hồi phiên chỉ định) · SysSessionPolishTests & sys-session-helpers",
-    "pct": 95
-  },
-  "UC_SYS_012": {
-    "done": true,
-    "note": "Cap-2 · Quản lý Thiết bị Tin cậy (SysTrustedDevice, bỏ qua 2FA trong 30 ngày) · SysTrustedDevicePolishTests & sys-device-helpers",
-    "pct": 95
+    "note": "N2 · max 5 sessions",
+    "pct": 90
   },
   "UC_SYS_013": {
     "done": true,
@@ -3301,8 +3191,8 @@
   },
   "UC_SYS_029": {
     "done": true,
-    "note": "Cap-2 · Phân quyền phạm vi dữ liệu theo Điểm bán / Chi nhánh (SalesPoint scope từ UserDataScopes) · SysDataScopePolishTests",
-    "pct": 95
+    "note": "N2 · sales_point scope stub entity",
+    "pct": 60
   },
   "UC_SYS_030": {
     "done": true,
@@ -3506,8 +3396,8 @@
   },
   "UC_SYS_075": {
     "done": true,
-    "note": "Cap-2 · Xuất báo cáo định dạng PDF (%PDF-1.4 header + ContentType application/pdf) & CSV · BiAnalyticsPolishTests",
-    "pct": 95
+    "note": "N2 · CSV export as PDF substitute Day-1",
+    "pct": 50
   },
   "UC_SYS_076": {
     "done": true,
