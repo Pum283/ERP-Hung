@@ -279,4 +279,68 @@ public sealed class BiAnalyticsPolishTests : IDisposable
         Assert.Single(board);
         Assert.Equal(8_500_000m, board[0].ActualValue);
     }
+
+    [Fact]
+    public async Task KpiTarget_ComputesActualFromCrmOpportunities_ClosedWon()
+    {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        _db.CrmOpportunities.Add(new CrmOpportunity
+        {
+            TenantId = _tenant, Code = "OPP-01", Name = "Dự án ERP Chốt", EstimatedValue = 50_000_000,
+            Stage = "Won", ExpectedCloseDate = DateTimeOffset.UtcNow, CreatedBy = _user
+        });
+        await _db.SaveChangesAsync();
+
+        await _svc.UpsertKpiTargetAsync(_tenant, _user, new BiKpiTargetUpsertRequest(
+            null, "KPI-CRM", "Doanh số CRM Won", "CRM", "Revenue", "2026-08",
+            today.AddDays(-5), today.AddDays(5), 40_000_000, 0, "VND", "Active", null));
+
+        var board = await _svc.ListTargetVsActualAsync(_tenant, "2026-08", "CRM");
+        Assert.Single(board);
+        Assert.Equal(50_000_000m, board[0].ActualValue);
+    }
+
+    [Fact]
+    public async Task KpiTarget_ComputesActualFromFinJournalEntries_Fallback()
+    {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var acc511 = new FinAccount
+        {
+            TenantId = _tenant, Code = "5111", Name = "Doanh thu bán hàng", CreatedBy = _user
+        };
+        _db.FinAccounts.Add(acc511);
+        var je = new FinJournal
+        {
+            TenantId = _tenant, Code = "JE-REV-01", PeriodId = Guid.NewGuid(),
+            Status = "Posted", EntryDate = DateTimeOffset.UtcNow, CreatedByUserId = _user, CreatedBy = _user
+        };
+        _db.FinJournals.Add(je);
+        _db.FinJournalLines.Add(new FinJournalLine
+        {
+            TenantId = _tenant, JournalId = je.Id, AccountId = acc511.Id,
+            Credit = 12_000_000, Debit = 0, Note = "Doanh thu JE", CreatedBy = _user
+        });
+        await _db.SaveChangesAsync();
+
+        await _svc.UpsertKpiTargetAsync(_tenant, _user, new BiKpiTargetUpsertRequest(
+            null, "KPI-JE", "Doanh thu JE Fallback", "FIN", "Revenue", "2026-08",
+            today.AddDays(-5), today.AddDays(5), 10_000_000, 0, "VND", "Active", null));
+
+        var list = await _svc.ListKpiTargetsAsync(_tenant, "2026-08", "FIN");
+        var target = list.Single(x => x.Code == "KPI-JE");
+        Assert.Equal(12_000_000m, target.ActualStubValue);
+    }
+
+    [Fact]
+    public async Task KpiTarget_ZeroTargetValue_AvoidsDivisionByZero()
+    {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        await _svc.UpsertKpiTargetAsync(_tenant, _user, new BiKpiTargetUpsertRequest(
+            null, "KPI-ZERO", "KPI Target Zero", "FIN", "Revenue", "2026-08",
+            today.AddDays(-5), today.AddDays(5), 0, 5_000_000, "VND", "Active", null));
+
+        var board = await _svc.ListTargetVsActualAsync(_tenant, "2026-08", "FIN");
+        var target = board.Single(x => x.Code == "KPI-ZERO");
+        Assert.Equal(0m, target.VariancePercent);
+    }
 }

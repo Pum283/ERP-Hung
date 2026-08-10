@@ -687,6 +687,12 @@ public sealed class BiAnalyticsService : IBiAnalyticsService
                             && x.OrderDate >= fromDt && x.OrderDate <= toDt)
                 .SumAsync(x => (decimal?)x.TotalAmount, ct) ?? 0m;
             if (crmAmt > 0) return decimal.Round(crmAmt, 2);
+
+            var crmOppAmt = await _db.CrmOpportunities.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && !x.IsDeleted && (x.Stage == "Won" || x.Stage == "ClosedWon")
+                            && x.ExpectedCloseDate >= fromDt && x.ExpectedCloseDate <= toDt)
+                .SumAsync(x => (decimal?)x.EstimatedValue, ct) ?? 0m;
+            if (crmOppAmt > 0) return decimal.Round(crmOppAmt, 2);
         }
 
         if (target.MetricKey == "Revenue")
@@ -696,6 +702,23 @@ public sealed class BiAnalyticsService : IBiAnalyticsService
                             && x.DocDate >= fromDt && x.DocDate <= toDt)
                 .SumAsync(x => (decimal?)x.RevenueAmount, ct) ?? 0m;
             if (revDoc > 0) return decimal.Round(revDoc, 2);
+
+            var revAccountIds = await _db.FinAccounts.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Code.StartsWith("511"))
+                .Select(x => x.Id).ToListAsync(ct);
+            var postedJeIds = await _db.FinJournals.AsNoTracking()
+                .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.Status == "Posted"
+                            && x.EntryDate >= fromDt && x.EntryDate <= toDt)
+                .Select(x => x.Id).ToListAsync(ct);
+
+            if (revAccountIds.Count > 0 && postedJeIds.Count > 0)
+            {
+                var jeRev = await _db.FinJournalLines.AsNoTracking()
+                    .Where(x => x.TenantId == tenantId && !x.IsDeleted
+                                && postedJeIds.Contains(x.JournalId) && revAccountIds.Contains(x.AccountId))
+                    .SumAsync(x => (decimal?)x.Credit - x.Debit, ct) ?? 0m;
+                if (jeRev > 0) return decimal.Round(jeRev, 2);
+            }
         }
         else if (target.MetricKey == "Profit")
         {

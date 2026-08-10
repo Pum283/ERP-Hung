@@ -161,13 +161,13 @@
   },
   "UC_BI_018": {
     "done": true,
-    "note": "L2 · so sánh kỳ / mục tiêu BiKpiTarget + ComparePeriods",
-    "pct": 90
+    "note": "Hoàn thiện Cap-2: Dashboard Widget live metrics từ FIN Revenue Documents (Doanh thu & Lợi nhuận) và fallback TK 511/632/641/642 từ Journal Entries Posted. Test pass.",
+    "pct": 95
   },
   "UC_BI_019": {
     "done": true,
-    "note": "L2 · cấu hình ngưỡng BiAlertThreshold evaluate on-read",
-    "pct": 90
+    "note": "Hoàn thiện Cap-2: KPI Target vs Actual live metrics từ CRM (Sales Orders & ClosedWon Opportunities), POS Sales, FIN Revenue Docs + Journal Entries Fallback, chống lỗi chia cho 0 khi Target = 0. Test pass.",
+    "pct": 95
   },
   "UC_BI_021": {
     "done": true,
