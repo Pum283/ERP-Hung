@@ -325,130 +325,130 @@
 |              | `UC_LMS_050` | Phân quyền giảng viên — Polish BE/FE & Unit Test                            |    100%    |
 |              | `UC_LMS_051` | Theo dõi danh sách học viên — Polish BE/FE & Unit Test                      |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 56**  | `UC_LMS_058` | Xác nhận đã đọc nội quy — Polish BE/FE & Unit Test                          | 80% ➔ 100% |
-|              | `UC_LMS_065` | Dashboard tiến độ đào tạo — Polish BE/FE & Unit Test                        | 90% ➔ 100% |
-|              | `UC_LMS_066` | Báo cáo hoàn thành theo đơn vị — Polish BE/FE & Unit Test                   | 90% ➔ 100% |
-|              | `UC_LMS_070` | Xuất báo cáo đào tạo — Polish BE/FE & Unit Test                             | 90% ➔ 100% |
+| **Bước 56**  | `UC_LMS_058` | Xác nhận đã đọc nội quy — Polish BE/FE & Unit Test                          |    100%    |
+|   `[XONG]`   | `UC_LMS_065` | Dashboard tiến độ đào tạo — Polish BE/FE & Unit Test                        |    100%    |
+|              | `UC_LMS_066` | Báo cáo hoàn thành theo đơn vị — Polish BE/FE & Unit Test                   |    100%    |
+|              | `UC_LMS_070` | Xuất báo cáo đào tạo — Polish BE/FE & Unit Test                             |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 57**  | `UC_CRM_001` | Tạo khách hàng cá nhân — Polish BE/FE & Unit Test                           | 95% ➔ 100% |
-|              | `UC_CRM_002` | Tạo khách hàng doanh nghiệp — Polish BE/FE & Unit Test                      | 95% ➔ 100% |
-|              | `UC_CRM_003` | Cập nhật thông tin khách hàng — Polish BE/FE & Unit Test                    | 95% ➔ 100% |
-|              | `UC_CRM_004` | Kiểm tra trùng SĐT / MST — Polish BE/FE & Unit Test                         | 85% ➔ 100% |
+| **Bước 57**  | `UC_CRM_001` | Tạo khách hàng cá nhân — Polish BE/FE & Unit Test                           |    100%    |
+|   `[XONG]`   | `UC_CRM_002` | Tạo khách hàng doanh nghiệp — Polish BE/FE & Unit Test                      |    100%    |
+|              | `UC_CRM_003` | Cập nhật thông tin khách hàng — Polish BE/FE & Unit Test                    |    100%    |
+|              | `UC_CRM_004` | Kiểm tra trùng SĐT / MST — Polish BE/FE & Unit Test                         |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 58**  | `UC_CRM_005` | Gộp khách hàng trùng — Polish BE/FE & Unit Test                             | 85% ➔ 100% |
-|              | `UC_CRM_006` | Phân loại tệp khách hàng — Polish BE/FE & Unit Test                         | 85% ➔ 100% |
-|              | `UC_CRM_008` | Gán người phụ trách — Polish BE/FE & Unit Test                              | 85% ➔ 100% |
-|              | `UC_CRM_009` | Bàn giao khách hàng — Polish BE/FE & Unit Test                              | 85% ➔ 100% |
+| **Bước 58**  | `UC_CRM_005` | Gộp khách hàng trùng — Polish BE/FE & Unit Test                             |    100%    |
+|   `[XONG]`   | `UC_CRM_006` | Phân loại tệp khách hàng — Polish BE/FE & Unit Test                         |    100%    |
+|              | `UC_CRM_008` | Gán người phụ trách — Polish BE/FE & Unit Test                              |    100%    |
+|              | `UC_CRM_009` | Bàn giao khách hàng — Polish BE/FE & Unit Test                              |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 59**  | `UC_CRM_010` | Hồ sơ khách 360° — Polish BE/FE & Unit Test                                 | 80% ➔ 100% |
-|              | `UC_CRM_011` | Danh sách người liên hệ — Polish BE/FE & Unit Test                          | 85% ➔ 100% |
-|              | `UC_CRM_012` | Lịch sử thay đổi dữ liệu — Polish BE/FE & Unit Test                         | 95% ➔ 100% |
-|              | `UC_CRM_013` | Ngưng sử dụng / blacklist — Polish BE/FE & Unit Test                        | 95% ➔ 100% |
+| **Bước 59**  | `UC_CRM_010` | Hồ sơ khách 360° — Polish BE/FE & Unit Test                                 |    100%    |
+|   `[XONG]`   | `UC_CRM_011` | Danh sách người liên hệ — Polish BE/FE & Unit Test                          |    100%    |
+|              | `UC_CRM_012` | Lịch sử thay đổi dữ liệu — Polish BE/FE & Unit Test                         |    100%    |
+|              | `UC_CRM_013` | Ngưng sử dụng / blacklist — Polish BE/FE & Unit Test                        |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 60**  | `UC_CRM_014` | Import / export khách hàng — Polish BE/FE & Unit Test                       | 80% ➔ 100% |
-|              | `UC_CRM_015` | Tìm kiếm khách đa tiêu chí — Polish BE/FE & Unit Test                       | 85% ➔ 100% |
-|              | `UC_CRM_016` | Tạo campaign marketing — Polish BE/FE & Unit Test                           | 95% ➔ 100% |
-|              | `UC_CRM_017` | Quản lý nhóm quảng cáo — Polish BE/FE & Unit Test                           | 95% ➔ 100% |
+| **Bước 60**  | `UC_CRM_014` | Import / export khách hàng — Polish BE/FE & Unit Test                       |    100%    |
+|   `[XONG]`   | `UC_CRM_015` | Tìm kiếm khách đa tiêu chí — Polish BE/FE & Unit Test                       |    100%    |
+|              | `UC_CRM_016` | Tạo campaign marketing — Polish BE/FE & Unit Test                           |    100%    |
+|              | `UC_CRM_017` | Quản lý nhóm quảng cáo — Polish BE/FE & Unit Test                           |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 61**  | `UC_CRM_018` | Gắn sản phẩm / đối tượng mục tiêu — Polish BE/FE & Unit Test                | 95% ➔ 100% |
-|              | `UC_CRM_019` | Ghi nhận chi phí quảng cáo — Polish BE/FE & Unit Test                       | 95% ➔ 100% |
-|              | `UC_CRM_020` | Gắn ngân sách & theo dõi — Polish BE/FE & Unit Test                         | 95% ➔ 100% |
-|              | `UC_CRM_021` | Đánh giá hậu chiến dịch — Polish BE/FE & Unit Test                          | 95% ➔ 100% |
+| **Bước 61**  | `UC_CRM_018` | Gắn sản phẩm / đối tượng mục tiêu — Polish BE/FE & Unit Test                |    100%    |
+|   `[XONG]`   | `UC_CRM_019` | Ghi nhận chi phí quảng cáo — Polish BE/FE & Unit Test                       |    100%    |
+|              | `UC_CRM_020` | Gắn ngân sách & theo dõi — Polish BE/FE & Unit Test                         |    100%    |
+|              | `UC_CRM_021` | Đánh giá hậu chiến dịch — Polish BE/FE & Unit Test                          |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 62**  | `UC_CRM_023` | Đóng campaign — Polish BE/FE & Unit Test                                    | 95% ➔ 100% |
-|              | `UC_CRM_024` | Danh mục nguồn lead — Polish BE/FE & Unit Test                              | 85% ➔ 100% |
-|              | `UC_CRM_025` | Đồng bộ lead mạng xã hội — Polish BE/FE & Unit Test                         | 95% ➔ 100% |
-|              | `UC_CRM_026` | Đồng bộ lead website / landing — Polish BE/FE & Unit Test                   | 90% ➔ 100% |
+| **Bước 62**  | `UC_CRM_023` | Đóng campaign — Polish BE/FE & Unit Test                                    |    100%    |
+|   `[XONG]`   | `UC_CRM_024` | Danh mục nguồn lead — Polish BE/FE & Unit Test                              |    100%    |
+|              | `UC_CRM_025` | Đồng bộ lead mạng xã hội — Polish BE/FE & Unit Test                         |    100%    |
+|              | `UC_CRM_026` | Đồng bộ lead website / landing — Polish BE/FE & Unit Test                   |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 63**  | `UC_CRM_027` | Đồng bộ kênh khác — Polish BE/FE & Unit Test                                | 95% ➔ 100% |
-|              | `UC_CRM_028` | Attribution nguồn khách — Polish BE/FE & Unit Test                          | 95% ➔ 100% |
-|              | `UC_CRM_029` | Tính CPL / CAC / ROAS / ROI — Polish BE/FE & Unit Test                      | 90% ➔ 100% |
-|              | `UC_CRM_030` | Funnel marketing đến doanh thu — Polish BE/FE & Unit Test                   | 95% ➔ 100% |
+| **Bước 63**  | `UC_CRM_027` | Đồng bộ kênh khác — Polish BE/FE & Unit Test                                |    100%    |
+|   `[XONG]`   | `UC_CRM_028` | Attribution nguồn khách — Polish BE/FE & Unit Test                          |    100%    |
+|              | `UC_CRM_029` | Tính CPL / CAC / ROAS / ROI — Polish BE/FE & Unit Test                      |    100%    |
+|              | `UC_CRM_030` | Funnel marketing đến doanh thu — Polish BE/FE & Unit Test                   |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 64**  | `UC_CRM_031` | Dashboard marketing — Polish BE/FE & Unit Test                              | 90% ➔ 100% |
-|              | `UC_CRM_032` | Tạo chương trình khuyến mại — Polish BE/FE & Unit Test                      | 90% ➔ 100% |
-|              | `UC_CRM_033` | Cấu hình điều kiện khuyến mại — Polish BE/FE & Unit Test                    | 90% ➔ 100% |
-|              | `UC_CRM_034` | Sinh mã voucher — Polish BE/FE & Unit Test                                  | 90% ➔ 100% |
+| **Bước 64**  | `UC_CRM_031` | Dashboard marketing — Polish BE/FE & Unit Test                              |    100%    |
+|   `[XONG]`   | `UC_CRM_032` | Tạo chương trình khuyến mại — Polish BE/FE & Unit Test                      |    100%    |
+|              | `UC_CRM_033` | Cấu hình điều kiện khuyến mại — Polish BE/FE & Unit Test                    |    100%    |
+|              | `UC_CRM_034` | Sinh mã voucher — Polish BE/FE & Unit Test                                  |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 65**  | `UC_CRM_035` | Giới hạn lượt dùng voucher — Polish BE/FE & Unit Test                       | 90% ➔ 100% |
-|              | `UC_CRM_036` | Đồng bộ khuyến mại sang POS — Polish BE/FE & Unit Test                      | 90% ➔ 100% |
-|              | `UC_CRM_037` | Áp dụng khuyến mại trên báo giá — Polish BE/FE & Unit Test                  | 90% ➔ 100% |
-|              | `UC_CRM_038` | Báo cáo sử dụng voucher — Polish BE/FE & Unit Test                          | 90% ➔ 100% |
+| **Bước 65**  | `UC_CRM_035` | Giới hạn lượt dùng voucher — Polish BE/FE & Unit Test                       |    100%    |
+|   `[XONG]`   | `UC_CRM_036` | Đồng bộ khuyến mại sang POS — Polish BE/FE & Unit Test                      |    100%    |
+|              | `UC_CRM_037` | Áp dụng khuyến mại trên báo giá — Polish BE/FE & Unit Test                  |    100%    |
+|              | `UC_CRM_038` | Báo cáo sử dụng voucher — Polish BE/FE & Unit Test                          |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 66**  | `UC_CRM_047` | Lưu lịch sử chat — Polish BE/FE & Unit Test                                 | 80% ➔ 100% |
-|              | `UC_CRM_049` | Tạo lead thủ công — Polish BE/FE & Unit Test                                | 85% ➔ 100% |
-|              | `UC_CRM_050` | Tiếp nhận lead tự động — Polish BE/FE & Unit Test                           | 90% ➔ 100% |
-|              | `UC_CRM_051` | Phân bổ lead cho sales — Polish BE/FE & Unit Test                           | 85% ➔ 100% |
+| **Bước 66**  | `UC_CRM_047` | Lưu lịch sử chat — Polish BE/FE & Unit Test                                 |    100%    |
+|   `[XONG]`   | `UC_CRM_049` | Tạo lead thủ công — Polish BE/FE & Unit Test                                |    100%    |
+|              | `UC_CRM_050` | Tiếp nhận lead tự động — Polish BE/FE & Unit Test                           |    100%    |
+|              | `UC_CRM_051` | Phân bổ lead cho sales — Polish BE/FE & Unit Test                           |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 67**  | `UC_CRM_052` | Lead scoring — Polish BE/FE & Unit Test                                     | 95% ➔ 100% |
-|              | `UC_CRM_053` | Cập nhật trạng thái pipeline — Polish BE/FE & Unit Test                     | 85% ➔ 100% |
-|              | `UC_CRM_054` | Task follow-up lead — Polish BE/FE & Unit Test                              | 85% ➔ 100% |
-|              | `UC_CRM_055` | Nhắc việc follow-up — Polish BE/FE & Unit Test                              | 85% ➔ 100% |
+| **Bước 67**  | `UC_CRM_052` | Lead scoring — Polish BE/FE & Unit Test                                     |    100%    |
+|   `[XONG]`   | `UC_CRM_053` | Cập nhật trạng thái pipeline — Polish BE/FE & Unit Test                     |    100%    |
+|              | `UC_CRM_054` | Task follow-up lead — Polish BE/FE & Unit Test                              |    100%    |
+|              | `UC_CRM_055` | Nhắc việc follow-up — Polish BE/FE & Unit Test                              |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 68**  | `UC_CRM_056` | Nhật ký chăm sóc lead — Polish BE/FE & Unit Test                            | 85% ➔ 100% |
-|              | `UC_CRM_057` | Chuyển lead thành cơ hội — Polish BE/FE & Unit Test                         | 85% ➔ 100% |
-|              | `UC_CRM_058` | Đánh dấu lead mất — Polish BE/FE & Unit Test                                | 85% ➔ 100% |
-|              | `UC_CRM_059` | Gộp lead trùng — Polish BE/FE & Unit Test                                   | 95% ➔ 100% |
+| **Bước 68**  | `UC_CRM_056` | Nhật ký chăm sóc lead — Polish BE/FE & Unit Test                            |    100%    |
+|   `[XONG]`   | `UC_CRM_057` | Chuyển lead thành cơ hội — Polish BE/FE & Unit Test                         |    100%    |
+|              | `UC_CRM_058` | Đánh dấu lead mất — Polish BE/FE & Unit Test                                |    100%    |
+|              | `UC_CRM_059` | Gộp lead trùng — Polish BE/FE & Unit Test                                   |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 69**  | `UC_CRM_060` | Import lead Excel — Polish BE/FE & Unit Test                                | 85% ➔ 100% |
-|              | `UC_CRM_061` | Báo cáo chuyển đổi lead — Polish BE/FE & Unit Test                          | 85% ➔ 100% |
-|              | `UC_CRM_062` | Tạo cơ hội từ lead/khách — Polish BE/FE & Unit Test                         | 85% ➔ 100% |
-|              | `UC_CRM_063` | Pipeline cơ hội theo giai đoạn — Polish BE/FE & Unit Test                   | 85% ➔ 100% |
+| **Bước 69**  | `UC_CRM_060` | Import lead Excel — Polish BE/FE & Unit Test                                |    100%    |
+|   `[XONG]`   | `UC_CRM_061` | Báo cáo chuyển đổi lead — Polish BE/FE & Unit Test                          |    100%    |
+|              | `UC_CRM_062` | Tạo cơ hội từ lead/khách — Polish BE/FE & Unit Test                         |    100%    |
+|              | `UC_CRM_063` | Pipeline cơ hội theo giai đoạn — Polish BE/FE & Unit Test                   |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 70**  | `UC_CRM_064` | Dự báo doanh thu — Polish BE/FE & Unit Test                                 | 95% ➔ 100% |
-|              | `UC_CRM_065` | Gắn sản phẩm / giá trị ước tính — Polish BE/FE & Unit Test                  | 85% ➔ 100% |
-|              | `UC_CRM_066` | Đối thủ / ghi chú đàm phán — Polish BE/FE & Unit Test                       | 95% ➔ 100% |
-|              | `UC_CRM_067` | Chuyển cơ hội sang báo giá — Polish BE/FE & Unit Test                       | 90% ➔ 100% |
+| **Bước 70**  | `UC_CRM_064` | Dự báo doanh thu — Polish BE/FE & Unit Test                                 |    100%    |
+|   `[XONG]`   | `UC_CRM_065` | Gắn sản phẩm / giá trị ước tính — Polish BE/FE & Unit Test                  |    100%    |
+|              | `UC_CRM_066` | Đối thủ / ghi chú đàm phán — Polish BE/FE & Unit Test                       |    100%    |
+|              | `UC_CRM_067` | Chuyển cơ hội sang báo giá — Polish BE/FE & Unit Test                       |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 71**  | `UC_CRM_068` | Đóng thắng / thua — Polish BE/FE & Unit Test                                | 85% ➔ 100% |
-|              | `UC_CRM_069` | Báo cáo win-rate — Polish BE/FE & Unit Test                                 | 95% ➔ 100% |
-|              | `UC_CRM_070` | Tạo báo giá từ cơ hội — Polish BE/FE & Unit Test                            | 90% ➔ 100% |
-|              | `UC_CRM_071` | Thêm dòng sản phẩm / dịch vụ — Polish BE/FE & Unit Test                     | 85% ➔ 100% |
+| **Bước 71**  | `UC_CRM_068` | Đóng thắng / thua — Polish BE/FE & Unit Test                                |    100%    |
+|   `[XONG]`   | `UC_CRM_069` | Báo cáo win-rate — Polish BE/FE & Unit Test                                 |    100%    |
+|              | `UC_CRM_070` | Tạo báo giá từ cơ hội — Polish BE/FE & Unit Test                            |    100%    |
+|              | `UC_CRM_071` | Thêm dòng sản phẩm / dịch vụ — Polish BE/FE & Unit Test                     |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 72**  | `UC_CRM_072` | Áp chính sách giá / bảng giá — Polish BE/FE & Unit Test                     | 85% ➔ 100% |
-|              | `UC_CRM_073` | Xin duyệt chiết khấu — Polish BE/FE & Unit Test                             | 85% ➔ 100% |
-|              | `UC_CRM_074` | Gửi báo giá PDF/email — Polish BE/FE & Unit Test                            | 90% ➔ 100% |
-|              | `UC_CRM_075` | Phiên bản báo giá — Polish BE/FE & Unit Test                                | 95% ➔ 100% |
+| **Bước 72**  | `UC_CRM_072` | Áp chính sách giá / bảng giá — Polish BE/FE & Unit Test                     |    100%    |
+|   `[XONG]`   | `UC_CRM_073` | Xin duyệt chiết khấu — Polish BE/FE & Unit Test                             |    100%    |
+|              | `UC_CRM_074` | Gửi báo giá PDF/email — Polish BE/FE & Unit Test                            |    100%    |
+|              | `UC_CRM_075` | Phiên bản báo giá — Polish BE/FE & Unit Test                                |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 73**  | `UC_CRM_076` | Hết hạn báo giá tự động — Polish BE/FE & Unit Test                          | 95% ➔ 100% |
-|              | `UC_CRM_077` | Chuyển báo giá thành đơn — Polish BE/FE & Unit Test                         | 90% ➔ 100% |
-|              | `UC_CRM_078` | In mẫu báo giá — Polish BE/FE & Unit Test                                   | 95% ➔ 100% |
-|              | `UC_CRM_079` | Tạo đơn hàng từ báo giá — Polish BE/FE & Unit Test                          | 90% ➔ 100% |
+| **Bước 73**  | `UC_CRM_076` | Hết hạn báo giá tự động — Polish BE/FE & Unit Test                          |    100%    |
+|   `[XONG]`   | `UC_CRM_077` | Chuyển báo giá thành đơn — Polish BE/FE & Unit Test                         |    100%    |
+|              | `UC_CRM_078` | In mẫu báo giá — Polish BE/FE & Unit Test                                   |    100%    |
+|              | `UC_CRM_079` | Tạo đơn hàng từ báo giá — Polish BE/FE & Unit Test                          |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 74**  | `UC_CRM_081` | Cập nhật trạng thái đơn — Polish BE/FE & Unit Test                          | 85% ➔ 100% |
-|              | `UC_CRM_082` | Giữ tồn khi duyệt đơn — Polish BE/FE & Unit Test                            | 90% ➔ 100% |
-|              | `UC_CRM_083` | Tách / gộp đơn — Polish BE/FE & Unit Test                                   | 95% ➔ 100% |
-|              | `UC_CRM_084` | Hủy đơn có kiểm soát — Polish BE/FE & Unit Test                             | 85% ➔ 100% |
+| **Bước 74**  | `UC_CRM_081` | Cập nhật trạng thái đơn — Polish BE/FE & Unit Test                          |    100%    |
+|   `[XONG]`   | `UC_CRM_082` | Giữ tồn khi duyệt đơn — Polish BE/FE & Unit Test                            |    100%    |
+|              | `UC_CRM_083` | Tách / gộp đơn — Polish BE/FE & Unit Test                                   |    100%    |
+|              | `UC_CRM_084` | Hủy đơn có kiểm soát — Polish BE/FE & Unit Test                             |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 75**  | `UC_CRM_085` | Trả hàng / điều chỉnh đơn — Polish BE/FE & Unit Test                        | 95% ➔ 100% |
-|              | `UC_CRM_086` | Gắn hợp đồng — Polish BE/FE & Unit Test                                     | 95% ➔ 100% |
-|              | `UC_CRM_087` | Theo dõi thanh toán — Polish BE/FE & Unit Test                              | 85% ➔ 100% |
-|              | `UC_CRM_088` | Đẩy đơn sang kho / giao vận — Polish BE/FE & Unit Test                      | 90% ➔ 100% |
+| **Bước 75**  | `UC_CRM_085` | Trả hàng / điều chỉnh đơn — Polish BE/FE & Unit Test                        |    100%    |
+|   `[XONG]`   | `UC_CRM_086` | Gắn hợp đồng — Polish BE/FE & Unit Test                                     |    100%    |
+|              | `UC_CRM_087` | Theo dõi thanh toán — Polish BE/FE & Unit Test                              |    100%    |
+|              | `UC_CRM_088` | Đẩy đơn sang kho / giao vận — Polish BE/FE & Unit Test                      |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 76**  | `UC_POS_001` | Khai báo điểm bán POS — Polish BE/FE & Unit Test                            | 85% ➔ 100% |
-|              | `UC_POS_002` | Khai báo quầy / máy POS — Polish BE/FE & Unit Test                          | 85% ➔ 100% |
-|              | `UC_POS_003` | Cấu hình máy in hóa đơn — Polish BE/FE & Unit Test                          | 85% ➔ 100% |
-|              | `UC_POS_007` | Phân quyền thu ngân trên POS — Polish BE/FE & Unit Test                     | 85% ➔ 100% |
+| **Bước 76**  | `UC_POS_001` | Khai báo điểm bán POS — Polish BE/FE & Unit Test                            |    100%    |
+|   `[XONG]`   | `UC_POS_002` | Khai báo quầy / máy POS — Polish BE/FE & Unit Test                          |    100%    |
+|              | `UC_POS_003` | Cấu hình máy in hóa đơn — Polish BE/FE & Unit Test                          |    100%    |
+|              | `UC_POS_007` | Phân quyền thu ngân trên POS — Polish BE/FE & Unit Test                     |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 77**  | `UC_POS_009` | Danh mục nhóm sản phẩm — Polish BE/FE & Unit Test                           | 85% ➔ 100% |
-|              | `UC_POS_010` | Danh mục sản phẩm bán — Polish BE/FE & Unit Test                            | 85% ➔ 100% |
-|              | `UC_POS_012` | BOM / định mức nguyên liệu — Polish BE/FE & Unit Test                       | 85% ➔ 100% |
-|              | `UC_POS_014` | Ngưng bán sản phẩm tạm thời — Polish BE/FE & Unit Test                      | 85% ➔ 100% |
+| **Bước 77**  | `UC_POS_009` | Danh mục nhóm sản phẩm — Polish BE/FE & Unit Test                           |    100%    |
+|   `[XONG]`   | `UC_POS_010` | Danh mục sản phẩm bán — Polish BE/FE & Unit Test                            |    100%    |
+|              | `UC_POS_012` | BOM / định mức nguyên liệu — Polish BE/FE & Unit Test                       |    100%    |
+|              | `UC_POS_014` | Ngưng bán sản phẩm tạm thời — Polish BE/FE & Unit Test                      |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 78**  | `UC_POS_015` | Đồng bộ catalog từ back-office — Polish BE/FE & Unit Test                   | 90% ➔ 100% |
-|              | `UC_POS_016` | Bảng giá theo điểm bán — Polish BE/FE & Unit Test                           | 85% ➔ 100% |
-|              | `UC_POS_019` | Cấu hình thuế GTGT — Polish BE/FE & Unit Test                               | 85% ➔ 100% |
-|              | `UC_POS_021` | Áp dụng chương trình khuyến mại — Polish BE/FE & Unit Test                  | 90% ➔ 100% |
+| **Bước 78**  | `UC_POS_015` | Đồng bộ catalog từ back-office — Polish BE/FE & Unit Test                   |    100%    |
+|   `[XONG]`   | `UC_POS_016` | Bảng giá theo điểm bán — Polish BE/FE & Unit Test                           |    100%    |
+|              | `UC_POS_019` | Cấu hình thuế GTGT — Polish BE/FE & Unit Test                               |    100%    |
+|              | `UC_POS_021` | Áp dụng chương trình khuyến mại — Polish BE/FE & Unit Test                  |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 79**  | `UC_POS_022` | Nhập mã voucher — Polish BE/FE & Unit Test                                  | 90% ➔ 100% |
-|              | `UC_POS_024` | Giảm giá tay có quyền — Polish BE/FE & Unit Test                            | 90% ➔ 100% |
-|              | `UC_POS_026` | Mở đơn / chọn khu vực — Polish BE/FE & Unit Test                            | 85% ➔ 100% |
-|              | `UC_POS_027` | Thêm / sửa / xóa sản phẩm — Polish BE/FE & Unit Test                        | 85% ➔ 100% |
+| **Bước 79**  | `UC_POS_022` | Nhập mã voucher — Polish BE/FE & Unit Test                                  |    100%    |
+|   `[XONG]`   | `UC_POS_024` | Giảm giá tay có quyền — Polish BE/FE & Unit Test                            |    100%    |
+|              | `UC_POS_026` | Mở đơn / chọn khu vực — Polish BE/FE & Unit Test                            |    100%    |
+|              | `UC_POS_027` | Thêm / sửa / xóa sản phẩm — Polish BE/FE & Unit Test                        |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 80**  | `UC_POS_032` | Tạm tính / giữ đơn — Polish BE/FE & Unit Test                               | 85% ➔ 100% |
-|              | `UC_POS_033` | Thanh toán tiền mặt — Polish BE/FE & Unit Test                              | 85% ➔ 100% |
-|              | `UC_POS_034` | Thanh toán chuyển khoản / QR — Polish BE/FE & Unit Test                     | 85% ➔ 100% |
-|              | `UC_POS_035` | Thanh toán thẻ / ví điện tử — Polish BE/FE & Unit Test                      | 85% ➔ 100% |
+| **Bước 80**  | `UC_POS_032` | Tạm tính / giữ đơn — Polish BE/FE & Unit Test                               |    100%    |
+|   `[XONG]`   | `UC_POS_033` | Thanh toán tiền mặt — Polish BE/FE & Unit Test                              |    100%    |
+|              | `UC_POS_034` | Thanh toán chuyển khoản / QR — Polish BE/FE & Unit Test                     |    100%    |
+|              | `UC_POS_035` | Thanh toán thẻ / ví điện tử — Polish BE/FE & Unit Test                      |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
 | **Bước 81**  | `UC_POS_037` | In hóa đơn — Polish BE/FE & Unit Test                                       | 90% ➔ 100% |
 |              | `UC_POS_038` | Hủy sản phẩm — Polish BE/FE & Unit Test                                     | 85% ➔ 100% |

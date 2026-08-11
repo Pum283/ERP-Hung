@@ -46,8 +46,8 @@ public sealed class CrmPromotionService : ICrmPromotionService
         if (!DiscountTypes.Contains(dtype))
             throw new AppException("DiscountType: Percentage|FixedAmount|BuyXGetY|FreeShipping.");
         if (req.DiscountValue < 0) throw new AppException("Giá trị giảm không được âm.");
-        if (dtype.Equals("Percentage", StringComparison.OrdinalIgnoreCase) && req.DiscountValue > 100)
-            throw new AppException("Giảm % tối đa 100.");
+        if (req.StartDate is DateTimeOffset s && req.EndDate is DateTimeOffset e && e < s)
+            throw new AppException("Ngày kết thúc phải >= Ngày bắt đầu.");
         if (req.CampaignId is Guid cid)
             _ = await RequireAsync(_db.CrmCampaigns, tenantId, cid, "campaign", ct);
 

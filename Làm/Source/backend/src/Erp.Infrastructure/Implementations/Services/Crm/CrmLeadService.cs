@@ -103,6 +103,9 @@ public sealed class CrmLeadService : ICrmLeadService
         Guid tenantId, Guid userId, CrmLeadUpsertRequest req, CancellationToken ct = default)
     {
         var name = Req(req.Name, 200, "Tên lead");
+        if (NullIfEmpty(req.Phone) == null && NullIfEmpty(req.Email) == null)
+            throw new AppException("Cần ít nhất SĐT hoặc Email để liên hệ.");
+
         if (req.SourceId is Guid sid)
             _ = await RequireAsync(_db.CrmLeadSources, tenantId, sid, "nguồn lead", ct);
         if (req.CustomerId is Guid cid)
