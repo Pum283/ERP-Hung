@@ -27,6 +27,12 @@ const SCOPE_LABEL: Record<string, string> = {
   Shift: "Ca",
 };
 
+import { validateHeadcountPlan } from "@/shared/api/hrm-step22-helpers";
+import {
+  validateDeptHeadcountPlan,
+  validateShiftHeadcountPlan,
+} from "@/shared/api/hrm-step23-helpers";
+
 export default function HeadcountPage() {
   const { can } = usePermissions();
   const canRead = can("hrm.employee.read");
@@ -88,6 +94,21 @@ export default function HeadcountPage() {
   async function onSave(e: FormEvent, submit: boolean) {
     e.preventDefault();
     if (!canManage) return;
+
+    const plannedNum = Number(planned);
+    const vBase = validateHeadcountPlan({ scopeType, orgUnitId, plannedHeadcount: plannedNum });
+    if (!vBase.valid) { setError(vBase.error ?? "Lỗi validation định biên."); return; }
+
+    if (scopeType === "Shift") {
+      const vShift = validateShiftHeadcountPlan(shiftCode, plannedNum);
+      if (!vShift.valid) { setError(vShift.error ?? "Lỗi ca làm việc."); return; }
+    }
+
+    if (scopeType === "Department") {
+      const vDept = validateDeptHeadcountPlan(departmentId, plannedNum);
+      if (!vDept.valid) { setError(vDept.error ?? "Lỗi bộ phận."); return; }
+    }
+
     setSubmitting(true);
     setError(null);
     setOk(null);
@@ -102,11 +123,11 @@ export default function HeadcountPage() {
         note: note.trim() || null,
         submit,
       });
-      setOk(submit ? "Đã gửi duyệt định biên." : "Đã lưu nháp định biên.");
+      setOk(submit ? "✅ Đã gửi duyệt định biên." : "✅ Đã lưu nháp định biên.");
       setNote("");
       await load();
-    } catch {
-      setError("Không lưu/gửi được định biên. Kiểm tra phạm vi và số lượng.");
+    } catch (ex: unknown) {
+      setError(ex instanceof Error ? ex.message : "Không lưu/gửi được định biên.");
     } finally {
       setSubmitting(false);
     }

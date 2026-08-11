@@ -132,12 +132,15 @@ public sealed class HrmRewardDisciplineService : IHrmRewardDisciplineService
         var y = year ?? DateTime.UtcNow.Year;
         var from = new DateOnly(y, 1, 1);
         var to = new DateOnly(y, 12, 31);
-        return await _db.RewardDisciplineDecisions.AsNoTracking()
+        var rows = await _db.RewardDisciplineDecisions.AsNoTracking()
             .Where(x => x.TenantId == tenantId && !x.IsDeleted && x.DecisionDate >= from && x.DecisionDate <= to)
+            .ToListAsync(ct);
+
+        return rows
             .GroupBy(x => x.Kind)
             .Select(g => new RewardDisciplineReportRowDto(g.Key, g.Count(), g.Sum(x => x.PayrollImpactAmount)))
             .OrderBy(x => x.Kind)
-            .ToListAsync(ct);
+            .ToList();
     }
 
     private static RewardDisciplineDto Map(RewardDisciplineDecision d, string code, string name) => new(

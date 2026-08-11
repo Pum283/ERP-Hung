@@ -26,6 +26,8 @@ import {
 import { fetchOrgUnits, type OrgUnitDto } from "@/shared/api/sys-api";
 import { usePermissions } from "@/shared/hooks/use-permissions";
 import { btn } from "@/shared/ui/btn";
+import { validateMobilizationOrder } from "@/shared/api/hrm-step26-helpers";
+import { validateMobilizationRequest } from "@/shared/api/hrm-step27-helpers";
 
 function today() {
   return new Date().toISOString().slice(0, 10);
@@ -96,6 +98,16 @@ export default function TransfersPage() {
   async function onCreateRequest(e: FormEvent, submit: boolean) {
     e.preventDefault();
     if (!canManage) return;
+
+    const v = validateMobilizationRequest({
+      fromOrgUnitId: fromOrg,
+      toOrgUnitId: toOrg,
+      startDate,
+      requestedHeadcount: Number(headcount),
+      reason,
+    });
+    if (!v.valid) { setError(v.error ?? "Lỗi đề xuất điều động."); return; }
+
     setError(null);
     setOk(null);
     try {
@@ -108,17 +120,27 @@ export default function TransfersPage() {
         reason,
         submit,
       });
-      setOk(submit ? "Đã gửi đề xuất điều động." : "Đã lưu đề xuất nháp.");
+      setOk(submit ? "✅ Đã gửi đề xuất điều động (UC_HRM_093)." : "✅ Đã lưu đề xuất nháp (UC_HRM_093).");
       setReason("");
       await load();
-    } catch {
-      setError("Tạo đề xuất thất bại.");
+    } catch (ex: unknown) {
+      setError(ex instanceof Error ? ex.message : "Tạo đề xuất thất bại.");
     }
   }
 
   async function onCreateOrder(e: FormEvent, issue: boolean) {
     e.preventDefault();
     if (!canManage) return;
+
+    const v = validateMobilizationOrder({
+      employeeId,
+      fromOrgUnitId: fromOrg,
+      toOrgUnitId: toOrg,
+      startDate,
+      reason,
+    });
+    if (!v.valid) { setError(v.error ?? "Lỗi thông tin điều động."); return; }
+
     setError(null);
     setOk(null);
     try {
@@ -134,11 +156,11 @@ export default function TransfersPage() {
         attendanceTagged,
         issue,
       });
-      setOk(issue ? "Đã phát hành lệnh điều động." : "Đã lưu lệnh nháp.");
+      setOk(issue ? "✅ Đã phát hành lệnh điều động (UC_HRM_092)." : "✅ Đã lưu lệnh nháp điều động (UC_HRM_092).");
       setReason("");
       await load();
-    } catch {
-      setError("Tạo lệnh thất bại.");
+    } catch (ex: unknown) {
+      setError(ex instanceof Error ? ex.message : "Tạo lệnh thất bại.");
     }
   }
 

@@ -3628,5 +3628,765 @@
     "done": true,
     "pct": 100,
     "note": "Production-ready · Quản lý Thiết bị Tin cậy (SysTrustedDevice, bỏ qua 2FA trong 30 ngày) · SysTrustedDevicePolishTests & sys-device-helpers"
+  },
+  "UC_HRM_055": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 18 · Ghi nhận kênh đăng tuyển (Internal|Website|Facebook|LinkedIn|Other) · validate channel BE, ChannelStats aggregate đúng · FE helpers isValidChannel + RECRUIT_CHANNELS · HrmRecruitCandidateScreeningPolishTests 16 tests PASS"
+  },
+  "UC_HRM_056": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 18 · Nhập hồ sơ ứng viên · validate FullName, Email regex, Phone regex · chống trùng Email+JobPostingId, Phone+JobPostingId · FE validateCandidateForm · duplicate email/phone tests PASS"
+  },
+  "UC_HRM_057": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 18 · Upload file CV gắn CvStorageKey vào Candidate · FE validate file type (pdf/doc/docx) và size ≤10MB · validateCvFile helper · candidates page.tsx không còn stub"
+  },
+  "UC_HRM_059": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 18 · Sơ loại ứng viên: action Screen→Screening, ScreenReject→Rejected · ScreeningNote bắt buộc · chặn sơ loại ứng viên Accepted/Rejected · endpoint POST /candidates/{id}/screen · FE ScreenModalPanel thay window.prompt · validateScreenForm + canScreen helpers · tests PASS"
+  },
+  "UC_HRM_060": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 19 · Chuyển ứng viên cho đơn vị đánh giá (Assign Eval Org Unit) · validate OrgUnit thuộc tenant, tự động nâng status New/Screening -> Evaluating · endpoint POST /candidates/{id}/assign-eval-org · FE AssignEvalOrgModalPanel + validateAssignEvalOrgForm · 18 BE tests + 15 FE tests PASS"
+  },
+  "UC_HRM_061": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 19 · Form đánh giá ứng viên chi tiết (Score 0-100, EvalResult Pass|Fail|Hold, EvalComment) · endpoint POST /candidates/{id}/submit-evaluation · FE EvaluationModalPanel + validateEvaluationForm · tests PASS"
+  },
+  "UC_HRM_062": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 19 · Ra quyết định tuyển dụng: Action Accept (PipelineStatus=Accepted, kiểm tra posting Open) | Reject (PipelineStatus=Rejected) · bắt buộc DecisionNote · endpoint POST /candidates/{id}/decide · FE DecisionModalPanel + validateCandidateDecisionForm · tests PASS"
+  },
+  "UC_HRM_063": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 19 · Strict Pipeline State Machine transitions (New -> Screening -> Evaluating -> Accepted / Rejected) · cấm nhảy vọt trạng thái · cấm cập nhật pipeline khi posting Closed · FE isValidPipelineTransition helper · tests PASS"
+  },
+  "UC_HRM_064": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 20 · Lịch sử chăm sóc ứng viên · parse timestamped care note lines thành CareNoteItemDto[] · endpoint GET /api/hrm/candidates/{id}/care-notes · FE CareNotesHistoryModalPanel + validateCareNote helper · 14 BE tests + 12 FE tests PASS"
+  },
+  "UC_HRM_065": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 20 · Báo cáo hiệu quả kênh tuyển (Recruit Channel Report) · aggregate PostingCount, CandidateCount, ScreeningCount, EvaluatingCount, AcceptedCount, RejectedCount, ConversionRatePct · endpoint GET /api/hrm/recruit/channel-report · FE calculateConversionRate helper & Bảng Funnel Báo cáo"
+  },
+  "UC_HRM_066": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 20 · Cấu hình thời hạn onboarding (OnboardingDays 1–365) · OnboardingSetting entity & tenant initialization · FE validateOnboardingSettingsForm · UpsertSettingsAsync tests PASS"
+  },
+  "UC_HRM_067": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 20 · Cấu hình thời hạn thử việc (TrialDays 1–365) · OnboardingSetting entity & tenant initialization · FE validateOnboardingSettingsForm · UpsertSettingsAsync tests PASS"
+  },
+  "UC_HRM_068": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 21 · Tạo hồ sơ nhân viên mới từ ứng viên trúng tuyển · HireFromCandidateAsync validate status Accepted & ConvertedEmployeeId null · FE validateHireRequest helper · 15 BE tests + 13 FE tests PASS"
+  },
+  "UC_HRM_069": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 21 · Gán người hướng dẫn onboarding · AssignMentorAsync validate MentorEmployeeId != EmployeeId (cấm gán chính mình) · FE Modal gán mentor + validateMentorAssignment helper"
+  },
+  "UC_HRM_070": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 21 · Checklist onboarding & tiến độ % · UpdateChecklistAsync · FE calculateChecklistProgress helper & Interactive Progress Bar UI %"
+  },
+  "UC_HRM_071": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 21 · Upload chứng chỉ / giấy tờ tiếp nhận · AddDocumentAsync validate title <= 200 chars & storageKey required · FE validateOnboardingDocument helper"
+  },
+  "UC_HRM_072": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 22 · Đánh giá kết thúc thử việc · EvaluateTrialAsync score 0-100, score >= 50 set TrialPassed status, comment <= 1000 chars · FE validateTrialEvaluation helper · 14 BE tests + 11 FE tests PASS"
+  },
+  "UC_HRM_073": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 22 · Chuyển thử việc thành chính thức · ConvertToOfficialAsync require TrialScore != null, Employee.Status=Active, OnboardingCase.Status=Converted · FE validateConvertOfficial helper"
+  },
+  "UC_HRM_074": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 22 · Cảnh báo hết hạn thử việc · ListTrialExpiringAsync within 1-90 days, daysLeft calculation, excludes Converted/Cancelled cases"
+  },
+  "UC_HRM_075": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 22 · Khai báo định biên theo đơn vị · HrmHeadcountService.UpsertAsync ScopeType=OrgUnit, PlannedHeadcount >= 0, OrgUnit validation · FE validateHeadcountPlan helper"
+  },
+  "UC_HRM_076": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 23 · Khai báo định biên theo ca · HrmHeadcountService.UpsertAsync ScopeType=Shift, ShiftCode required & max 40 chars · FE validateShiftHeadcountPlan helper · 11 BE tests + 11 FE tests PASS"
+  },
+  "UC_HRM_077": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 23 · Khai báo định biên theo bộ phận · HrmHeadcountService.UpsertAsync ScopeType=Department, DepartmentId required & belonging to OrgUnit · FE validateDeptHeadcountPlan helper"
+  },
+  "UC_HRM_078": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 23 · So sánh thực tế vs định biên · HrmHeadcountService.CompareAsync aggregate Approved plans vs Active/Probation employees, calculate Planned, Actual, Gap, Shortage · FE calculateHeadcountGap helper"
+  },
+  "UC_HRM_079": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 23 · Cảnh báo thiếu người · HrmHeadcountService.ShortagesAsync filter rows with Shortage=true (Gap > 0) · FE isHeadcountShortage helper & Shortages alert UI table"
+  },
+  "UC_HRM_080": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 24 · Duyệt thay đổi định biên · HrmHeadcountService.DecideAsync approve/reject Pending plans, update Status, DecidedByUserId, DecidedAt · 16 BE tests + 13 FE tests PASS"
+  },
+  "UC_HRM_081": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 24 · Tạo mẫu ca làm việc · HrmShiftService.UpsertTemplateAsync validate Code 1-40 chars & unique, Name 1-100 chars, BreakMinutes 0-600, IsOvernight flag · FE validateWorkShiftTemplate helper"
+  },
+  "UC_HRM_082": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 24 · Xếp lịch ca nhân viên · HrmShiftService.AssignAsync single shift assign, require EmployeeId, WorkShiftId, WorkDate, check active shift & locked period · FE validateSingleShiftAssign helper"
+  },
+  "UC_HRM_083": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 24 · Xếp lịch ca theo tuần / tháng · HrmShiftService.AssignRangeAsync range shift assign, require EmployeeIds non-empty, From <= To, range <= 62 days · FE validateShiftAssignRange helper"
+  },
+  "UC_HRM_084": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 25 · Đổi ca giữa nhân viên · HrmShiftService.SwapAsync swap WorkShiftId between 2 scheduled assignments on same date, check locked period · FE validateShiftSwap helper · 13 BE tests + 8 FE tests PASS"
+  },
+  "UC_HRM_085": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 25 · Hủy lịch ca · HrmShiftService.CancelAsync update status to Cancelled, check locked period · FE validateShiftCancel helper"
+  },
+  "UC_HRM_086": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 25 · Xem lịch ca theo đơn vị · HrmShiftService.ListAssignmentsAsync query by OrgUnitId, EmployeeId, Date range, return WorkShift & Employee details"
+  },
+  "UC_HRM_087": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 25 · Xem lịch ca cá nhân trên APP · HrmShiftService.MyAssignmentsAsync lookup employee profile by logged-in UserId, return personal shift roster · FE filterPersonalRoster helper"
+  },
+  "UC_HRM_089": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 26 · Sao chép lịch ca · HrmShiftService.CopyAsync batch copy Scheduled assignments, validate SourceTo >= SourceFrom & span <= 62 days, check target period lock · FE validateShiftCopy helper · 13 BE tests + 11 FE tests PASS"
+  },
+  "UC_HRM_090": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 26 · Khóa sổ lịch ca theo kỳ · HrmShiftService.LockPeriodAsync periodKey yyyy-MM validation, set PeriodFrom/To, store LockedByUserId & LockedAt · FE validateShiftLock helper"
+  },
+  "UC_HRM_091": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 26 · In / xuất lịch ca · HrmShiftService.ExportCsvAsync RFC 4180 CSV string generation for OrgUnit & date range"
+  },
+  "UC_HRM_092": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 26 · Tạo lệnh điều động · HrmTransferService.CreateOrderAsync validate Employee, FromOrgUnit != ToOrgUnit, Reason 3-500 chars · FE validateMobilizationOrder helper"
+  },
+  "UC_HRM_093": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 27 · Đề xuất nhu cầu điều động · HrmTransferService.CreateRequestAsync Kind=Request, RequestedHeadcount 1-1000, Reason 3-500 chars, FromOrg != ToOrg · FE validateMobilizationRequest helper · 12 BE tests + 10 FE tests PASS"
+  },
+  "UC_HRM_094": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 27 · Nhận lệnh điều động trên APP · HrmTransferService.AcknowledgeAsync validate Issued status, matching EmployeeId with logged-in UserId, set AcknowledgedAt & AcknowledgedByUserId · FE validateOrderAcknowledge helper"
+  },
+  "UC_HRM_095": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 27 · Theo dõi nhân sự điều động · HrmTransferService.ActiveTrackingAsync query Orders with status in [Issued, Acknowledged, Active] · FE filterActiveTracking helper"
+  },
+  "UC_HRM_096": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 27 · Gắn nhãn công điều động khi chấm · HrmTransferService.ActivateAsync set Status=Active, AttendanceTagged=true, AttendanceTag=TRANSFER for attendance cost tracking · FE validateAttendanceTag helper"
+  },
+  "UC_HRM_097": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 28 · Báo cáo giờ / chi phí điều động · HrmTransferService.SetActualHoursAsync (validate 0-1000h) & CostReportAsync aggregate planned/actual hours & costs by destination org unit · FE validateActualHours helper · 15 BE tests + 12 FE tests PASS"
+  },
+  "UC_HRM_098": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 28 · Cấu hình chấm vân tay / sinh trắc · HrmAttendanceService.UpsertDeviceAsync validate code 1-40 chars, name 1-100 chars, DeviceType=Fingerprint · FE validateBiometricDevice helper"
+  },
+  "UC_HRM_099": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 28 · Cấu hình chấm APP điện thoại / GPS · HrmAttendanceService.UpsertGeoFenceAsync validate radius 10-50,000m, latitude/longitude bounds · FE validateGeoFence helper"
+  },
+  "UC_HRM_100": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 28 · Cấu hình chấm QR / khuôn mặt / chính sách · HrmAttendanceService.UpsertPolicyAsync validate LateGraceMinutes (0-240m), LateDeductEveryMinutes (1-480m), LateDeductWorkUnit (0-1.0) · FE validateFaceRecognitionConfig helper"
+  },
+  "UC_HRM_101": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 29 · Đăng ký & đồng bộ thiết bị chấm · HrmAttendanceService.SyncDeviceAsync validate max 500 items, count synced, skippedUnknownEmployee, skippedLocked, skippedDuplicate, skippedInvalidType · FE validateDeviceSyncRequest helper · 13 BE tests + 12 FE tests PASS"
+  },
+  "UC_HRM_102": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 29 · Cấu hình geo-fence điểm chấm · HrmAttendanceService.UpsertGeoFenceAsync validate radius 10-50,000m, name 1-100 chars, latitude/longitude bounds · FE validateGeoFenceLocation helper"
+  },
+  "UC_HRM_103": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 29 · Cấu hình quy tắc đi trễ · HrmAttendanceService.ApplyLateAndWorkAsync validate lateGraceMinutes 0-240m, no deduction when lateMinutes <= graceMinutes · FE validateLateGraceRules helper"
+  },
+  "UC_HRM_104": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 29 · Cấu hình mức trừ công khi trễ · HrmAttendanceService.ApplyLateAndWorkAsync calculate LateDeductEveryMinutes & LateDeductWorkUnit, cap DeductedWorkUnit at 1.0 & floor WorkUnit at 0.0 · FE validateLateDeductionScale helper"
+  },
+  "UC_HRM_105": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 30 · Cấu hình quên check-out · HrmAttendanceService.UpsertPolicyAsync validate ForgotCheckoutHours (1-48h), generate missing alerts in MissingAlertsAsync · FE validateForgotCheckoutConfig helper · 10 BE tests + 10 FE tests PASS"
+  },
+  "UC_HRM_106": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 30 · Cấu hình thời hạn xin điều chỉnh · HrmAttendanceService.CreateAdjustAsync validate WorkDate within AdjustDeadlineDays (0-60d) · FE validateAdjustDeadlineConfig helper"
+  },
+  "UC_HRM_107": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 30 · Cấu hình làm thêm giờ (OT) · HrmAttendanceService.ApplyOtAsync calculate OtMinutes when EnableOt=true & CheckOutAt > ScheduledEnd + OtAfterMinutes (0-480m) · FE validateOvertimeConfig helper"
+  },
+  "UC_HRM_108": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 30 · Cấu hình ca đêm / ngày lễ · HrmAttendanceService.ApplyOtAsync & ResolveShiftWindowAsync handle overnight shift crossover when EnableNightShiftRule=true & EnableHolidayRule=true · FE validateNightShiftHolidayConfig helper"
+  },
+  "UC_HRM_109": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 31 · Check-in đầu ca · HrmAttendanceService.CheckInAsync validate RequireMyEmployeeAsync, EnsureMethodAllowed, EnsureNotLockedAsync, duplicate check-in, set CheckInAt = now, Status = 'Open' · FE validatePunchRequest helper · 12 BE tests + 9 FE tests PASS"
+  },
+  "UC_HRM_110": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 31 · Check-out cuối ca · HrmAttendanceService.CheckOutAsync validate CheckInAt != null, duplicate check-out, set CheckOutAt = now, Status = 'Closed', calculate OtMinutes · FE validatePunchRequest helper"
+  },
+  "UC_HRM_111": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 31 · Xem lịch sử chấm cá nhân · HrmAttendanceService.MyHistoryAsync lookup logged-in employee profile, filter date range · FE validateDateRangeFilter helper"
+  },
+  "UC_HRM_112": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 31 · Bảng chấm công theo đơn vị · HrmAttendanceService.BoardAsync query department attendance records by OrgUnitId & date range · FE filterDepartmentBoard & formatAttendanceStatus helpers"
+  },
+  "UC_HRM_113": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 32 · Bảng chấm công toàn công ty · HrmAttendanceService.BoardAsync query company-wide attendance records across all departments (orgUnitId=null) · FE filterCompanyWideBoard helper · 9 BE tests + 8 FE tests PASS"
+  },
+  "UC_HRM_114": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 32 · Cảnh báo thiếu chấm realtime · HrmAttendanceService.MissingAlertsAsync scan missing check-in & missing check-out past ForgotCheckoutHours · FE formatMissingAlertMessage helper"
+  },
+  "UC_HRM_115": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 32 · Tự tính phút đi trễ · HrmAttendanceService.ApplyLateAndWorkAsync auto-calculate LateMinutes based on CheckInAt vs ShiftStart · FE calculateLateMinutes helper"
+  },
+  "UC_HRM_116": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 32 · Tự trừ công do đi trễ · HrmAttendanceService.ApplyLateAndWorkAsync auto-calculate DeductedWorkUnit & WorkUnit when lateMinutes > LateGraceMinutes · FE calculatePenaltyDeduction helper"
+  },
+  "UC_HRM_117": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 33 · Đánh dấu quên chấm · HrmAttendanceService.MissingAlertsAsync scan & tag missing check-in/check-out alerts · FE filterMissingAlertsByEmployee helper · 8 BE tests + 6 FE tests PASS"
+  },
+  "UC_HRM_119": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 33 · Xử lý công OT tự động · HrmAttendanceService.ApplyOtAsync & RecalcOtAsync calculate OtMinutes when CheckOutAt > ScheduledEnd + OtAfterMinutes threshold · FE formatOvertimeHours helper"
+  },
+  "UC_HRM_120": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 33 · Tạo phiếu xin điều chỉnh công · HrmAttendanceService.CreateAdjustAsync validate employee, WorkDate within AdjustDeadlineDays, reason 3-500 chars · FE validateAdjustCreateRequest helper"
+  },
+  "UC_HRM_121": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 33 · Đính kèm lý do / bằng chứng · HrmAttendanceService.CreateAdjustAsync store & sanitize EvidenceStorageKey (max 250 chars) · FE validateEvidenceStorageKey helper"
+  },
+  "UC_HRM_122": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 34 · Duyệt / từ chối điều chỉnh · HrmAttendanceService.DecideAdjustAsync validate status='Submitted', period lock, update AttendanceRecord timestamps & status='Adjusted' · FE validateAdjustDecision helper · 9 BE tests + 7 FE tests PASS"
+  },
+  "UC_HRM_123": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 34 · Ghi nhận vi phạm đi trễ · HrmAttendanceService.ApplyLateAndWorkAsync & BoardAsync log late arrival violations with LateMinutes & DeductedWorkUnit · FE filterLateViolations helper"
+  },
+  "UC_HRM_126": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 34 · Khóa bảng công theo kỳ · HrmAttendanceService.LockPeriodAsync validate PeriodKey format yyyy-MM, set IsLocked=true · FE validatePeriodLockKey helper"
+  },
+  "UC_HRM_127": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 34 · Mở khóa bảng công có kiểm soát · HrmAttendanceService.UnlockPeriodAsync update IsLocked=false, record UnlockedByUserId & UnlockedAt · FE formatPeriodLockStatus helper"
+  },
+  "UC_HRM_128": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 35 · Xác nhận bảng công · HrmAttendanceService.ConfirmRecordAsync update IsConfirmed=true for AttendanceRecord · 11 BE tests + 7 FE tests PASS"
+  },
+  "UC_HRM_130": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 35 · Cấu hình quỹ phép theo loại NS · HrmLeaveService.UpsertEntitlementRuleAsync validate DaysPerYear (0-366d), LeaveTypeId & EmployeeTypeId · FE validateLeaveEntitlementRule helper"
+  },
+  "UC_HRM_131": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 35 · Cấp phát / điều chỉnh quỹ phép · HrmLeaveService.AdjustBalanceAsync & AllocateYearAsync calculate Entitled & Remaining leave balances · FE validateLeaveBalanceAdjust & calculateRemainingLeave helpers"
+  },
+  "UC_HRM_133": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 35 · Duyệt đơn nghỉ đa cấp · HrmLeaveService.CreateAndOptionallySubmitAsync check balance, start LEAVE_APPROVE workflow, set Pending status · FE validateLeaveCreateRequest helper"
+  },
+  "UC_HRM_134": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 36 · Hủy đơn nghỉ · HrmLeaveService.CancelRequestAsync restore used leave balance if Approved, update status to Cancelled · FE validateLeaveCancelRequest helper · 10 BE tests + 8 FE tests PASS"
+  },
+  "UC_HRM_136": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 36 · Lịch nghỉ theo đơn vị · HrmLeaveService.CalendarAsync query Pending & Approved leave requests by OrgUnitId & date range · FE filterLeaveCalendar helper"
+  },
+  "UC_HRM_137": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 36 · Import nghỉ lễ / ngày nghỉ · HrmLeaveService.UpsertHolidayAsync & ImportHolidaysAsync validate holiday name (1-200 chars), date & isPaid · FE validateHolidayInput & validateHolidayImportBatch helpers"
+  },
+  "UC_HRM_138": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 36 · Báo cáo nghỉ / quỹ phép · HrmLeaveService.ReportAsync summary report of Entitled, Used, Remaining & ApprovedRequests per employee & org unit"
+  },
+  "UC_HRM_139": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 37 · Ghi nhận quyết định khen thưởng · HrmRewardDisciplineService.CreateAsync validate Title, Kind='Reward', PayrollImpactKind, store decision · 11 BE tests + 7 FE tests PASS"
+  },
+  "UC_HRM_140": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 37 · Ghi nhận quyết định kỷ luật · HrmRewardDisciplineService.CreateAsync validate Title, Kind='Discipline', PayrollImpactKind & amount"
+  },
+  "UC_HRM_141": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 37 · Đính kèm quyết định · HrmRewardDisciplineService.AttachAsync validate & update DecisionStorageKey · FE validateDecisionAttach helper"
+  },
+  "UC_HRM_142": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 37 · Ảnh hưởng lương / phụ cấp · HrmRewardDisciplineService.ApplyToPayrollAsync create PayrollAdjustment & set Status='Applied'"
+  },
+  "UC_HRM_143": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 38 · Báo cáo khen thưởng – kỷ luật · HrmRewardDisciplineService.ReportAsync generate summary of decisions & amount by Kind for year · 10 BE tests + 6 FE tests PASS"
+  },
+  "UC_HRM_144": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 38 · Tạo đơn nghỉ việc · HrmOffboardingService.CreateAsync validate EmployeeId, LastWorkingDay & ReasonCode, initialize Checklist · FE validateOffboardingCreateRequest helper"
+  },
+  "UC_HRM_145": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 38 · Cấu hình / kiểm tra báo trước · HrmOffboardingService.UpsertSettingsAsync & RefreshNotice check NoticeDays & set NoticeSatisfied · FE validateNoticePeriodConfig & calculateNoticeDaysLeft helpers"
+  },
+  "UC_HRM_146": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 38 · Duyệt đơn nghỉ việc · HrmOffboardingService.ApproveAsync & RejectAsync update Status='Approved'/'Rejected' & record ApprovedAt/ApprovedByUserId · FE formatNoticeStatus helper"
+  },
+  "UC_HRM_147": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 39 · Checklist bàn giao · HrmOffboardingService.UpdateChecklistAsync update handover items & set Status='InProgress' · FE calculateHandoverProgress helper · 9 BE tests + 6 FE tests PASS"
+  },
+  "UC_HRM_148": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 39 · Thu hồi quyền hệ thống · HrmOffboardingService.RevokeAccessAsync set AccessRevoked=true & disable AppUser account (Status=Disabled)"
+  },
+  "UC_HRM_149": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 39 · Quyết toán phép / lương nghỉ việc · HrmOffboardingService.SettleAsync calculate remaining leave days, LeaveSettlementAmount & FinalPayEstimate · FE validateFinalSettlementInput helper"
+  },
+  "UC_HRM_150": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 39 · Phỏng vấn nghỉ việc · HrmOffboardingService.SaveInterviewAsync & CompleteAsync record InterviewNotes, verify RequireChecklistComplete, update Employee Status='Resigned' & EmploymentStatusChange · FE validateExitInterviewNotes helper"
+  },
+  "UC_HRM_151": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 40 · Báo cáo nghỉ việc / lý do · HrmOffboardingService.ListAsync list offboarding cases with reason codes & notice period compliance · 9 BE tests + 7 FE tests PASS"
+  },
+  "UC_HRM_152": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 40 · Tạo thang bậc lương · HrmPayrollService.UpsertGradeAsync validate Code (1-40 chars), Name (1-100 chars), Level, BaseAmount (>= 0), check unique code · FE validateSalaryGradeInput & filterSalaryGrades helpers"
+  },
+  "UC_HRM_153": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 40 · Gán bậc lương theo nhân sự · HrmPayrollService.UpsertEmployeeSalaryAsync assign SalaryGradeId & BaseSalary to Employee · FE validateEmployeeSalaryInput helper"
+  },
+  "UC_HRM_154": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 40 · Cấu hình phụ cấp theo bậc lương · HrmPayrollService.UpsertAllowanceTypeAsync validate Code (1-40 chars), Name, DefaultAmount (>= 0) & IsTaxable · FE validateAllowanceTypeInput helper"
+  },
+  "UC_HRM_155": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 41 · Đơn giá giờ / ngày nhân viên · HrmPayrollService.CalculateAsync calculate DailyRate (BaseSalary / StandardWorkDays) & HourlyRate (DailyRate / 8) · FE calculateDailyHourlyRates helper · 8 BE tests + 6 FE tests PASS"
+  },
+  "UC_HRM_156": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 41 · Quản lý lương thực tế chi trả · HrmPayrollService.CalculateAsync & ConfirmAsync calculate GrossPay, NetPay & set Status='Confirmed' · FE validatePayrollPeriodConfirm & calculateNetSalary helpers"
+  },
+  "UC_HRM_157": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 41 · Danh mục phụ cấp · HrmPayrollService.ListAllowanceTypesAsync & UpsertAllowanceTypeAsync manage allowance category types & taxable status"
+  },
+  "UC_HRM_158": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 41 · Rule phụ cấp theo ca · HrmPayrollService.UpsertAllowanceRuleAsync & CalculateAsync apply shift-based allowance rules to employee AllowanceTotal · FE formatPayrollPeriodStatus helper"
+  },
+  "UC_HRM_159": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 42 · Rule phụ cấp đặc thù · HrmPayrollService.UpsertAllowanceRuleAsync validate AllowanceTypeId, ShiftCode, Amount (>= 0) · 9 BE tests + 6 FE tests PASS"
+  },
+  "UC_HRM_160": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 42 · Cấu hình bảo hiểm · HrmPayrollService.UpsertPolicyAsync validate SocialInsuranceEmpRate, HealthInsuranceEmpRate & UnemploymentEmpRate (0-1) · FE calculateInsuranceDeductions & formatInsuranceRatesSummary helpers"
+  },
+  "UC_HRM_161": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 42 · Cấu hình thuế TNCN · HrmPayrollService.UpsertPolicyAsync validate FlatTaxRate (0-1) & PersonalDeduction (>= 0) · FE calculatePersonalTax & validatePayrollPolicyInput helpers"
+  },
+  "UC_HRM_162": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 42 · Giảm trừ gia cảnh · HrmPayrollService.UpsertPolicyAsync & CalculateAsync apply PersonalDeduction to taxable income before tax calculation"
+  },
+  "UC_HRM_163": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 43 · Tạo kỳ lương · HrmPayrollService.CreatePeriodAsync validate PeriodKey (yyyy-MM) & unique PeriodKey constraint · FE validatePayrollPeriodKeyFormat helper · 9 BE tests + 6 FE tests PASS"
+  },
+  "UC_HRM_164": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 43 · Tổng hợp công vào kỳ lương · HrmPayrollService.CalculateAsync aggregate AttendanceRecord WorkUnits & OtMinutes into PayrollLine"
+  },
+  "UC_HRM_165": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 43 · Tính lương tự động theo rule · HrmPayrollService.CalculateAsync compute GrossPay, NetPay & set status='Calculated'"
+  },
+  "UC_HRM_166": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 43 · Nhập thưởng / phụ cấp phát sinh · HrmPayrollService.AddAdjustmentAsync validate Kind (Bonus/Allowance/Deduction/Advance), Title & Locked period check · FE validatePayrollAdjustmentInput & formatAdjustmentKind helpers"
+  },
+  "UC_HRM_167": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 44 · Nhập khấu trừ / tạm ứng · HrmPayrollService.AddAdjustmentAsync with Kind Deduction or Advance, validate Title & Amount (> 0) · 9 BE tests + 6 FE tests PASS"
+  },
+  "UC_HRM_168": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 44 · Xem / chỉnh bảng lương chi tiết · HrmPayrollService.PatchLineAsync, ListLinesAsync & MyPayslipAsync recalculate NetPay & validate line/period status · FE validatePayrollLinePatchInput & filterPayrollLines helpers"
+  },
+  "UC_HRM_169": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 44 · Xác nhận bảng lương · HrmPayrollService.ConfirmAsync set period status to Confirmed & lines IsConfirmed=true"
+  },
+  "UC_HRM_170": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 44 · Khóa sổ kỳ lương · HrmPayrollService.LockAsync set period status to Locked after confirmation · FE validatePeriodLockEligibility & formatPayslipSummary helpers"
+  },
+  "UC_HRM_171": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 45 · Phiếu lương cá nhân (APP) · HrmPayrollService.MyPayslipAsync returns payslip for logged-in user from latest Confirmed/Locked period · FE formatPayslipDetail helper · 9 BE tests + 6 FE tests PASS"
+  },
+  "UC_HRM_172": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 45 · Xuất bảng lương tổng hợp · HrmPayrollService.ExportCsvAsync generates CSV with all payroll line columns (EmployeeCode, BaseSalary, Gross, Net, etc.)"
+  },
+  "UC_HRM_173": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 45 · Xuất file chi lương ngân hàng · HrmPayrollService.ExportBankCsvAsync generates bank transfer CSV (EmployeeCode, Amount, Content) filtering NetPay > 0 · FE validateBankExportRow helper"
+  },
+  "UC_HRM_175": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 45 · Báo cáo chi phí lương theo đơn vị · HrmPayrollService.CostByOrgAsync groups payroll lines by OrgUnit returning Headcount, Gross, Net, Insurance · FE calculateCostByOrgTotals & formatCostByOrgRow helpers"
+  },
+  "UC_HRM_176": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 46 · So sánh lương kỳ này / kỳ trước · HrmPayrollService.CompareAsync returns comparative gross, net, insurance & line counts for current & previous period · FE calculatePayrollCompareDelta helper · 6 BE tests + 5 FE tests PASS"
+  },
+  "UC_HRM_182": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 46 · Dashboard headcount & biến động · HrmDashboardService.HeadcountAsync returns total active, probation, left, breakdown by status/org, & 6-month movement trend · FE formatHeadcountMovementSummary helper"
+  },
+  "UC_HRM_183": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 46 · Báo cáo công / OT / đi trễ · HrmDashboardService.AttendanceReportAsync aggregates WorkUnits, OtMinutes, LateMinutes, & LateCount by OrgUnit · FE calculateAttendanceSummary helper"
+  },
+  "UC_HRM_184": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 46 · Báo cáo tuyển dụng funnel · HrmDashboardService.RecruitFunnelAsync breaks down candidate pipeline counts by PipelineStatus · FE formatRecruitFunnelStage helper"
+  },
+  "UC_HRM_185": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 47 · Báo cáo quỹ phép · HrmDashboardService.LeaveSummaryAsync aggregates leave entitled, used, & remaining by OrgUnit · FE calculateLeaveFundUsageRate helper · 9 BE tests + 6 FE tests PASS"
+  },
+  "UC_HRM_186": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 47 · Báo cáo chi phí nhân sự · HrmDashboardService.CostSummaryAsync aggregates total gross, net, insurance costs & line count"
+  },
+  "UC_HRM_187": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 47 · Báo cáo định biên vs thực tế · HrmHeadcountService.ListAsync returns HeadcountPlan records with ScopeType & PlannedHeadcount · FE calculateHeadcountVariance helper"
+  },
+  "UC_LMS_001": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 47 · Danh mục chương trình đào tạo · LmsCourseService.UpsertProgramAsync & ListProgramsAsync validate Code (1-40 chars), Name (1-200 chars), Status & unique Code · FE validateLmsProgramInput & formatLmsProgramStatus helpers"
+  },
+  "UC_LMS_002": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 48 · Danh mục khóa học · LmsCourseService.UpsertCourseAsync & ListCoursesAsync validate Code, Name, Price (>= 0) & unique Code · FE validateLmsCourseInput helper · 10 BE tests + 6 FE tests PASS"
+  },
+  "UC_LMS_003": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 48 · Phân loại khóa online/offline/blended · LmsCourseService.UpsertCourseAsync validate DeliveryMode in (Online, Offline, Blended) · FE formatLmsDeliveryMode helper"
+  },
+  "UC_LMS_004": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 48 · Quản lý chương / bài học · LmsCourseService.UpsertChapterAsync & UpsertLessonAsync manage course chapters & lessons hierarchy · FE validateLmsChapterInput helper"
+  },
+  "UC_LMS_005": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 48 · Upload video bài giảng · LmsCourseService.UpsertLessonAsync validate LessonType Video, ContentUrl & DurationSec · FE validateLmsLessonVideoInput helper"
+  },
+  "UC_LMS_006": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 49 · Upload tài liệu PDF / slide · LmsCourseService.UpsertLessonAsync validate LessonType Document, ContentUrl & Body · FE validateLmsDocumentLessonInput helper · 10 BE tests + 6 FE tests PASS"
+  },
+  "UC_LMS_009": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 49 · Ẩn / xuất bản khóa học · LmsCourseService.SetPublishStatusAsync validate Published requires at least 1 lesson in course · FE formatLmsCoursePublishStatus helper"
+  },
+  "UC_LMS_014": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 49 · Cấu hình điểm đạt / số lần thi · LmsExamService.UpsertExamAsync validate PassScore (0-100) & MaxAttempts (>= 1) · FE validateLmsExamPassConfig helper"
+  },
+  "UC_LMS_016": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 49 · Mở lớp đào tạo offline · LmsClassService.UpsertClassAsync & ListClassesAsync validate Class Code, Name, CourseTitle, StartDate <= EndDate · FE validateLmsOfflineClassInput helper"
+  },
+  "UC_LMS_017": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 50 · Gán giảng viên / địa điểm / lịch · LmsClassService.AddSessionAsync validates Topic (1-300 chars) & auto increments SortOrder · FE validateLmsClassSessionInput helper · 10 BE tests + 5 FE tests PASS"
+  },
+  "UC_LMS_018": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 50 · Tuyển sinh / ghi danh học viên · LmsClassService.EnrollAsync registers employee enrollment, prevents duplicates & logs integration call · FE calculateClassAttendanceRate helper"
+  },
+  "UC_LMS_019": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 50 · Điểm danh buổi học · LmsClassService.RecordAttendanceAsync records Present/Absent/Late status per session · FE formatLmsAttendanceStatus helper"
+  },
+  "UC_LMS_022": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 50 · Đóng lớp & tổng kết · LmsClassService.CloseClassAsync sets status to Closed & prevents further session edits · FE formatLmsClassStatus helper"
+  },
+  "UC_LMS_023": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 51 · Gán mentor cho học viên · LmsClassService.AssignMentorAsync ensures mentee & mentor are distinct employees & active in tenant · FE validateLmsMentorAssignment & formatMentorAssignmentSummary helpers · 9 BE tests + 7 FE tests PASS"
+  },
+  "UC_LMS_028": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 51 · Đăng ký tài khoản học viên · AppUser tenant registration & password policy validation · FE validateLearnerRegistration helper"
+  },
+  "UC_LMS_029": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 51 · Đăng nhập / quên mật khẩu · Auth login authentication & password reset flow · FE validateLearnerLogin helper"
+  },
+  "UC_LMS_030": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 51 · Danh sách & chi tiết khóa · LmsCourseService.ListCoursesAsync & GetCourseDetailAsync return course catalog, chapters & lessons breakdown · FE formatCourseLessonProgressSummary helper"
+  },
+  "UC_LMS_031": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 52 · Mua khóa / thanh toán online · LmsCourseService.EnrollAsync calculates course price, sets PaidAmount & transitions status · FE calculateCourseFinalPrice helper · 10 BE tests + 6 FE tests PASS"
+  },
+  "UC_LMS_032": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 52 · Kích hoạt bằng mã voucher · LmsCourseService.EnrollAsync supports FREE & promo voucher codes to discount course price · FE validateVoucherCode helper"
+  },
+  "UC_LMS_033": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 52 · Tự mở khóa sau thanh toán · LmsCourseService.EnrollAsync automatically sets status to Unlocked & records PaidAt timestamp · FE formatCourseEnrollmentStatus helper"
+  },
+  "UC_LMS_034": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 52 · Xem video / tài liệu · LmsCourseService.GetLearnAsync & CompleteLessonAsync track lesson viewing progress & resume lesson pointer · FE calculateCourseProgressPercentage helper"
+  },
+  "UC_LMS_035": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 53 · Đánh dấu hoàn thành bài học · LmsCourseService.CompleteLessonAsync updates LmsLessonProgress status to Completed & records timestamp · FE formatLessonCompletionStatus helper · 10 BE tests + 5 FE tests PASS"
+  },
+  "UC_LMS_036": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 53 · Tiếp tục học dở · LmsCourseService.GetLearnAsync resolves next uncompleted lesson into ResumeLessonId pointer · FE formatResumeLessonText helper"
+  },
+  "UC_LMS_037": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 53 · Theo dõi % tiến độ khóa · LmsCourseService.GetLearnAsync returns progress breakdown across all course lessons · FE calculateCourseCompletionPercentage helper"
+  },
+  "UC_LMS_040": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 53 · Làm quiz cuối chương · LmsExamService.StartAttemptAsync & SubmitAttemptAsync evaluate chapter quiz attempts, max attempts limit & pass score · FE validateChapterQuizSubmission & formatQuizResultSummary helpers"
+  },
+  "UC_LMS_041": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 54 · Thi cuối khóa · LmsExamService.StartAttemptAsync creates final exam attempt with time limit & question list · FE formatExamTimeRemaining helper · 10 BE tests + 6 FE tests PASS"
+  },
+  "UC_LMS_042": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 54 · Chấm điểm tự động · LmsExamService.SubmitAttemptAsync grades multiple choice questions against CorrectKeys & calculates total score · FE calculateExamScorePercentage helper"
+  },
+  "UC_LMS_043": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 54 · Xem kết quả & đáp án · LmsExamService.GetAttemptResultAsync returns answer key reviews, submitted answers & pass status · FE evaluateExamPassStatus helper"
+  },
+  "UC_LMS_044": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 54 · Điều kiện cấp chứng chỉ · LmsExamService.SubmitAttemptAsync evaluates course completion & pass score to automatically generate LmsCertificate · FE formatCertificateEligibilityMessage helper"
+  },
+  "UC_LMS_045": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 55 · Cấp chứng chỉ điện tử · LmsCertificate digital verification & code lookup · FE formatCertificateVerificationUrl helper · 10 BE tests + 6 FE tests PASS"
+  },
+  "UC_LMS_049": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 55 · Hồ sơ giảng viên · LmsInstructorService.UpsertAsync validates instructor Code (1-40 chars), DisplayName & EmployeeId/UserId links · FE validateLmsInstructorInput helper"
+  },
+  "UC_LMS_050": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 55 · Phân quyền giảng viên · LmsInstructorService.GrantRoleInternalAsync assigns system RoleLmsInstructorId to linked User · FE formatInstructorRoleSummary helper"
+  },
+  "UC_LMS_051": {
+    "done": true,
+    "pct": 100,
+    "note": "Production-ready Bước 55 · Theo dõi danh sách học viên · LmsClassService.GetClassDetailAsync & LmsInstructorService.ListAsync return student roster & enrollment statistics · FE calculateLearnerCompletionRate helper"
   }
 }

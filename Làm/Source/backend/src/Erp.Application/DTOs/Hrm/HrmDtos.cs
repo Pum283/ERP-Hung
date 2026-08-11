@@ -130,7 +130,8 @@ public sealed record JobPostingCreateRequest(Guid RecruitmentRequestId, string T
 public sealed record CandidateDto(
     Guid Id, Guid JobPostingId, string JobPostingTitle, string FullName, string? Email, string? Phone,
     string? CvStorageKey, string PipelineStatus, Guid? EvalOrgUnitId, string? EvalOrgUnitName,
-    int? EvalScore, string? EvalComment, string? CareNotes, Guid? ConvertedEmployeeId, DateTimeOffset CreatedAt);
+    int? EvalScore, string? EvalComment, string? CareNotes, Guid? ConvertedEmployeeId,
+    string? ScreeningNote, string? EvalResult, string? DecisionNote, DateTimeOffset CreatedAt);
 
 public sealed record CandidateCreateRequest(
     Guid JobPostingId, string FullName, string? Email, string? Phone, string? CvStorageKey);
@@ -140,6 +141,31 @@ public sealed record CandidatePipelineUpdateRequest(string PipelineStatus);
 public sealed record CandidateEvalRequest(Guid? EvalOrgUnitId, int? EvalScore, string? EvalComment);
 
 public sealed record CandidateCareNoteRequest(string Note);
+
+/// <summary>
+/// UC_HRM_059 — Sơ loại ứng viên.
+/// Action: "Screen" → chuyển New/Screening → Screening, bắt buộc ScreeningNote.
+///          "ScreenReject" → chuyển sang Rejected, bắt buộc ScreeningNote (lý do từ chối).
+/// </summary>
+public sealed record CandidateScreenRequest(string Action, string ScreeningNote);
+
+/// <summary>UC_HRM_060 — Phân công đơn vị đánh giá ứng viên.</summary>
+public sealed record CandidateAssignEvalOrgRequest(Guid EvalOrgUnitId);
+
+/// <summary>UC_HRM_061 — Nộp form đánh giá ứng viên chi tiết (EvalScore 0-100, EvalResult Pass|Fail|Hold).</summary>
+public sealed record CandidateSubmitEvalRequest(Guid? EvalOrgUnitId, int EvalScore, string EvalResult, string EvalComment);
+
+/// <summary>UC_HRM_062 — Ra quyết định tuyển dụng: Action "Accept" | "Reject", bắt buộc DecisionNote.</summary>
+public sealed record CandidateDecideRequest(string Action, string DecisionNote);
+
+/// <summary>UC_HRM_064 — Mục ghi chú chăm sóc ứng viên dạng cấu trúc.</summary>
+public sealed record CareNoteItemDto(DateTimeOffset At, string Note);
+
+/// <summary>UC_HRM_065 — Báo cáo hiệu quả kênh tuyển dụng với đầy đủ funnel chỉ số.</summary>
+public sealed record RecruitChannelReportDto(
+    string Channel, int PostingCount, int CandidateCount,
+    int ScreeningCount, int EvaluatingCount, int AcceptedCount, int RejectedCount,
+    double ConversionRatePct);
 
 public sealed record RecruitChannelStatDto(string Channel, int PostingCount, int CandidateCount);
 

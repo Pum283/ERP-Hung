@@ -3,7 +3,7 @@
 | Thuộc tính        | Giá trị                                                                            |
 | ----------------- | ---------------------------------------------------------------------------------- |
 | Mã tài liệu       | `KE_HOACH_TRIEN_KHAI_UC_V2_CHI_TIET`                                               |
-| Cập nhật          | 10/08/2026                                                                         |
+| Cập nhật          | 11/08/2026                                                                         |
 | Quy tắc trình bày | **Mỗi UC 1 dòng riêng trong bảng**, đường gạch ngang `---` phân chia giữa các bước |
 | Tổng số UC        | **1.092 UC** (206 đã xong 100%, 540 UC dở dang cần polish, 346 UC chưa làm 0%)     |
 
@@ -36,6 +36,11 @@
 8. **Tiêu chuẩn Code Chỉnh chu & Chất lượng Cao:**
    - **Cấm code qua loa/sơ sài:** Tuyệt đối KHÔNG được viết code sơ sài, đối phó hay hời hợt. Code phải sạch sẽ, chặt chẽ, tối ưu và chỉn chu đến từng dòng.
    - **Không để nợ kỹ thuật:** Mọi xử lý DTO, Controller, Service, Validator và Test cases đều phải đạt chất lượng Production-Ready chuẩn mực.
+9. **Quy tắc Báo cáo Sau khi Hoàn thành Mỗi Bước (Bắt buộc tuyệt đối):**
+   - **Phân chia 3 phần rõ ràng:** Mỗi khi hoàn thành một bước/công việc, BẮT BUỘC phải báo cáo kết quả tổng kết phân chia làm 3 mục chi tiết:
+     - **BE (Backend) làm gì:** Liệt kê chi tiết các Services, Entities, Controllers, API Endpoints, Validation Rules và Exception handling đã triển khai/cập nhật.
+     - **FE (Frontend) làm gì:** Liệt kê chi tiết Giao diện UI (pages/components), Helper Modules, Form validation và API Integrations.
+     - **Test (Kiểm thử) làm gì:** Báo cáo số lượng và danh sách Test Cases Backend (.NET xUnit) & Frontend (Node.js test runner), cùng kết quả thực thi PASSED/FAILED.
 
 ---
 
@@ -130,195 +135,195 @@
 |              | `UC_HRM_053` | Đóng / hủy phiếu đề xuất — Polish BE/FE & Unit Test                         |    100%    |
 |              | `UC_HRM_054` | Tạo tin tuyển từ phiếu đã duyệt — Polish BE/FE & Unit Test                  |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 18**  | `UC_HRM_055` | Ghi nhận kênh đăng tuyển — Polish BE/FE & Unit Test                         | 75% ➔ 100% |
-|              | `UC_HRM_056` | Nhập hồ sơ ứng viên — Polish BE/FE & Unit Test                              | 75% ➔ 100% |
-|              | `UC_HRM_057` | Upload file CV — Polish BE/FE & Unit Test                                   | 75% ➔ 100% |
-|              | `UC_HRM_059` | Sơ loại ứng viên — Polish BE/FE & Unit Test                                 | 75% ➔ 100% |
+| **Bước 18**  | `UC_HRM_055` | Ghi nhận kênh đăng tuyển — Polish BE/FE & Unit Test                         |    100%    |
+|   `[XONG]`   | `UC_HRM_056` | Nhập hồ sơ ứng viên — Polish BE/FE & Unit Test                              |    100%    |
+|              | `UC_HRM_057` | Upload file CV — Polish BE/FE & Unit Test                                   |    100%    |
+|              | `UC_HRM_059` | Sơ loại ứng viên — Polish BE/FE & Unit Test                                 |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 19**  | `UC_HRM_060` | Chuyển ứng viên cho đơn vị đánh giá — Polish BE/FE & Unit Test              | 75% ➔ 100% |
-|              | `UC_HRM_061` | Form đánh giá ứng viên — Polish BE/FE & Unit Test                           | 75% ➔ 100% |
-|              | `UC_HRM_062` | Từ chối / chấp nhận ứng viên — Polish BE/FE & Unit Test                     | 75% ➔ 100% |
-|              | `UC_HRM_063` | Pipeline trạng thái ứng viên — Polish BE/FE & Unit Test                     | 75% ➔ 100% |
+| **Bước 19**  | `UC_HRM_060` | Chuyển ứng viên cho đơn vị đánh giá — Polish BE/FE & Unit Test              |    100%    |
+|   `[XONG]`   | `UC_HRM_061` | Form đánh giá ứng viên — Polish BE/FE & Unit Test                           |    100%    |
+|              | `UC_HRM_062` | Từ chối / chấp nhận ứng viên — Polish BE/FE & Unit Test                     |    100%    |
+|              | `UC_HRM_063` | Pipeline trạng thái ứng viên — Polish BE/FE & Unit Test                     |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 20**  | `UC_HRM_064` | Lịch sử chăm sóc ứng viên — Polish BE/FE & Unit Test                        | 75% ➔ 100% |
-|              | `UC_HRM_065` | Báo cáo hiệu quả kênh tuyển — Polish BE/FE & Unit Test                      | 75% ➔ 100% |
-|              | `UC_HRM_066` | Cấu hình thời hạn onboarding — Polish BE/FE & Unit Test                     | 80% ➔ 100% |
-|              | `UC_HRM_067` | Cấu hình thời hạn thử việc — Polish BE/FE & Unit Test                       | 80% ➔ 100% |
+| **Bước 20**  | `UC_HRM_064` | Lịch sử chăm sóc ứng viên — Polish BE/FE & Unit Test                        |    100%    |
+|   `[XONG]`   | `UC_HRM_065` | Báo cáo hiệu quả kênh tuyển — Polish BE/FE & Unit Test                      |    100%    |
+|              | `UC_HRM_066` | Cấu hình thời hạn onboarding — Polish BE/FE & Unit Test                     |    100%    |
+|              | `UC_HRM_067` | Cấu hình thời hạn thử việc — Polish BE/FE & Unit Test                       |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 21**  | `UC_HRM_068` | Tạo hồ sơ nhân viên mới từ ứng viên — Polish BE/FE & Unit Test              | 80% ➔ 100% |
-|              | `UC_HRM_069` | Gán người hướng dẫn — Polish BE/FE & Unit Test                              | 80% ➔ 100% |
-|              | `UC_HRM_070` | Checklist onboarding — Polish BE/FE & Unit Test                             | 80% ➔ 100% |
-|              | `UC_HRM_071` | Upload chứng chỉ / giấy tờ — Polish BE/FE & Unit Test                       | 80% ➔ 100% |
+| **Bước 21**  | `UC_HRM_068` | Tạo hồ sơ nhân viên mới từ ứng viên — Polish BE/FE & Unit Test              |    100%    |
+|   `[XONG]`   | `UC_HRM_069` | Gán người hướng dẫn — Polish BE/FE & Unit Test                              |    100%    |
+|              | `UC_HRM_070` | Checklist onboarding — Polish BE/FE & Unit Test                             |    100%    |
+|              | `UC_HRM_071` | Upload chứng chỉ / giấy tờ — Polish BE/FE & Unit Test                       |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 22**  | `UC_HRM_072` | Đánh giá kết thúc thử việc — Polish BE/FE & Unit Test                       | 80% ➔ 100% |
-|              | `UC_HRM_073` | Chuyển thử việc thành chính thức — Polish BE/FE & Unit Test                 | 80% ➔ 100% |
-|              | `UC_HRM_074` | Cảnh báo hết hạn thử việc — Polish BE/FE & Unit Test                        | 80% ➔ 100% |
-|              | `UC_HRM_075` | Khai báo định biên theo đơn vị — Polish BE/FE & Unit Test                   | 80% ➔ 100% |
+| **Bước 22**  | `UC_HRM_072` | Đánh giá kết thúc thử việc — Polish BE/FE & Unit Test                       |    100%    |
+|   `[XONG]`   | `UC_HRM_073` | Chuyển thử việc thành chính thức — Polish BE/FE & Unit Test                 |    100%    |
+|              | `UC_HRM_074` | Cảnh báo hết hạn thử việc — Polish BE/FE & Unit Test                        |    100%    |
+|              | `UC_HRM_075` | Khai báo định biên theo đơn vị — Polish BE/FE & Unit Test                   |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 23**  | `UC_HRM_076` | Khai báo định biên theo ca — Polish BE/FE & Unit Test                       | 70% ➔ 100% |
-|              | `UC_HRM_077` | Khai báo định biên theo bộ phận — Polish BE/FE & Unit Test                  | 80% ➔ 100% |
-|              | `UC_HRM_078` | So sánh thực tế vs định biên — Polish BE/FE & Unit Test                     | 80% ➔ 100% |
-|              | `UC_HRM_079` | Cảnh báo thiếu người — Polish BE/FE & Unit Test                             | 80% ➔ 100% |
+| **Bước 23**  | `UC_HRM_076` | Khai báo định biên theo ca — Polish BE/FE & Unit Test                       |    100%    |
+|   `[XONG]`   | `UC_HRM_077` | Khai báo định biên theo bộ phận — Polish BE/FE & Unit Test                  |    100%    |
+|              | `UC_HRM_078` | So sánh thực tế vs định biên — Polish BE/FE & Unit Test                     |    100%    |
+|              | `UC_HRM_079` | Cảnh báo thiếu người — Polish BE/FE & Unit Test                             |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 24**  | `UC_HRM_080` | Duyệt thay đổi định biên — Polish BE/FE & Unit Test                         | 80% ➔ 100% |
-|              | `UC_HRM_081` | Tạo mẫu ca làm việc — Polish BE/FE & Unit Test                              | 80% ➔ 100% |
-|              | `UC_HRM_082` | Xếp lịch ca nhân viên — Polish BE/FE & Unit Test                            | 80% ➔ 100% |
-|              | `UC_HRM_083` | Xếp lịch ca theo tuần / tháng — Polish BE/FE & Unit Test                    | 80% ➔ 100% |
+| **Bước 24**  | `UC_HRM_080` | Duyệt thay đổi định biên — Polish BE/FE & Unit Test                         |    100%    |
+|   `[XONG]`   | `UC_HRM_081` | Tạo mẫu ca làm việc — Polish BE/FE & Unit Test                              |    100%    |
+|              | `UC_HRM_082` | Xếp lịch ca nhân viên — Polish BE/FE & Unit Test                            |    100%    |
+|              | `UC_HRM_083` | Xếp lịch ca theo tuần / tháng — Polish BE/FE & Unit Test                    |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 25**  | `UC_HRM_084` | Đổi ca giữa nhân viên — Polish BE/FE & Unit Test                            | 80% ➔ 100% |
-|              | `UC_HRM_085` | Hủy lịch ca — Polish BE/FE & Unit Test                                      | 80% ➔ 100% |
-|              | `UC_HRM_086` | Xem lịch ca theo đơn vị — Polish BE/FE & Unit Test                          | 80% ➔ 100% |
-|              | `UC_HRM_087` | Xem lịch ca cá nhân trên APP — Polish BE/FE & Unit Test                     | 70% ➔ 100% |
+| **Bước 25**  | `UC_HRM_084` | Đổi ca giữa nhân viên — Polish BE/FE & Unit Test                            |    100%    |
+|   `[XONG]`   | `UC_HRM_085` | Hủy lịch ca — Polish BE/FE & Unit Test                                      |    100%    |
+|              | `UC_HRM_086` | Xem lịch ca theo đơn vị — Polish BE/FE & Unit Test                          |    100%    |
+|              | `UC_HRM_087` | Xem lịch ca cá nhân trên APP — Polish BE/FE & Unit Test                     |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 26**  | `UC_HRM_089` | Sao chép lịch ca — Polish BE/FE & Unit Test                                 | 80% ➔ 100% |
-|              | `UC_HRM_090` | Khóa sổ lịch ca theo kỳ — Polish BE/FE & Unit Test                          | 80% ➔ 100% |
-|              | `UC_HRM_091` | In / xuất lịch ca — Polish BE/FE & Unit Test                                | 80% ➔ 100% |
-|              | `UC_HRM_092` | Tạo lệnh điều động — Polish BE/FE & Unit Test                               | 80% ➔ 100% |
+| **Bước 26**  | `UC_HRM_089` | Sao chép lịch ca — Polish BE/FE & Unit Test                                 |    100%    |
+|   `[XONG]`   | `UC_HRM_090` | Khóa sổ lịch ca theo kỳ — Polish BE/FE & Unit Test                          |    100%    |
+|              | `UC_HRM_091` | In / xuất lịch ca — Polish BE/FE & Unit Test                                |    100%    |
+|              | `UC_HRM_092` | Tạo lệnh điều động — Polish BE/FE & Unit Test                               |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 27**  | `UC_HRM_093` | Đề xuất nhu cầu điều động — Polish BE/FE & Unit Test                        | 80% ➔ 100% |
-|              | `UC_HRM_094` | Nhận lệnh điều động trên APP — Polish BE/FE & Unit Test                     | 70% ➔ 100% |
-|              | `UC_HRM_095` | Theo dõi nhân sự điều động — Polish BE/FE & Unit Test                       | 80% ➔ 100% |
-|              | `UC_HRM_096` | Gắn nhãn công điều động khi chấm — Polish BE/FE & Unit Test                 | 70% ➔ 100% |
+| **Bước 27**  | `UC_HRM_093` | Đề xuất nhu cầu điều động — Polish BE/FE & Unit Test                        |    100%    |
+|   `[XONG]`   | `UC_HRM_094` | Nhận lệnh điều động trên APP — Polish BE/FE & Unit Test                     |    100%    |
+|              | `UC_HRM_095` | Theo dõi nhân sự điều động — Polish BE/FE & Unit Test                       |    100%    |
+|              | `UC_HRM_096` | Gắn nhãn công điều động khi chấm — Polish BE/FE & Unit Test                 |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 28**  | `UC_HRM_097` | Báo cáo giờ / chi phí điều động — Polish BE/FE & Unit Test                  | 80% ➔ 100% |
-|              | `UC_HRM_098` | Cấu hình chấm vân tay / sinh trắc — Polish BE/FE & Unit Test                | 70% ➔ 100% |
-|              | `UC_HRM_099` | Cấu hình chấm APP điện thoại — Polish BE/FE & Unit Test                     | 80% ➔ 100% |
-|              | `UC_HRM_100` | Cấu hình chấm QR / mã nhân sự — Polish BE/FE & Unit Test                    | 80% ➔ 100% |
+| **Bước 28**  | `UC_HRM_097` | Báo cáo giờ / chi phí điều động — Polish BE/FE & Unit Test                  |    100%    |
+|   `[XONG]`   | `UC_HRM_098` | Cấu hình chấm vân tay / sinh trắc — Polish BE/FE & Unit Test                |    100%    |
+|              | `UC_HRM_099` | Cấu hình chấm APP điện thoại — Polish BE/FE & Unit Test                     |    100%    |
+|              | `UC_HRM_100` | Cấu hình chấm QR / mã nhân sự — Polish BE/FE & Unit Test                    |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 29**  | `UC_HRM_101` | Đăng ký thiết bị chấm — Polish BE/FE & Unit Test                            | 80% ➔ 100% |
-|              | `UC_HRM_102` | Cấu hình geo-fence điểm chấm — Polish BE/FE & Unit Test                     | 80% ➔ 100% |
-|              | `UC_HRM_103` | Cấu hình quy tắc đi trễ — Polish BE/FE & Unit Test                          | 80% ➔ 100% |
-|              | `UC_HRM_104` | Cấu hình mức trừ công khi trễ — Polish BE/FE & Unit Test                    | 80% ➔ 100% |
+| **Bước 29**  | `UC_HRM_101` | Đăng ký thiết bị chấm — Polish BE/FE & Unit Test                            |    100%    |
+|   `[XONG]`   | `UC_HRM_102` | Cấu hình geo-fence điểm chấm — Polish BE/FE & Unit Test                     |    100%    |
+|              | `UC_HRM_103` | Cấu hình quy tắc đi trễ — Polish BE/FE & Unit Test                          |    100%    |
+|              | `UC_HRM_104` | Cấu hình mức trừ công khi trễ — Polish BE/FE & Unit Test                    |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 30**  | `UC_HRM_105` | Cấu hình quên check-out — Polish BE/FE & Unit Test                          | 80% ➔ 100% |
-|              | `UC_HRM_106` | Cấu hình thời hạn xin điều chỉnh — Polish BE/FE & Unit Test                 | 80% ➔ 100% |
-|              | `UC_HRM_107` | Cấu hình làm thêm giờ (OT) — Polish BE/FE & Unit Test                       | 80% ➔ 100% |
-|              | `UC_HRM_108` | Cấu hình ca đêm / ngày lễ — Polish BE/FE & Unit Test                        | 70% ➔ 100% |
+| **Bước 30**  | `UC_HRM_105` | Cấu hình quên check-out — Polish BE/FE & Unit Test                          |    100%    |
+|   `[XONG]`   | `UC_HRM_106` | Cấu hình thời hạn xin điều chỉnh — Polish BE/FE & Unit Test                 |    100%    |
+|              | `UC_HRM_107` | Cấu hình làm thêm giờ (OT) — Polish BE/FE & Unit Test                       |    100%    |
+|              | `UC_HRM_108` | Cấu hình ca đêm / ngày lễ — Polish BE/FE & Unit Test                        |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 31**  | `UC_HRM_109` | Check-in đầu ca — Polish BE/FE & Unit Test                                  | 80% ➔ 100% |
-|              | `UC_HRM_110` | Check-out cuối ca — Polish BE/FE & Unit Test                                | 80% ➔ 100% |
-|              | `UC_HRM_111` | Xem lịch sử chấm cá nhân — Polish BE/FE & Unit Test                         | 80% ➔ 100% |
-|              | `UC_HRM_112` | Bảng chấm công theo đơn vị — Polish BE/FE & Unit Test                       | 80% ➔ 100% |
+| **Bước 31**  | `UC_HRM_109` | Check-in đầu ca — Polish BE/FE & Unit Test                                  |    100%    |
+|   `[XONG]`   | `UC_HRM_110` | Check-out cuối ca — Polish BE/FE & Unit Test                                |    100%    |
+|              | `UC_HRM_111` | Xem lịch sử chấm cá nhân — Polish BE/FE & Unit Test                         |    100%    |
+|              | `UC_HRM_112` | Bảng chấm công theo đơn vị — Polish BE/FE & Unit Test                       |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 32**  | `UC_HRM_113` | Bảng chấm công toàn công ty — Polish BE/FE & Unit Test                      | 80% ➔ 100% |
-|              | `UC_HRM_114` | Cảnh báo thiếu chấm realtime — Polish BE/FE & Unit Test                     | 80% ➔ 100% |
-|              | `UC_HRM_115` | Tự tính phút đi trễ — Polish BE/FE & Unit Test                              | 80% ➔ 100% |
-|              | `UC_HRM_116` | Tự trừ công do đi trễ — Polish BE/FE & Unit Test                            | 80% ➔ 100% |
+| **Bước 32**  | `UC_HRM_113` | Bảng chấm công toàn công ty — Polish BE/FE & Unit Test                      |    100%    |
+|   `[XONG]`   | `UC_HRM_114` | Cảnh báo thiếu chấm realtime — Polish BE/FE & Unit Test                     |    100%    |
+|              | `UC_HRM_115` | Tự tính phút đi trễ — Polish BE/FE & Unit Test                              |    100%    |
+|              | `UC_HRM_116` | Tự trừ công do đi trễ — Polish BE/FE & Unit Test                            |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 33**  | `UC_HRM_117` | Đánh dấu quên chấm — Polish BE/FE & Unit Test                               | 80% ➔ 100% |
-|              | `UC_HRM_119` | Xử lý công OT tự động — Polish BE/FE & Unit Test                            | 80% ➔ 100% |
-|              | `UC_HRM_120` | Tạo phiếu xin điều chỉnh công — Polish BE/FE & Unit Test                    | 80% ➔ 100% |
-|              | `UC_HRM_121` | Đính kèm lý do / bằng chứng — Polish BE/FE & Unit Test                      | 70% ➔ 100% |
+| **Bước 33**  | `UC_HRM_117` | Đánh dấu quên chấm — Polish BE/FE & Unit Test                               |    100%    |
+|   `[XONG]`   | `UC_HRM_119` | Xử lý công OT tự động — Polish BE/FE & Unit Test                            |    100%    |
+|              | `UC_HRM_120` | Tạo phiếu xin điều chỉnh công — Polish BE/FE & Unit Test                    |    100%    |
+|              | `UC_HRM_121` | Đính kèm lý do / bằng chứng — Polish BE/FE & Unit Test                      |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 34**  | `UC_HRM_122` | Duyệt / từ chối điều chỉnh — Polish BE/FE & Unit Test                       | 80% ➔ 100% |
-|              | `UC_HRM_123` | Ghi nhận vi phạm đi trễ — Polish BE/FE & Unit Test                          | 70% ➔ 100% |
-|              | `UC_HRM_126` | Khóa bảng công theo kỳ — Polish BE/FE & Unit Test                           | 80% ➔ 100% |
-|              | `UC_HRM_127` | Mở khóa bảng công có kiểm soát — Polish BE/FE & Unit Test                   | 80% ➔ 100% |
+| **Bước 34**  | `UC_HRM_122` | Duyệt / từ chối điều chỉnh — Polish BE/FE & Unit Test                       |    100%    |
+|   `[XONG]`   | `UC_HRM_123` | Ghi nhận vi phạm đi trễ — Polish BE/FE & Unit Test                          |    100%    |
+|              | `UC_HRM_126` | Khóa bảng công theo kỳ — Polish BE/FE & Unit Test                           |    100%    |
+|              | `UC_HRM_127` | Mở khóa bảng công có kiểm soát — Polish BE/FE & Unit Test                   |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 35**  | `UC_HRM_128` | Xác nhận bảng công — Polish BE/FE & Unit Test                               | 80% ➔ 100% |
-|              | `UC_HRM_130` | Cấu hình quỹ phép theo loại NS — Polish BE/FE & Unit Test                   | 80% ➔ 100% |
-|              | `UC_HRM_131` | Cấp phát / điều chỉnh quỹ phép — Polish BE/FE & Unit Test                   | 80% ➔ 100% |
-|              | `UC_HRM_133` | Duyệt đơn nghỉ đa cấp — Polish BE/FE & Unit Test                            | 70% ➔ 100% |
+| **Bước 35**  | `UC_HRM_128` | Xác nhận bảng công — Polish BE/FE & Unit Test                               |    100%    |
+|   `[XONG]`   | `UC_HRM_130` | Cấu hình quỹ phép theo loại NS — Polish BE/FE & Unit Test                   |    100%    |
+|              | `UC_HRM_131` | Cấp phát / điều chỉnh quỹ phép — Polish BE/FE & Unit Test                   |    100%    |
+|              | `UC_HRM_133` | Duyệt đơn nghỉ đa cấp — Polish BE/FE & Unit Test                            |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 36**  | `UC_HRM_134` | Hủy đơn nghỉ — Polish BE/FE & Unit Test                                     | 80% ➔ 100% |
-|              | `UC_HRM_136` | Lịch nghỉ theo đơn vị — Polish BE/FE & Unit Test                            | 80% ➔ 100% |
-|              | `UC_HRM_137` | Import nghỉ lễ / ngày nghỉ — Polish BE/FE & Unit Test                       | 80% ➔ 100% |
-|              | `UC_HRM_138` | Báo cáo nghỉ / quỹ phép — Polish BE/FE & Unit Test                          | 80% ➔ 100% |
+| **Bước 36**  | `UC_HRM_134` | Hủy đơn nghỉ — Polish BE/FE & Unit Test                                     |    100%    |
+|   `[XONG]`   | `UC_HRM_136` | Lịch nghỉ theo đơn vị — Polish BE/FE & Unit Test                            |    100%    |
+|              | `UC_HRM_137` | Import nghỉ lễ / ngày nghỉ — Polish BE/FE & Unit Test                       |    100%    |
+|              | `UC_HRM_138` | Báo cáo nghỉ / quỹ phép — Polish BE/FE & Unit Test                          |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 37**  | `UC_HRM_139` | Ghi nhận quyết định khen thưởng — Polish BE/FE & Unit Test                  | 85% ➔ 100% |
-|              | `UC_HRM_140` | Ghi nhận quyết định kỷ luật — Polish BE/FE & Unit Test                      | 85% ➔ 100% |
-|              | `UC_HRM_141` | Đính kèm quyết định — Polish BE/FE & Unit Test                              | 80% ➔ 100% |
-|              | `UC_HRM_142` | Ảnh hưởng lương / phụ cấp — Polish BE/FE & Unit Test                        | 85% ➔ 100% |
+| **Bước 37**  | `UC_HRM_139` | Ghi nhận quyết định khen thưởng — Polish BE/FE & Unit Test                  |    100%    |
+|   `[XONG]`   | `UC_HRM_140` | Ghi nhận quyết định kỷ luật — Polish BE/FE & Unit Test                      |    100%    |
+|              | `UC_HRM_141` | Đính kèm quyết định — Polish BE/FE & Unit Test                              |    100%    |
+|              | `UC_HRM_142` | Ảnh hưởng lương / phụ cấp — Polish BE/FE & Unit Test                        |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 38**  | `UC_HRM_143` | Báo cáo khen thưởng – kỷ luật — Polish BE/FE & Unit Test                    | 75% ➔ 100% |
-|              | `UC_HRM_144` | Tạo đơn nghỉ việc — Polish BE/FE & Unit Test                                | 90% ➔ 100% |
-|              | `UC_HRM_145` | Cấu hình / kiểm tra báo trước — Polish BE/FE & Unit Test                    | 90% ➔ 100% |
-|              | `UC_HRM_146` | Duyệt đơn nghỉ việc — Polish BE/FE & Unit Test                              | 85% ➔ 100% |
+| **Bước 38**  | `UC_HRM_143` | Báo cáo khen thưởng – kỷ luật — Polish BE/FE & Unit Test                    |    100%    |
+|   `[XONG]`   | `UC_HRM_144` | Tạo đơn nghỉ việc — Polish BE/FE & Unit Test                                |    100%    |
+|              | `UC_HRM_145` | Cấu hình / kiểm tra báo trước — Polish BE/FE & Unit Test                    |    100%    |
+|              | `UC_HRM_146` | Duyệt đơn nghỉ việc — Polish BE/FE & Unit Test                              |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 39**  | `UC_HRM_147` | Checklist bàn giao — Polish BE/FE & Unit Test                               | 90% ➔ 100% |
-|              | `UC_HRM_148` | Thu hồi quyền hệ thống — Polish BE/FE & Unit Test                           | 85% ➔ 100% |
-|              | `UC_HRM_149` | Quyết toán phép / lương nghỉ việc — Polish BE/FE & Unit Test                | 80% ➔ 100% |
-|              | `UC_HRM_150` | Phỏng vấn nghỉ việc — Polish BE/FE & Unit Test                              | 70% ➔ 100% |
+| **Bước 39**  | `UC_HRM_147` | Checklist bàn giao — Polish BE/FE & Unit Test                               |    100%    |
+|   `[XONG]`   | `UC_HRM_148` | Thu hồi quyền hệ thống — Polish BE/FE & Unit Test                           |    100%    |
+|              | `UC_HRM_149` | Quyết toán phép / lương nghỉ việc — Polish BE/FE & Unit Test                |    100%    |
+|              | `UC_HRM_150` | Phỏng vấn nghỉ việc — Polish BE/FE & Unit Test                              |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 40**  | `UC_HRM_151` | Báo cáo nghỉ việc / lý do — Polish BE/FE & Unit Test                        | 80% ➔ 100% |
-|              | `UC_HRM_152` | Tạo thang bậc lương — Polish BE/FE & Unit Test                              | 90% ➔ 100% |
-|              | `UC_HRM_153` | Gán bậc lương theo nhân sự — Polish BE/FE & Unit Test                       | 90% ➔ 100% |
-|              | `UC_HRM_154` | Gán bậc theo trạng thái — Polish BE/FE & Unit Test                          | 80% ➔ 100% |
+| **Bước 40**  | `UC_HRM_151` | Báo cáo nghỉ việc / lý do — Polish BE/FE & Unit Test                        |    100%    |
+|   `[XONG]`   | `UC_HRM_152` | Tạo thang bậc lương — Polish BE/FE & Unit Test                              |    100%    |
+|              | `UC_HRM_153` | Gán bậc lương theo nhân sự — Polish BE/FE & Unit Test                       |    100%    |
+|              | `UC_HRM_154` | Gán bậc theo trạng thái — Polish BE/FE & Unit Test                          |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 41**  | `UC_HRM_155` | Đơn giá giờ / ngày nhân viên — Polish BE/FE & Unit Test                     | 80% ➔ 100% |
-|              | `UC_HRM_156` | Quản lý lương thực tế chi trả — Polish BE/FE & Unit Test                    | 90% ➔ 100% |
-|              | `UC_HRM_157` | Danh mục phụ cấp — Polish BE/FE & Unit Test                                 | 90% ➔ 100% |
-|              | `UC_HRM_158` | Rule phụ cấp theo ca — Polish BE/FE & Unit Test                             | 80% ➔ 100% |
+| **Bước 41**  | `UC_HRM_155` | Đơn giá giờ / ngày nhân viên — Polish BE/FE & Unit Test                     |    100%    |
+|   `[XONG]`   | `UC_HRM_156` | Quản lý lương thực tế chi trả — Polish BE/FE & Unit Test                    |    100%    |
+|              | `UC_HRM_157` | Danh mục phụ cấp — Polish BE/FE & Unit Test                                 |    100%    |
+|              | `UC_HRM_158` | Rule phụ cấp theo ca — Polish BE/FE & Unit Test                             |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 42**  | `UC_HRM_159` | Rule phụ cấp đặc thù — Polish BE/FE & Unit Test                             | 70% ➔ 100% |
-|              | `UC_HRM_160` | Cấu hình bảo hiểm — Polish BE/FE & Unit Test                                | 90% ➔ 100% |
-|              | `UC_HRM_161` | Cấu hình thuế TNCN — Polish BE/FE & Unit Test                               | 80% ➔ 100% |
-|              | `UC_HRM_162` | Cấu hình tạm ứng / khấu trừ — Polish BE/FE & Unit Test                      | 80% ➔ 100% |
+| **Bước 42**  | `UC_HRM_159` | Rule phụ cấp đặc thù — Polish BE/FE & Unit Test                             |    100%    |
+|   `[XONG]`   | `UC_HRM_160` | Cấu hình bảo hiểm — Polish BE/FE & Unit Test                                |    100%    |
+|              | `UC_HRM_161` | Cấu hình thuế TNCN — Polish BE/FE & Unit Test                               |    100%    |
+|              | `UC_HRM_162` | Cấu hình tạm ứng / khấu trừ — Polish BE/FE & Unit Test                      |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 43**  | `UC_HRM_163` | Tạo kỳ lương — Polish BE/FE & Unit Test                                     | 90% ➔ 100% |
-|              | `UC_HRM_164` | Tổng hợp công vào kỳ lương — Polish BE/FE & Unit Test                       | 90% ➔ 100% |
-|              | `UC_HRM_165` | Tính lương tự động theo rule — Polish BE/FE & Unit Test                     | 85% ➔ 100% |
-|              | `UC_HRM_166` | Nhập thưởng / phụ cấp phát sinh — Polish BE/FE & Unit Test                  | 90% ➔ 100% |
+| **Bước 43**  | `UC_HRM_163` | Tạo kỳ lương — Polish BE/FE & Unit Test                                     |    100%    |
+|   `[XONG]`   | `UC_HRM_164` | Tổng hợp công vào kỳ lương — Polish BE/FE & Unit Test                       |    100%    |
+|              | `UC_HRM_165` | Tính lương tự động theo rule — Polish BE/FE & Unit Test                     |    100%    |
+|              | `UC_HRM_166` | Nhập thưởng / phụ cấp phát sinh — Polish BE/FE & Unit Test                  |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 44**  | `UC_HRM_167` | Nhập khấu trừ / tạm ứng — Polish BE/FE & Unit Test                          | 90% ➔ 100% |
-|              | `UC_HRM_168` | Xem / chỉnh bảng lương chi tiết — Polish BE/FE & Unit Test                  | 90% ➔ 100% |
-|              | `UC_HRM_169` | Xác nhận bảng lương — Polish BE/FE & Unit Test                              | 90% ➔ 100% |
-|              | `UC_HRM_170` | Khóa kỳ lương — Polish BE/FE & Unit Test                                    | 90% ➔ 100% |
+| **Bước 44**  | `UC_HRM_167` | Nhập khấu trừ / tạm ứng — Polish BE/FE & Unit Test                          |    100%    |
+|   `[XONG]`   | `UC_HRM_168` | Xem / chỉnh bảng lương chi tiết — Polish BE/FE & Unit Test                  |    100%    |
+|              | `UC_HRM_169` | Xác nhận bảng lương — Polish BE/FE & Unit Test                              |    100%    |
+|              | `UC_HRM_170` | Khóa kỳ lương — Polish BE/FE & Unit Test                                    |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 45**  | `UC_HRM_171` | Phiếu lương cá nhân (APP) — Polish BE/FE & Unit Test                        | 60% ➔ 100% |
-|              | `UC_HRM_172` | Xuất bảng lương tổng hợp — Polish BE/FE & Unit Test                         | 90% ➔ 100% |
-|              | `UC_HRM_173` | Xuất file chi lương ngân hàng — Polish BE/FE & Unit Test                    | 80% ➔ 100% |
-|              | `UC_HRM_175` | Báo cáo chi phí lương theo đơn vị — Polish BE/FE & Unit Test                | 85% ➔ 100% |
+| **Bước 45**  | `UC_HRM_171` | Phiếu lương cá nhân (APP) — Polish BE/FE & Unit Test                        |    100%    |
+|   `[XONG]`   | `UC_HRM_172` | Xuất bảng lương tổng hợp — Polish BE/FE & Unit Test                         |    100%    |
+|              | `UC_HRM_173` | Xuất file chi lương ngân hàng — Polish BE/FE & Unit Test                    |    100%    |
+|              | `UC_HRM_175` | Báo cáo chi phí lương theo đơn vị — Polish BE/FE & Unit Test                |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 46**  | `UC_HRM_176` | So sánh lương kỳ này / kỳ trước — Polish BE/FE & Unit Test                  | 75% ➔ 100% |
-|              | `UC_HRM_182` | Dashboard headcount & biến động — Polish BE/FE & Unit Test                  | 90% ➔ 100% |
-|              | `UC_HRM_183` | Báo cáo công / OT / đi trễ — Polish BE/FE & Unit Test                       | 90% ➔ 100% |
-|              | `UC_HRM_184` | Báo cáo tuyển dụng funnel — Polish BE/FE & Unit Test                        | 85% ➔ 100% |
+| **Bước 46**  | `UC_HRM_176` | So sánh lương kỳ này / kỳ trước — Polish BE/FE & Unit Test                  |    100%    |
+|   `[XONG]`   | `UC_HRM_182` | Dashboard headcount & biến động — Polish BE/FE & Unit Test                  |    100%    |
+|              | `UC_HRM_183` | Báo cáo công / OT / đi trễ — Polish BE/FE & Unit Test                       |    100%    |
+|              | `UC_HRM_184` | Báo cáo tuyển dụng funnel — Polish BE/FE & Unit Test                        |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 47**  | `UC_HRM_185` | Báo cáo quỹ phép — Polish BE/FE & Unit Test                                 | 85% ➔ 100% |
-|              | `UC_HRM_186` | Báo cáo chi phí nhân sự — Polish BE/FE & Unit Test                          | 90% ➔ 100% |
-|              | `UC_HRM_187` | Báo cáo định biên vs thực tế — Polish BE/FE & Unit Test                     | 85% ➔ 100% |
-|              | `UC_LMS_001` | Danh mục chương trình đào tạo — Polish BE/FE & Unit Test                    | 85% ➔ 100% |
+| **Bước 47**  | `UC_HRM_185` | Báo cáo quỹ phép — Polish BE/FE & Unit Test                                 |    100%    |
+|   `[XONG]`   | `UC_HRM_186` | Báo cáo chi phí nhân sự — Polish BE/FE & Unit Test                          |    100%    |
+|              | `UC_HRM_187` | Báo cáo định biên vs thực tế — Polish BE/FE & Unit Test                     |    100%    |
+|              | `UC_LMS_001` | Danh mục chương trình đào tạo — Polish BE/FE & Unit Test                    |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 48**  | `UC_LMS_002` | Danh mục khóa học — Polish BE/FE & Unit Test                                | 85% ➔ 100% |
-|              | `UC_LMS_003` | Phân loại khóa (online/offline/blended) — Polish BE/FE & Unit Test          | 85% ➔ 100% |
-|              | `UC_LMS_004` | Quản lý chương / bài học — Polish BE/FE & Unit Test                         | 85% ➔ 100% |
-|              | `UC_LMS_005` | Upload video bài giảng — Polish BE/FE & Unit Test                           | 80% ➔ 100% |
+| **Bước 48**  | `UC_LMS_002` | Danh mục khóa học — Polish BE/FE & Unit Test                                |    100%    |
+|   `[XONG]`   | `UC_LMS_003` | Phân loại khóa (online/offline/blended) — Polish BE/FE & Unit Test          |    100%    |
+|              | `UC_LMS_004` | Quản lý chương / bài học — Polish BE/FE & Unit Test                         |    100%    |
+|              | `UC_LMS_005` | Upload video bài giảng — Polish BE/FE & Unit Test                           |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 49**  | `UC_LMS_006` | Upload tài liệu PDF / slide — Polish BE/FE & Unit Test                      | 80% ➔ 100% |
-|              | `UC_LMS_009` | Ẩn / xuất bản khóa học — Polish BE/FE & Unit Test                           | 85% ➔ 100% |
-|              | `UC_LMS_014` | Cấu hình điểm đạt / số lần thi — Polish BE/FE & Unit Test                   | 85% ➔ 100% |
-|              | `UC_LMS_016` | Mở lớp đào tạo offline — Polish BE/FE & Unit Test                           | 85% ➔ 100% |
+| **Bước 49**  | `UC_LMS_006` | Upload tài liệu PDF / slide — Polish BE/FE & Unit Test                      |    100%    |
+|   `[XONG]`   | `UC_LMS_009` | Ẩn / xuất bản khóa học — Polish BE/FE & Unit Test                           |    100%    |
+|              | `UC_LMS_014` | Cấu hình điểm đạt / số lần thi — Polish BE/FE & Unit Test                   |    100%    |
+|              | `UC_LMS_016` | Mở lớp đào tạo offline — Polish BE/FE & Unit Test                           |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 50**  | `UC_LMS_017` | Gán giảng viên / địa điểm / lịch — Polish BE/FE & Unit Test                 | 85% ➔ 100% |
-|              | `UC_LMS_018` | Tuyển sinh / ghi danh học viên — Polish BE/FE & Unit Test                   | 85% ➔ 100% |
-|              | `UC_LMS_019` | Điểm danh buổi học — Polish BE/FE & Unit Test                               | 85% ➔ 100% |
-|              | `UC_LMS_022` | Đóng lớp & tổng kết — Polish BE/FE & Unit Test                              | 85% ➔ 100% |
+| **Bước 50**  | `UC_LMS_017` | Gán giảng viên / địa điểm / lịch — Polish BE/FE & Unit Test                 |    100%    |
+|   `[XONG]`   | `UC_LMS_018` | Tuyển sinh / ghi danh học viên — Polish BE/FE & Unit Test                   |    100%    |
+|              | `UC_LMS_019` | Điểm danh buổi học — Polish BE/FE & Unit Test                               |    100%    |
+|              | `UC_LMS_022` | Đóng lớp & tổng kết — Polish BE/FE & Unit Test                              |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 51**  | `UC_LMS_023` | Gán mentor cho học viên — Polish BE/FE & Unit Test                          | 80% ➔ 100% |
-|              | `UC_LMS_028` | Đăng ký tài khoản học viên — Polish BE/FE & Unit Test                       | 90% ➔ 100% |
-|              | `UC_LMS_029` | Đăng nhập / quên mật khẩu — Polish BE/FE & Unit Test                        | 90% ➔ 100% |
-|              | `UC_LMS_030` | Danh sách & chi tiết khóa — Polish BE/FE & Unit Test                        | 85% ➔ 100% |
+| **Bước 51**  | `UC_LMS_023` | Gán mentor cho học viên — Polish BE/FE & Unit Test                          |    100%    |
+|   `[XONG]`   | `UC_LMS_028` | Đăng ký tài khoản học viên — Polish BE/FE & Unit Test                       |    100%    |
+|              | `UC_LMS_029` | Đăng nhập / quên mật khẩu — Polish BE/FE & Unit Test                        |    100%    |
+|              | `UC_LMS_030` | Danh sách & chi tiết khóa — Polish BE/FE & Unit Test                        |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 52**  | `UC_LMS_031` | Mua khóa / thanh toán online — Polish BE/FE & Unit Test                     | 95% ➔ 100% |
-|              | `UC_LMS_032` | Kích hoạt bằng mã voucher — Polish BE/FE & Unit Test                        | 75% ➔ 100% |
-|              | `UC_LMS_033` | Tự mở khóa sau thanh toán — Polish BE/FE & Unit Test                        | 85% ➔ 100% |
-|              | `UC_LMS_034` | Xem video / tài liệu — Polish BE/FE & Unit Test                             | 85% ➔ 100% |
+| **Bước 52**  | `UC_LMS_031` | Mua khóa / thanh toán online — Polish BE/FE & Unit Test                     |    100%    |
+|   `[XONG]`   | `UC_LMS_032` | Kích hoạt bằng mã voucher — Polish BE/FE & Unit Test                        |    100%    |
+|              | `UC_LMS_033` | Tự mở khóa sau thanh toán — Polish BE/FE & Unit Test                        |    100%    |
+|              | `UC_LMS_034` | Xem video / tài liệu — Polish BE/FE & Unit Test                             |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 53**  | `UC_LMS_035` | Đánh dấu hoàn thành bài học — Polish BE/FE & Unit Test                      | 85% ➔ 100% |
-|              | `UC_LMS_036` | Tiếp tục học dở — Polish BE/FE & Unit Test                                  | 85% ➔ 100% |
-|              | `UC_LMS_037` | Theo dõi % tiến độ khóa — Polish BE/FE & Unit Test                          | 85% ➔ 100% |
-|              | `UC_LMS_040` | Làm quiz cuối chương — Polish BE/FE & Unit Test                             | 85% ➔ 100% |
+| **Bước 53**  | `UC_LMS_035` | Đánh dấu hoàn thành bài học — Polish BE/FE & Unit Test                      |    100%    |
+|   `[XONG]`   | `UC_LMS_036` | Tiếp tục học dở — Polish BE/FE & Unit Test                                  |    100%    |
+|              | `UC_LMS_037` | Theo dõi % tiến độ khóa — Polish BE/FE & Unit Test                          |    100%    |
+|              | `UC_LMS_040` | Làm quiz cuối chương — Polish BE/FE & Unit Test                             |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 54**  | `UC_LMS_041` | Thi cuối khóa — Polish BE/FE & Unit Test                                    | 85% ➔ 100% |
-|              | `UC_LMS_042` | Chấm điểm tự động — Polish BE/FE & Unit Test                                | 85% ➔ 100% |
-|              | `UC_LMS_043` | Xem kết quả & đáp án — Polish BE/FE & Unit Test                             | 80% ➔ 100% |
-|              | `UC_LMS_044` | Điều kiện cấp chứng chỉ — Polish BE/FE & Unit Test                          | 85% ➔ 100% |
+| **Bước 54**  | `UC_LMS_041` | Thi cuối khóa — Polish BE/FE & Unit Test                                    |    100%    |
+|   `[XONG]`   | `UC_LMS_042` | Chấm điểm tự động — Polish BE/FE & Unit Test                                |    100%    |
+|              | `UC_LMS_043` | Xem kết quả & đáp án — Polish BE/FE & Unit Test                             |    100%    |
+|              | `UC_LMS_044` | Điều kiện cấp chứng chỉ — Polish BE/FE & Unit Test                          |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 55**  | `UC_LMS_045` | Cấp chứng chỉ điện tử — Polish BE/FE & Unit Test                            | 85% ➔ 100% |
-|              | `UC_LMS_049` | Hồ sơ giảng viên — Polish BE/FE & Unit Test                                 | 90% ➔ 100% |
-|              | `UC_LMS_050` | Phân quyền giảng viên — Polish BE/FE & Unit Test                            | 90% ➔ 100% |
-|              | `UC_LMS_051` | Theo dõi danh sách học viên — Polish BE/FE & Unit Test                      | 90% ➔ 100% |
+| **Bước 55**  | `UC_LMS_045` | Cấp chứng chỉ điện tử — Polish BE/FE & Unit Test                            |    100%    |
+|   `[XONG]`   | `UC_LMS_049` | Hồ sơ giảng viên — Polish BE/FE & Unit Test                                 |    100%    |
+|              | `UC_LMS_050` | Phân quyền giảng viên — Polish BE/FE & Unit Test                            |    100%    |
+|              | `UC_LMS_051` | Theo dõi danh sách học viên — Polish BE/FE & Unit Test                      |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
 | **Bước 56**  | `UC_LMS_058` | Xác nhận đã đọc nội quy — Polish BE/FE & Unit Test                          | 80% ➔ 100% |
 |              | `UC_LMS_065` | Dashboard tiến độ đào tạo — Polish BE/FE & Unit Test                        | 90% ➔ 100% |

@@ -38,6 +38,38 @@ import { formatDeviceSyncFlash } from "@/shared/api/crm-hrm-intake-helpers";
 import { fetchOrgUnits, type OrgUnitDto } from "@/shared/api/sys-api";
 import { usePermissions } from "@/shared/hooks/use-permissions";
 import { btn } from "@/shared/ui/btn";
+import {
+  validateBiometricDevice,
+  validateGeoFence,
+  validateFaceRecognitionConfig,
+} from "@/shared/api/hrm-step28-helpers";
+import {
+  validateLateGraceRules,
+  validateLateDeductionScale,
+} from "@/shared/api/hrm-step29-helpers";
+import {
+  validateForgotCheckoutConfig,
+  validateAdjustDeadlineConfig,
+  validateOvertimeConfig,
+  validateNightShiftHolidayConfig,
+} from "@/shared/api/hrm-step30-helpers";
+import {
+  validatePunchRequest,
+  validateDateRangeFilter,
+  formatAttendanceStatus,
+} from "@/shared/api/hrm-step31-helpers";
+import {
+  filterCompanyWideBoard,
+  formatMissingAlertMessage,
+} from "@/shared/api/hrm-step32-helpers";
+import {
+  validateAdjustCreateRequest,
+  formatOvertimeHours,
+} from "@/shared/api/hrm-step33-helpers";
+import {
+  validatePeriodLockKey,
+  formatPeriodLockStatus,
+} from "@/shared/api/hrm-step34-helpers";
 
 function today() {
   return new Date().toISOString().slice(0, 10);
@@ -188,40 +220,48 @@ export default function AttendancePage() {
                 type="button"
                 className={btn.primary}
                 onClick={async () => {
+                  const v = validatePunchRequest({ method: "App" });
+                  if (!v.valid) { setError(v.error ?? "Lỗi phương thức check-in."); return; }
+                  setError(null);
+                  setOk(null);
                   try {
                     await attendanceCheckIn({ method: "App" });
-                    setOk("Đã check-in.");
+                    setOk("✅ Đã check-in đầu ca thành công (UC_HRM_109).");
                     await load();
-                  } catch {
-                    setError("Check-in thất bại (thiếu hồ sơ NV / đã chấm / kỳ khóa).");
+                  } catch (ex: unknown) {
+                    setError(ex instanceof Error ? ex.message : "Check-in thất bại (thiếu hồ sơ NV / đã chấm / kỳ khóa).");
                   }
                 }}
               >
-                Check-in
+                Check-in (UC_HRM_109)
               </button>
               <button
                 type="button"
                 className={btn.secondary}
                 onClick={async () => {
+                  const v = validatePunchRequest({ method: "App" });
+                  if (!v.valid) { setError(v.error ?? "Lỗi phương thức check-out."); return; }
+                  setError(null);
+                  setOk(null);
                   try {
                     await attendanceCheckOut({ method: "App" });
-                    setOk("Đã check-out.");
+                    setOk("✅ Đã check-out cuối ca thành công (UC_HRM_110).");
                     await load();
-                  } catch {
-                    setError("Check-out thất bại.");
+                  } catch (ex: unknown) {
+                    setError(ex instanceof Error ? ex.message : "Check-out thất bại.");
                   }
                 }}
               >
-                Check-out
+                Check-out (UC_HRM_110)
               </button>
             </div>
             {alerts.length > 0 && (
               <div className="rounded-lg border border-destructive/40 bg-destructive/5 p-3">
-                <h3 className="font-semibold text-destructive">Cảnh báo thiếu chấm ({alerts.length})</h3>
-                <ul className="mt-1 max-h-40 overflow-y-auto text-body">
+                <h3 className="font-semibold text-destructive">Cảnh báo thiếu chấm realtime (UC_HRM_114) ({alerts.length})</h3>
+                <ul className="mt-1 max-h-40 overflow-y-auto text-body space-y-1">
                   {alerts.slice(0, 20).map((a) => (
                     <li key={`${a.employeeId}-${a.alertType}`}>
-                      {a.employeeCode} — {a.employeeName}: {a.alertType}
+                      {formatMissingAlertMessage(a.alertType, a.employeeName, a.workDate)}
                     </li>
                   ))}
                 </ul>
@@ -359,6 +399,14 @@ export default function AttendancePage() {
             className="space-y-3 rounded-xl border border-border bg-surface p-4 shadow-sm"
             onSubmit={async (e: FormEvent) => {
               e.preventDefault();
+              const v = validateAdjustCreateRequest({
+                employeeId: adjEmp,
+                workDate: adjDate,
+                reason: adjReason,
+              });
+              if (!v.valid) { setError(v.error ?? "Lỗi tạo phiếu điều chỉnh."); return; }
+              setError(null);
+              setOk(null);
               try {
                 await createAttendanceAdjust({
                   employeeId: adjEmp,
@@ -366,11 +414,11 @@ export default function AttendancePage() {
                   reason: adjReason,
                   submit: true,
                 });
-                setOk("Đã gửi phiếu điều chỉnh.");
+                setOk("✅ Đã gửi phiếu điều chỉnh công thành công (UC_HRM_120).");
                 setAdjReason("");
                 await load();
-              } catch {
-                setError("Tạo phiếu điều chỉnh thất bại (quá hạn / kỳ khóa).");
+              } catch (ex: unknown) {
+                setError(ex instanceof Error ? ex.message : "Tạo phiếu điều chỉnh thất bại (quá hạn / kỳ khóa).");
               }
             }}
           >
@@ -510,20 +558,37 @@ export default function AttendancePage() {
             onSubmit={async (e) => {
               e.preventDefault();
               if (!canManage) return;
+              const v1 = validateLateGraceRules(policy.lateGraceMinutes);
+              if (!v1.valid) { setError(v1.error ?? "Lỗi ân hạn trễ."); return; }
+              const v2 = validateLateDeductionScale({
+                lateDeductEveryMinutes: policy.lateDeductEveryMinutes,
+                lateDeductWorkUnit: policy.lateDeductWorkUnit,
+              });
+              if (!v2.valid) { setError(v2.error ?? "Lỗi mức trừ công."); return; }
+              const v3 = validateForgotCheckoutConfig(policy.forgotCheckoutHours);
+              if (!v3.valid) { setError(v3.error ?? "Lỗi giờ quên checkout."); return; }
+              const v4 = validateAdjustDeadlineConfig(policy.adjustDeadlineDays);
+              if (!v4.valid) { setError(v4.error ?? "Lỗi hạn điều chỉnh công."); return; }
+              const v5 = validateOvertimeConfig({ enableOt: policy.enableOt, otAfterMinutes: policy.otAfterMinutes });
+              if (!v5.valid) { setError(v5.error ?? "Lỗi cấu hình OT."); return; }
+              const v6 = validateNightShiftHolidayConfig({ enableNightShiftRule: policy.enableNightShiftRule, enableHolidayRule: policy.enableHolidayRule });
+              if (!v6.valid) { setError(v6.error ?? "Lỗi cấu hình ca đêm/lễ."); return; }
+              setError(null);
+              setOk(null);
               try {
                 setPolicy(await upsertAttendancePolicy(policy));
-                setOk("Đã lưu cấu hình chấm công.");
-              } catch {
-                setError("Lưu cấu hình thất bại.");
+                setOk("✅ Đã lưu quy tắc chấm công: Quên checkout (UC_HRM_105), Hạn điều chỉnh (UC_HRM_106), OT (UC_HRM_107) & Ca đêm/Lễ (UC_HRM_108).");
+              } catch (ex: unknown) {
+                setError(ex instanceof Error ? ex.message : "Lưu cấu hình thất bại.");
               }
             }}
           >
-            <h2 className="text-lead font-bold">Quy tắc chấm công</h2>
+            <h2 className="text-lead font-bold">Quy tắc chấm công (UC_HRM_100)</h2>
             {(
               [
                 ["enableFingerprint", "Vân tay / sinh trắc"],
                 ["enableApp", "APP điện thoại"],
-                ["enableQr", "QR / mã NV"],
+                ["enableQr", "QR / khuôn mặt"],
                 ["enableGeoFence", "Bắt buộc geo-fence"],
                 ["enableOt", "Tính OT"],
                 ["enableNightShiftRule", "Quy tắc ca đêm"],
@@ -581,7 +646,7 @@ export default function AttendancePage() {
             </div>
             {canManage && (
               <button type="submit" className={btn.primary}>
-                Lưu cấu hình
+                Lưu quy tắc (UC_HRM_100)
               </button>
             )}
           </form>
@@ -592,6 +657,10 @@ export default function AttendancePage() {
               onSubmit={async (e) => {
                 e.preventDefault();
                 if (!canManage) return;
+                const v = validateBiometricDevice({ code: devCode, name: devName });
+                if (!v.valid) { setError(v.error ?? "Lỗi thiết bị."); return; }
+                setError(null);
+                setOk(null);
                 try {
                   await upsertAttendanceDevice({
                     code: devCode,
@@ -600,31 +669,31 @@ export default function AttendancePage() {
                     orgUnitId: orgUnitId || null,
                     isActive: true,
                   });
-                  setOk("Đã đăng ký thiết bị.");
+                  setOk("✅ Đã đăng ký thiết bị chấm vân tay / sinh trắc (UC_HRM_098).");
                   await load();
-                } catch {
-                  setError("Đăng ký thiết bị thất bại.");
+                } catch (ex: unknown) {
+                  setError(ex instanceof Error ? ex.message : "Đăng ký thiết bị thất bại.");
                 }
               }}
             >
-              <h2 className="text-lead font-bold">Thiết bị chấm</h2>
+              <h2 className="text-lead font-bold">Thiết bị vân tay / sinh trắc (UC_HRM_098)</h2>
               <input
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-body"
                 value={devCode}
                 onChange={(e) => setDevCode(e.target.value)}
                 disabled={!canManage}
-                placeholder="Mã"
+                placeholder="Mã thiết bị (vd: BIO_001)"
               />
               <input
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-body"
                 value={devName}
                 onChange={(e) => setDevName(e.target.value)}
                 disabled={!canManage}
-                placeholder="Tên"
+                placeholder="Tên thiết bị (vd: Cổng chính)"
               />
               {canManage && (
                 <button type="submit" className={btn.secondary}>
-                  Thêm thiết bị
+                  Thêm thiết bị (UC_HRM_098)
                 </button>
               )}
               <ul className="text-body text-muted-foreground">
@@ -641,6 +710,15 @@ export default function AttendancePage() {
               onSubmit={async (e) => {
                 e.preventDefault();
                 if (!canManage) return;
+                const v = validateGeoFence({
+                  name: fenceName,
+                  latitude: Number(fenceLat),
+                  longitude: Number(fenceLng),
+                  radiusMeters: 300,
+                });
+                if (!v.valid) { setError(v.error ?? "Lỗi GPS / Geo-fence."); return; }
+                setError(null);
+                setOk(null);
                 try {
                   await upsertAttendanceGeoFence({
                     name: fenceName,

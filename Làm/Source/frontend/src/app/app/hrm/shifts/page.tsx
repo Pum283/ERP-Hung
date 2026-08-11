@@ -23,6 +23,15 @@ import {
 import { fetchOrgUnits, type OrgUnitDto } from "@/shared/api/sys-api";
 import { usePermissions } from "@/shared/hooks/use-permissions";
 import { btn } from "@/shared/ui/btn";
+import {
+  validateShiftAssignRange,
+  validateSingleShiftAssign,
+  validateWorkShiftTemplate,
+} from "@/shared/api/hrm-step24-helpers";
+import {
+  validateShiftCancel,
+  validateShiftSwap,
+} from "@/shared/api/hrm-step25-helpers";
 
 function today() {
   return new Date().toISOString().slice(0, 10);
@@ -120,6 +129,10 @@ export default function ShiftsPage() {
   async function onSaveTemplate(e: FormEvent) {
     e.preventDefault();
     if (!canManage) return;
+
+    const v = validateWorkShiftTemplate({ code, name, breakMinutes: Number(breakMinutes) });
+    if (!v.valid) { setError(v.error ?? "Lỗi mẫu ca."); return; }
+
     setError(null);
     setOk(null);
     try {
@@ -131,28 +144,45 @@ export default function ShiftsPage() {
         breakMinutes: Number(breakMinutes),
         isActive: true,
       });
-      setOk("Đã lưu mẫu ca.");
+      setOk("✅ Đã lưu mẫu ca làm việc (UC_HRM_081).");
       await load();
-    } catch {
-      setError("Lưu mẫu ca thất bại.");
+    } catch (ex: unknown) {
+      setError(ex instanceof Error ? ex.message : "Lưu mẫu ca thất bại.");
     }
   }
 
   async function onAssignOne(e: FormEvent) {
     e.preventDefault();
     if (!canManage) return;
+
+    const v = validateSingleShiftAssign({ employeeId, workShiftId, workDate });
+    if (!v.valid) { setError(v.error ?? "Lỗi xếp ca."); return; }
+
+    setError(null);
+    setOk(null);
     try {
       await assignShift({ employeeId, workShiftId, workDate });
-      setOk("Đã xếp ca.");
+      setOk("✅ Đã xếp ca làm việc cho nhân viên (UC_HRM_082).");
       await load();
-    } catch {
-      setError("Xếp ca thất bại (có thể kỳ đã khóa).");
+    } catch (ex: unknown) {
+      setError(ex instanceof Error ? ex.message : "Xếp ca thất bại (có thể kỳ đã khóa).");
     }
   }
 
   async function onAssignRange(e: FormEvent) {
     e.preventDefault();
-    if (!canManage || !employeeId) return;
+    if (!canManage) return;
+
+    const v = validateShiftAssignRange({
+      employeeIds: employeeId ? [employeeId] : [],
+      workShiftId,
+      from: rangeFrom,
+      to: rangeTo,
+    });
+    if (!v.valid) { setError(v.error ?? "Lỗi xếp ca dải."); return; }
+
+    setError(null);
+    setOk(null);
     try {
       await assignShiftRange({
         employeeIds: [employeeId],
@@ -161,10 +191,10 @@ export default function ShiftsPage() {
         to: rangeTo,
         weekdays: [1, 2, 3, 4, 5],
       });
-      setOk("Đã xếp ca theo tuần/tháng (T2–T6).");
+      setOk("✅ Đã xếp ca theo tuần/tháng (UC_HRM_083).");
       await load();
-    } catch {
-      setError("Xếp ca theo khoảng thất bại.");
+    } catch (ex: unknown) {
+      setError(ex instanceof Error ? ex.message : "Xếp ca theo khoảng thất bại.");
     }
   }
 
@@ -451,16 +481,20 @@ export default function ShiftsPage() {
                           type="button"
                           className={btn.ghost}
                           onClick={async () => {
+                            const v = validateShiftCancel(r.id);
+                            if (!v.valid) { setError(v.error ?? "Lỗi chọn ca."); return; }
+                            setError(null);
+                            setOk(null);
                             try {
                               await cancelShiftAssignment(r.id);
-                              setOk("Đã hủy lịch ca.");
+                              setOk("✅ Đã hủy lịch ca làm việc (UC_HRM_085).");
                               await load();
-                            } catch {
-                              setError("Hủy thất bại.");
+                            } catch (ex: unknown) {
+                              setError(ex instanceof Error ? ex.message : "Hủy thất bại.");
                             }
                           }}
                         >
-                          Hủy
+                          Hủy (UC_HRM_085)
                         </button>
                       )}
                     </td>
@@ -475,7 +509,7 @@ export default function ShiftsPage() {
       {canManage && (
         <section className="grid gap-4 lg:grid-cols-3">
           <div className="space-y-2 rounded-xl border border-border bg-surface p-4 shadow-sm">
-            <h2 className="text-lead font-bold">Đổi ca</h2>
+            <h2 className="text-lead font-bold">Đổi ca (UC_HRM_084)</h2>
             <select
               className="w-full rounded-lg border border-border bg-background px-3 py-2 text-body"
               value={swapA}
@@ -504,21 +538,25 @@ export default function ShiftsPage() {
               type="button"
               className={btn.secondary}
               onClick={async () => {
+                const v = validateShiftSwap(swapA, swapB);
+                if (!v.valid) { setError(v.error ?? "Lỗi chọn ca đổi."); return; }
+                setError(null);
+                setOk(null);
                 try {
                   await swapShifts(swapA, swapB);
-                  setOk("Đã đổi ca.");
+                  setOk("✅ Đã đổi ca làm việc (UC_HRM_084).");
                   await load();
-                } catch {
-                  setError("Đổi ca thất bại (cần cùng ngày).");
+                } catch (ex: unknown) {
+                  setError(ex instanceof Error ? ex.message : "Đổi ca thất bại (cần cùng ngày).");
                 }
               }}
             >
-              Đổi
+              Đổi (UC_HRM_084)
             </button>
           </div>
 
           <div className="space-y-2 rounded-xl border border-border bg-surface p-4 shadow-sm">
-            <h2 className="text-lead font-bold">Sao chép lịch</h2>
+            <h2 className="text-lead font-bold">Sao chép lịch (UC_HRM_089)</h2>
             <p className="text-body text-muted-foreground">
               Nguồn {filterFrom} → {filterTo}
             </p>
@@ -535,6 +573,10 @@ export default function ShiftsPage() {
               type="button"
               className={btn.secondary}
               onClick={async () => {
+                const v = validateShiftCopy({ sourceFrom: filterFrom, sourceTo: filterTo, targetStart: copyTarget });
+                if (!v.valid) { setError(v.error ?? "Lỗi chọn ngày sao chép."); return; }
+                setError(null);
+                setOk(null);
                 try {
                   const r = await copyShiftAssignments({
                     sourceFrom: filterFrom,
@@ -542,19 +584,19 @@ export default function ShiftsPage() {
                     targetStart: copyTarget,
                     orgUnitId: orgUnitId || null,
                   });
-                  setOk(`Đã sao chép ${r.copied} dòng.`);
+                  setOk(`✅ Đã sao chép ${r.copied} lịch ca (UC_HRM_089).`);
                   await load();
-                } catch {
-                  setError("Sao chép thất bại.");
+                } catch (ex: unknown) {
+                  setError(ex instanceof Error ? ex.message : "Sao chép thất bại.");
                 }
               }}
             >
-              Sao chép
+              Sao chép (UC_HRM_089)
             </button>
           </div>
 
           <div className="space-y-2 rounded-xl border border-border bg-surface p-4 shadow-sm">
-            <h2 className="text-lead font-bold">Khóa sổ kỳ</h2>
+            <h2 className="text-lead font-bold">Khóa sổ kỳ (UC_HRM_090)</h2>
             <label className="block space-y-1 text-body">
               <span className="text-muted-foreground">Kỳ (yyyy-MM)</span>
               <input
@@ -568,16 +610,20 @@ export default function ShiftsPage() {
               type="button"
               className={btn.primary}
               onClick={async () => {
+                const v = validateShiftLock({ orgUnitId, periodKey: lockPeriod });
+                if (!v.valid) { setError(v.error ?? "Lỗi kỳ khóa sổ."); return; }
+                setError(null);
+                setOk(null);
                 try {
                   await lockShiftPeriod({ orgUnitId, periodKey: lockPeriod });
-                  setOk("Đã khóa kỳ.");
+                  setOk(`✅ Đã khóa sổ lịch ca kỳ ${lockPeriod} (UC_HRM_090).`);
                   await load();
-                } catch {
-                  setError("Khóa kỳ thất bại.");
+                } catch (ex: unknown) {
+                  setError(ex instanceof Error ? ex.message : "Khóa sổ thất bại.");
                 }
               }}
             >
-              Khóa
+              Khóa sổ kỳ (UC_HRM_090)
             </button>
             <ul className="text-body text-muted-foreground">
               {locks.slice(0, 5).map((l) => (

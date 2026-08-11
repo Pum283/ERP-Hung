@@ -433,6 +433,12 @@ export type CandidateDto = {
   evalComment?: string | null;
   careNotes?: string | null;
   convertedEmployeeId?: string | null;
+  /** UC_HRM_059 — Ghi chú sơ loại / lý do từ chối sơ loại */
+  screeningNote?: string | null;
+  /** UC_HRM_061 — Kết quả đề xuất đánh giá: Pass | Fail | Hold */
+  evalResult?: string | null;
+  /** UC_HRM_062 — Ghi chú thư mời làm việc / lý do từ chối tuyển dụng */
+  decisionNote?: string | null;
   createdAt: string;
 };
 
@@ -474,6 +480,22 @@ export type TrialExpiringDto = {
   fullName: string;
   trialEndDate: string;
   daysLeft: number;
+};
+
+export type CareNoteItemDto = {
+  at: string;
+  note: string;
+};
+
+export type RecruitChannelReportDto = {
+  channel: string;
+  postingCount: number;
+  candidateCount: number;
+  screeningCount: number;
+  evaluatingCount: number;
+  acceptedCount: number;
+  rejectedCount: number;
+  conversionRatePct: number;
 };
 
 export type RecruitChannelStatDto = {
@@ -540,8 +562,55 @@ export async function addCandidateCareNote(id: string, note: string) {
   return data.data;
 }
 
+/** UC_HRM_059 — Sơ loại ứng viên (Screen → Screening | ScreenReject → Rejected). */
+export async function screenCandidate(
+  id: string,
+  body: { action: 'Screen' | 'ScreenReject'; screeningNote: string },
+) {
+  const { data } = await api.post<Envelope<CandidateDto>>(`/api/hrm/candidates/${id}/screen`, body);
+  return data.data;
+}
+
+/** UC_HRM_060 — Phân công đơn vị đánh giá ứng viên. */
+export async function assignCandidateEvalOrg(id: string, evalOrgUnitId: string) {
+  const { data } = await api.post<Envelope<CandidateDto>>(`/api/hrm/candidates/${id}/assign-eval-org`, {
+    evalOrgUnitId,
+  });
+  return data.data;
+}
+
+/** UC_HRM_061 — Nộp form đánh giá chi tiết (EvalScore 0-100, EvalResult Pass|Fail|Hold). */
+export async function submitCandidateEvaluation(
+  id: string,
+  body: { evalOrgUnitId?: string | null; evalScore: number; evalResult: string; evalComment?: string | null },
+) {
+  const { data } = await api.post<Envelope<CandidateDto>>(`/api/hrm/candidates/${id}/submit-evaluation`, body);
+  return data.data;
+}
+
+/** UC_HRM_062 — Ra quyết định tuyển dụng: Action "Accept" | "Reject", DecisionNote. */
+export async function decideCandidate(
+  id: string,
+  body: { action: 'Accept' | 'Reject'; decisionNote: string },
+) {
+  const { data } = await api.post<Envelope<CandidateDto>>(`/api/hrm/candidates/${id}/decide`, body);
+  return data.data;
+}
+
 export async function fetchRecruitChannelStats() {
   const { data } = await api.get<Envelope<RecruitChannelStatDto[]>>("/api/hrm/recruit/channel-stats");
+  return data.data;
+}
+
+/** UC_HRM_064 — Lấy danh sách lịch sử chăm sóc ứng viên. */
+export async function fetchCandidateCareNotes(id: string) {
+  const { data } = await api.get<Envelope<CareNoteItemDto[]>>(`/api/hrm/candidates/${id}/care-notes`);
+  return data.data;
+}
+
+/** UC_HRM_065 — Báo cáo hiệu quả kênh tuyển dụng với đầy đủ funnel. */
+export async function fetchRecruitChannelReport() {
+  const { data } = await api.get<Envelope<RecruitChannelReportDto[]>>("/api/hrm/recruit/channel-report");
   return data.data;
 }
 

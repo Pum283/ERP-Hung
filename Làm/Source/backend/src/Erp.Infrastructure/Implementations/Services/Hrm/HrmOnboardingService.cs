@@ -125,6 +125,9 @@ public sealed class HrmOnboardingService : IHrmOnboardingService
         Guid tenantId, Guid caseId, AssignMentorRequest req, CancellationToken ct = default)
     {
         var ob = await GetCaseAsync(tenantId, caseId, ct);
+        if (req.MentorEmployeeId == ob.EmployeeId)
+            throw new AppException("Không thể gán chính nhân viên mới làm người hướng dẫn.");
+
         if (!await _db.Employees.AnyAsync(
                 x => x.Id == req.MentorEmployeeId && x.TenantId == tenantId && !x.IsDeleted, ct))
             throw new AppException("Mentor không tồn tại.", 404);
@@ -152,6 +155,7 @@ public sealed class HrmOnboardingService : IHrmOnboardingService
         var title = (req.Title ?? "").Trim();
         var key = (req.StorageKey ?? "").Trim();
         if (title.Length == 0 || key.Length == 0) throw new AppException("Thiếu tiêu đề hoặc file.");
+        if (title.Length > 200) throw new AppException("Tiêu đề chứng chỉ / giấy tờ tối đa 200 ký tự.");
         _db.OnboardingDocuments.Add(new OnboardingDocument
         {
             TenantId = tenantId,
@@ -168,9 +172,15 @@ public sealed class HrmOnboardingService : IHrmOnboardingService
         Guid tenantId, Guid caseId, TrialEvalRequest req, CancellationToken ct = default)
     {
         var ob = await GetCaseAsync(tenantId, caseId, ct);
-        if (req.Score is < 0 or > 100) throw new AppException("Điểm 0–100.");
+        if (ob.Status is "Converted" or "Cancelled")
+            throw new AppException("Hồ sơ đã chuyển chính thức hoặc bị hủy, không thể đánh giá.");
+
+        if (req.Score is < 0 or > 100) throw new AppException("Điểm đánh giá phải từ 0 đến 100.");
+        var comment = (req.Comment ?? "").Trim();
+        if (comment.Length > 1000) throw new AppException("Nhận xét đánh giá thử việc tối đa 1000 ký tự.");
+
         ob.TrialScore = req.Score;
-        ob.TrialComment = string.IsNullOrWhiteSpace(req.Comment) ? null : req.Comment.Trim();
+        ob.TrialComment = string.IsNullOrWhiteSpace(comment) ? null : comment;
         ob.Status = req.Score >= 50 ? "TrialPassed" : "InProgress";
         await _db.SaveChangesAsync(ct);
         return (await MapManyAsync(tenantId, new[] { ob }, ct))[0];
