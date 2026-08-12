@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { fetchMyMenu, type MenuItemDto } from "@/shared/api/sys-api";
+import { fetchMyHome, fetchMyMenu, type MenuItemDto } from "@/shared/api/sys-api";
 import { useAuthStore } from "@/shared/auth/auth-store";
 import { useActiveModuleStore } from "@/shared/modules/active-module-store";
 import { getModuleMeta } from "@/shared/modules/module-meta";
@@ -23,12 +23,29 @@ export default function AppHomePage() {
   const router = useRouter();
   const setActiveModule = useActiveModuleStore((s) => s.setActiveModule);
   const [menu, setMenu] = useState<MenuItemDto[]>([]);
+  const [homeHint, setHomeHint] = useState<string | null>(null);
 
   useEffect(() => {
     void fetchMyMenu()
       .then(setMenu)
       .catch(() => setMenu([]));
   }, []);
+
+  useEffect(() => {
+    // UC_SYS_094 — redirect trang chủ theo role (một lần / session tab)
+    const key = "erp_role_home_redirected";
+    if (typeof window === "undefined") return;
+    if (sessionStorage.getItem(key)) return;
+    void fetchMyHome()
+      .then((h) => {
+        setHomeHint(h.matchedRoleCode ? `${h.matchedRoleCode} → ${h.landingPath}` : null);
+        if (h.landingPath && h.landingPath !== "/app") {
+          sessionStorage.setItem(key, "1");
+          router.replace(h.landingPath);
+        }
+      })
+      .catch(() => undefined);
+  }, [router]);
 
   const modules = useMemo(
     () => modulesFromMenu(menu, session.enabledModules),
@@ -49,6 +66,7 @@ export default function AppHomePage() {
           Xin chào{" "}
           <strong className="text-foreground">{session.displayName ?? session.username}</strong>
           {" · "}chỉ hiện module bạn có quyền truy cập
+          {homeHint ? ` · home: ${homeHint}` : ""}
         </p>
       </div>
 
@@ -78,9 +96,7 @@ export default function AppHomePage() {
       </div>
 
       {modules.length === 0 && (
-        <p className="text-body text-muted-foreground">
-          Tài khoản chưa được gán menu / module. Liên hệ quản trị viên.
-        </p>
+        <p className="text-muted-foreground">Không có module khả dụng.</p>
       )}
     </div>
   );

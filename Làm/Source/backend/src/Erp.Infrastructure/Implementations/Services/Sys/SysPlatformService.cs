@@ -385,6 +385,18 @@ public sealed class SysPlatformService : ISysPlatformService
 
     public async Task NotifyEventAsync(Guid tenantId, Guid targetUserId, string eventType, string? link, IDictionary<string, string>? vars, CancellationToken ct = default)
     {
+        // UC_SYS_064 — tôn trọng tùy chọn cá nhân (trừ sự kiện bảo mật bắt buộc)
+        var prefsEntity = await _db.SysUserNotificationPreferences.AsNoTracking()
+            .FirstOrDefaultAsync(x => x.TenantId == tenantId && x.UserId == targetUserId && !x.IsDeleted, ct);
+        var prefs = prefsEntity is null
+            ? new SysNotificationPreferenceDto(targetUserId, true, true, false, true, false, null, null)
+            : new SysNotificationPreferenceDto(
+                prefsEntity.UserId, prefsEntity.ChannelInApp, prefsEntity.ChannelEmail,
+                prefsEntity.ChannelSms, prefsEntity.ChannelPush, prefsEntity.MuteAll,
+                prefsEntity.QuietHoursStart, prefsEntity.QuietHoursEnd);
+        if (!SysStep154Service.ShouldDeliverInAppStatic(prefs, eventType, DateTimeOffset.UtcNow))
+            return;
+
         var rule = await _db.NotificationRules.AsNoTracking()
             .FirstOrDefaultAsync(x => x.TenantId == tenantId && x.EventType == eventType && x.IsEnabled && !x.IsDeleted, ct);
         var title = rule?.TitleTemplate ?? eventType;

@@ -37,7 +37,7 @@ public sealed class SysSessionPolishTests
 
         var jwt = new JwtTokenService(config);
         var platform = new SysPlatformService(db, new OutboxWriter(db));
-        var svc = new AuthService(db, jwt, new DummyScope(), platform, config, NullLogger<AuthService>.Instance);
+        var svc = new AuthService(db, jwt, new DummyScope(), platform, new SysStep154Service(db), config, NullLogger<AuthService>.Instance);
         return (db, svc);
     }
 

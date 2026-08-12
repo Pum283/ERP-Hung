@@ -9,4 +9,6 @@ public class SysConfigVersion : TenantEntity
     public string ConfigValue { get; set; } = "";
     public int VersionNumber { get; set; } = 1;
     public string? CommitNote { get; set; }
+    public bool IsCurrent { get; set; }
+    public Guid? CreatedByUserId { get; set; }
 }

@@ -1,3 +1,4 @@
+using Erp.Application.Interfaces.Services;
 using Erp.Application.Interfaces.Realtime;
 using Erp.Application.Interfaces.Services.Auth;
 using Erp.Application.Interfaces.Services.Ast;
@@ -21,6 +22,7 @@ using Erp.Infrastructure.Background;
 using Erp.Infrastructure.Implementations.Services.Auth;
 using Erp.Infrastructure.Implementations.Services.Ast;
 using Erp.Infrastructure.Implementations.Services.Bi;
+using Erp.Infrastructure.Implementations.Services;
 using Erp.Infrastructure.Implementations.Services.Crm;
 using Erp.Infrastructure.Implementations.Services.Prt;
 using Erp.Infrastructure.Implementations.Services.Fin;
@@ -115,6 +117,9 @@ public static class DependencyInjection
         services.AddScoped<IDataScopeService, DataScopeService>();
         services.AddScoped<ISysMasterService, SysMasterService>();
         services.AddScoped<ISysPlatformService, SysPlatformService>();
+        services.AddScoped<ISysStep153Service, SysStep153Service>();
+        services.AddScoped<ISysStep154Service, SysStep154Service>();
+        services.AddScoped<ISysStep155Service, SysStep155Service>();
         services.AddScoped<IMsgService, MsgService>();
         services.AddScoped<IOutboxWriter, OutboxWriter>();
         services.AddScoped<IInboxStore, InboxStore>();
@@ -146,6 +151,14 @@ public static class DependencyInjection
         services.AddScoped<IHrmRewardDisciplineService, HrmRewardDisciplineService>();
         services.AddScoped<IHrmOffboardingService, HrmOffboardingService>();
         services.AddScoped<IHrmDashboardService, HrmDashboardService>();
+        services.AddScoped<IHrmStep156Service, HrmStep156Service>();
+        services.AddScoped<IHrmStep157Service, HrmStep157Service>();
+        services.AddScoped<IHrmStep158Service, HrmStep158Service>();
+        services.AddScoped<IHrmStep159Service, HrmStep159Service>();
+        services.AddScoped<IStep160Service, Step160Service>();
+        services.AddScoped<IStep161Service, Step161Service>();
+        services.AddScoped<IStep162Service, Step162Service>();
+        services.AddScoped<IStep163Service, Step163Service>();
         return services;
     }
 

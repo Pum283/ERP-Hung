@@ -11,4 +11,8 @@ public class FileObject : TenantEntity
     public Guid? FolderId { get; set; }
     public string? LinkedEntityType { get; set; }
     public Guid? LinkedEntityId { get; set; }
+    /// <summary>UC_SYS_071 — Pending | Scanning | Clean | Infected | Skipped</summary>
+    public string ScanStatus { get; set; } = "Pending";
+    public DateTimeOffset? ScannedAt { get; set; }
+    public string? ThreatName { get; set; }
 }

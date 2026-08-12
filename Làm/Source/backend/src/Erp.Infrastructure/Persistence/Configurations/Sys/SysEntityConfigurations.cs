@@ -19,6 +19,10 @@ public sealed class TenantConfig : IEntityTypeConfiguration<Tenant>
         b.Property(x => x.DefaultCurrency).HasMaxLength(3);
         b.Property(x => x.LogoUrl).HasMaxLength(1000);
         b.Property(x => x.LogoStorageKey).HasMaxLength(500);
+        b.Property(x => x.PrimaryColor).HasMaxLength(16);
+        b.Property(x => x.AccentColor).HasMaxLength(16);
+        b.Property(x => x.FaviconUrl).HasMaxLength(1000);
+        b.Property(x => x.FaviconStorageKey).HasMaxLength(500);
     }
 }
 

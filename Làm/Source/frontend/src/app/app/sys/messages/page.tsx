@@ -24,6 +24,16 @@ import {
   type ConversationMemberDto,
   type MsgDirectoryUserDto,
 } from "@/shared/api/msg-api";
+import {
+  searchMessages,
+  setConversationMute,
+  type SysMessageSearchHitDto,
+} from "@/shared/api/sys-api";
+import {
+  highlightSearchSnippet,
+  validateMessageSearchQuery,
+  validateMuteUntil,
+} from "@/shared/api/sys-step155-helpers";
 import { MsgBubble } from "@/components/msg/MsgBubble";
 import { useAuthStore } from "@/shared/auth/auth-store";
 import { usePermissions } from "@/shared/hooks/use-permissions";
@@ -60,6 +70,8 @@ export default function MessagesPage() {
 
   const [convs, setConvs] = useState<ConversationDto[]>([]);
   const [filter, setFilter] = useState("");
+  const [msgSearchQ, setMsgSearchQ] = useState("");
+  const [msgHits, setMsgHits] = useState<SysMessageSearchHitDto[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessageDto[]>([]);
   const [draft, setDraft] = useState("");
@@ -278,6 +290,58 @@ export default function MessagesPage() {
               className="w-full border-0 bg-transparent text-body outline-none"
             />
           </div>
+          <div className="flex gap-1">
+            <input
+              value={msgSearchQ}
+              onChange={(e) => setMsgSearchQ(e.target.value)}
+              placeholder="Tìm nội dung tin (UC_103)…"
+              className="h-8 flex-1 rounded-md border border-border bg-background px-2 text-meta outline-none"
+              onKeyDown={(e) => {
+                if (e.key !== "Enter") return;
+                const v = validateMessageSearchQuery(msgSearchQ);
+                if (!v.isValid) {
+                  setError(v.error ?? "Query không hợp lệ.");
+                  return;
+                }
+                void searchMessages(msgSearchQ.trim())
+                  .then(setMsgHits)
+                  .catch((err) => setError((err as Error).message));
+              }}
+            />
+            <button
+              type="button"
+              className={btn.soft}
+              onClick={() => {
+                const v = validateMessageSearchQuery(msgSearchQ);
+                if (!v.isValid) {
+                  setError(v.error ?? "Query không hợp lệ.");
+                  return;
+                }
+                void searchMessages(msgSearchQ.trim())
+                  .then(setMsgHits)
+                  .catch((err) => setError((err as Error).message));
+              }}
+            >
+              Tìm
+            </button>
+          </div>
+          {msgHits.length > 0 && (
+            <div className="max-h-36 overflow-y-auto rounded-md border border-border text-meta">
+              {msgHits.map((h) => (
+                <button
+                  key={h.messageId}
+                  type="button"
+                  className="block w-full border-b border-border/50 px-2 py-1.5 text-left hover:bg-muted"
+                  onClick={() => void openConv(h.conversationId)}
+                >
+                  <span className="font-medium">{h.conversationTitle || "Hội thoại"}</span>
+                  <span className="block truncate text-muted-foreground">
+                    {highlightSearchSnippet(h.bodyPreview, msgSearchQ)}
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
         <div className="flex-1 overflow-y-auto">
           {loading ? (
@@ -336,6 +400,22 @@ export default function MessagesPage() {
                 }}
               >
                 {active.muted ? "Bỏ tắt tiếng" : "Tắt tiếng"}
+              </button>
+              <button
+                type="button"
+                className={btn.soft}
+                title="Mute 1 giờ (UC_104)"
+                onClick={() => {
+                  const until = new Date(Date.now() + 60 * 60 * 1000).toISOString();
+                  const v = validateMuteUntil(true, until);
+                  if (!v.isValid) {
+                    setError(v.error ?? "MuteUntil không hợp lệ.");
+                    return;
+                  }
+                  void setConversationMute(active.id, { muted: true, muteUntil: until }).then(loadConvs);
+                }}
+              >
+                Mute 1h
               </button>
               {active.kind === "Group" && (
                 <button type="button" className={btn.soft} onClick={() => void openMembers()}>

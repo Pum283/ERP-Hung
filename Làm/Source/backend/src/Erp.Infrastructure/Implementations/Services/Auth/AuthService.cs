@@ -21,17 +21,19 @@ public sealed class AuthService : IAuthService
     private readonly IJwtTokenService _jwt;
     private readonly IDataScopeService _scope;
     private readonly ISysPlatformService _platform;
+    private readonly ISysStep154Service _step154;
     private readonly IConfiguration _config;
     private readonly ILogger<AuthService> _log;
 
     public AuthService(
         AppDbContext db, IJwtTokenService jwt, IDataScopeService scope,
-        ISysPlatformService platform, IConfiguration config, ILogger<AuthService> log)
+        ISysPlatformService platform, ISysStep154Service step154, IConfiguration config, ILogger<AuthService> log)
     {
         _db = db;
         _jwt = jwt;
         _scope = scope;
         _platform = platform;
+        _step154 = step154;
         _config = config;
         _log = log;
     }
@@ -78,6 +80,9 @@ public sealed class AuthService : IAuthService
 
         if (user.Status == UserStatus.Locked || (user.LockedUntil is { } until && until > DateTimeOffset.UtcNow))
             throw new ForbiddenException("Tài khoản đang bị khóa.");
+
+        // UC_SYS_082 — chặn IP theo allow/deny của tenant
+        await _step154.EnsureIpAllowedAsync(user.TenantId, ip, ct);
 
         if (user.LockedUntil is not null && user.LockedUntil <= DateTimeOffset.UtcNow && user.Status == UserStatus.Locked)
         {

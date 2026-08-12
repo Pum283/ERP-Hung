@@ -56,6 +56,16 @@ public sealed class AppDbContext : DbContext
     public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
     public DbSet<UserSession> UserSessions => Set<UserSession>();
     public DbSet<SysTrustedDevice> TrustedDevices => Set<SysTrustedDevice>();
+    public DbSet<SysConfigVersion> SysConfigVersions => Set<SysConfigVersion>();
+    public DbSet<SysSsoProvider> SysSsoProviders => Set<SysSsoProvider>();
+    public DbSet<SysExternalLogin> SysExternalLogins => Set<SysExternalLogin>();
+    public DbSet<SysSensitiveField> SysSensitiveFields => Set<SysSensitiveField>();
+    public DbSet<SysRoleFieldPermission> SysRoleFieldPermissions => Set<SysRoleFieldPermission>();
+    public DbSet<SysPushDevice> SysPushDevices => Set<SysPushDevice>();
+    public DbSet<SysUserNotificationPreference> SysUserNotificationPreferences => Set<SysUserNotificationPreference>();
+    public DbSet<SysFileScanLog> SysFileScanLogs => Set<SysFileScanLog>();
+    public DbSet<SysIpRule> SysIpRules => Set<SysIpRule>();
+    public DbSet<SysRoleHomeConfig> SysRoleHomeConfigs => Set<SysRoleHomeConfig>();
     public DbSet<LegalEntity> LegalEntities => Set<LegalEntity>();
     public DbSet<SalesPoint> SalesPoints => Set<SalesPoint>();
     public DbSet<Province> Provinces => Set<Province>();
@@ -111,14 +121,26 @@ public sealed class AppDbContext : DbContext
     public DbSet<RewardDisciplineDecision> RewardDisciplineDecisions => Set<RewardDisciplineDecision>();
     public DbSet<OffboardingSetting> OffboardingSettings => Set<OffboardingSetting>();
     public DbSet<OffboardingCase> OffboardingCases => Set<OffboardingCase>();
+    public DbSet<HrmCostCenter> HrmCostCenters => Set<HrmCostCenter>();
+    public DbSet<EmployeeRelative> EmployeeRelatives => Set<EmployeeRelative>();
+    public DbSet<HrmEmployeeSkill> HrmEmployeeSkills => Set<HrmEmployeeSkill>();
+    public DbSet<PayrollPenalty> PayrollPenalties => Set<PayrollPenalty>();
+    public DbSet<HrmKpiTemplate> HrmKpiTemplates => Set<HrmKpiTemplate>();
+    public DbSet<HrmEvaluationCycle> HrmEvaluationCycles => Set<HrmEvaluationCycle>();
+    public DbSet<HrmManagerEvaluation> HrmManagerEvaluations => Set<HrmManagerEvaluation>();
+    public DbSet<HrmSelfEvaluation> HrmSelfEvaluations => Set<HrmSelfEvaluation>();
 
     public DbSet<LmsTrainingClass> LmsTrainingClasses => Set<LmsTrainingClass>();
     public DbSet<LmsClassSession> LmsClassSessions => Set<LmsClassSession>();
     public DbSet<LmsClassEnrollment> LmsClassEnrollments => Set<LmsClassEnrollment>();
     public DbSet<LmsSessionAttendance> LmsSessionAttendances => Set<LmsSessionAttendance>();
     public DbSet<LmsMentorAssignment> LmsMentorAssignments => Set<LmsMentorAssignment>();
+    public DbSet<LmsMentoringChecklist> LmsMentoringChecklists => Set<LmsMentoringChecklist>();
+    public DbSet<LmsMentoringEvaluation> LmsMentoringEvaluations => Set<LmsMentoringEvaluation>();
     public DbSet<LmsProgram> LmsPrograms => Set<LmsProgram>();
     public DbSet<LmsCourse> LmsCourses => Set<LmsCourse>();
+    public DbSet<LmsCourseVersion> LmsCourseVersions => Set<LmsCourseVersion>();
+    public DbSet<LmsCourseSkillTag> LmsCourseSkillTags => Set<LmsCourseSkillTag>();
     public DbSet<LmsChapter> LmsChapters => Set<LmsChapter>();
     public DbSet<LmsLesson> LmsLessons => Set<LmsLesson>();
     public DbSet<LmsOnlineEnrollment> LmsOnlineEnrollments => Set<LmsOnlineEnrollment>();
@@ -128,6 +150,10 @@ public sealed class AppDbContext : DbContext
     public DbSet<LmsExamQuestion> LmsExamQuestions => Set<LmsExamQuestion>();
     public DbSet<LmsExamAttempt> LmsExamAttempts => Set<LmsExamAttempt>();
     public DbSet<LmsCertificate> LmsCertificates => Set<LmsCertificate>();
+    public DbSet<LmsCertificateRevocation> LmsCertificateRevocations => Set<LmsCertificateRevocation>();
+    public DbSet<LmsForumTopic> LmsForumTopics => Set<LmsForumTopic>();
+    public DbSet<LmsStudyReminder> LmsStudyReminders => Set<LmsStudyReminder>();
+    public DbSet<LmsAssignmentFeedback> LmsAssignmentFeedbacks => Set<LmsAssignmentFeedback>();
     public DbSet<LmsInstructor> LmsInstructors => Set<LmsInstructor>();
 
     public DbSet<CrmCustomer> CrmCustomers => Set<CrmCustomer>();

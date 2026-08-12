@@ -285,3 +285,137 @@ public sealed class ExternalIntegrationConfig : IEntityTypeConfiguration<Externa
         b.Property(x => x.ConfigJson).HasMaxLength(8000);
     }
 }
+
+public sealed class SysConfigVersionConfig : IEntityTypeConfiguration<SysConfigVersion>
+{
+    public void Configure(EntityTypeBuilder<SysConfigVersion> b)
+    {
+        b.ToTable("sys_config_version");
+        b.HasKey(x => x.Id);
+        b.HasIndex(x => new { x.TenantId, x.ConfigKey, x.VersionNumber }).IsUnique();
+        b.Property(x => x.ConfigKey).HasMaxLength(100).IsRequired();
+        b.Property(x => x.ConfigValue).HasMaxLength(8000);
+        b.Property(x => x.CommitNote).HasMaxLength(400);
+    }
+}
+
+public sealed class SysSsoProviderConfig : IEntityTypeConfiguration<SysSsoProvider>
+{
+    public void Configure(EntityTypeBuilder<SysSsoProvider> b)
+    {
+        b.ToTable("sys_sso_provider");
+        b.HasKey(x => x.Id);
+        b.HasIndex(x => new { x.TenantId, x.Code }).IsUnique();
+        b.Property(x => x.Code).HasMaxLength(40).IsRequired();
+        b.Property(x => x.DisplayName).HasMaxLength(120);
+        b.Property(x => x.ClientId).HasMaxLength(200);
+        b.Property(x => x.ClientSecret).HasMaxLength(400);
+        b.Property(x => x.AuthorityUrl).HasMaxLength(400);
+        b.Property(x => x.RedirectUri).HasMaxLength(400);
+        b.Property(x => x.Scopes).HasMaxLength(200);
+        b.Property(x => x.Note).HasMaxLength(400);
+    }
+}
+
+public sealed class SysExternalLoginConfig : IEntityTypeConfiguration<SysExternalLogin>
+{
+    public void Configure(EntityTypeBuilder<SysExternalLogin> b)
+    {
+        b.ToTable("sys_external_login");
+        b.HasKey(x => x.Id);
+        b.HasIndex(x => new { x.TenantId, x.ProviderCode, x.ProviderSubject }).IsUnique();
+        b.Property(x => x.ProviderCode).HasMaxLength(40);
+        b.Property(x => x.ProviderSubject).HasMaxLength(200);
+        b.Property(x => x.Email).HasMaxLength(200);
+    }
+}
+
+public sealed class SysSensitiveFieldConfig : IEntityTypeConfiguration<SysSensitiveField>
+{
+    public void Configure(EntityTypeBuilder<SysSensitiveField> b)
+    {
+        b.ToTable("sys_sensitive_field");
+        b.HasKey(x => x.Id);
+        b.HasIndex(x => new { x.TenantId, x.ModuleCode, x.EntityName, x.FieldKey }).IsUnique();
+        b.Property(x => x.ModuleCode).HasMaxLength(20);
+        b.Property(x => x.EntityName).HasMaxLength(80);
+        b.Property(x => x.FieldKey).HasMaxLength(80);
+        b.Property(x => x.DisplayName).HasMaxLength(160);
+        b.Property(x => x.DefaultMask).HasMaxLength(20);
+    }
+}
+
+public sealed class SysRoleFieldPermissionConfig : IEntityTypeConfiguration<SysRoleFieldPermission>
+{
+    public void Configure(EntityTypeBuilder<SysRoleFieldPermission> b)
+    {
+        b.ToTable("sys_role_field_permission");
+        b.HasKey(x => x.Id);
+        b.HasIndex(x => new { x.TenantId, x.RoleId, x.SensitiveFieldId }).IsUnique();
+        b.Property(x => x.Access).HasMaxLength(20);
+    }
+}
+
+public sealed class SysPushDeviceConfig : IEntityTypeConfiguration<SysPushDevice>
+{
+    public void Configure(EntityTypeBuilder<SysPushDevice> b)
+    {
+        b.ToTable("sys_push_device");
+        b.HasKey(x => x.Id);
+        b.HasIndex(x => new { x.TenantId, x.DeviceToken }).IsUnique();
+        b.Property(x => x.Platform).HasMaxLength(20);
+        b.Property(x => x.DeviceToken).HasMaxLength(500);
+        b.Property(x => x.AppVersion).HasMaxLength(40);
+    }
+}
+
+public sealed class SysUserNotificationPreferenceConfig : IEntityTypeConfiguration<SysUserNotificationPreference>
+{
+    public void Configure(EntityTypeBuilder<SysUserNotificationPreference> b)
+    {
+        b.ToTable("sys_user_notification_preference");
+        b.HasKey(x => x.Id);
+        b.HasIndex(x => new { x.TenantId, x.UserId }).IsUnique();
+        b.Property(x => x.QuietHoursStart).HasMaxLength(8);
+        b.Property(x => x.QuietHoursEnd).HasMaxLength(8);
+    }
+}
+
+public sealed class SysFileScanLogConfig : IEntityTypeConfiguration<SysFileScanLog>
+{
+    public void Configure(EntityTypeBuilder<SysFileScanLog> b)
+    {
+        b.ToTable("sys_file_scan_log");
+        b.HasKey(x => x.Id);
+        b.HasIndex(x => new { x.TenantId, x.FileObjectId, x.ScannedAt });
+        b.Property(x => x.ScanStatus).HasMaxLength(20);
+        b.Property(x => x.Engine).HasMaxLength(80);
+        b.Property(x => x.ThreatName).HasMaxLength(200);
+        b.Property(x => x.Detail).HasMaxLength(1000);
+    }
+}
+
+public sealed class SysIpRuleConfig : IEntityTypeConfiguration<SysIpRule>
+{
+    public void Configure(EntityTypeBuilder<SysIpRule> b)
+    {
+        b.ToTable("sys_ip_rule");
+        b.HasKey(x => x.Id);
+        b.HasIndex(x => new { x.TenantId, x.IpAddressOrCidr, x.RuleType });
+        b.Property(x => x.IpAddressOrCidr).HasMaxLength(64).IsRequired();
+        b.Property(x => x.RuleType).HasMaxLength(16);
+        b.Property(x => x.Description).HasMaxLength(400);
+    }
+}
+
+public sealed class SysRoleHomeConfigConfig : IEntityTypeConfiguration<SysRoleHomeConfig>
+{
+    public void Configure(EntityTypeBuilder<SysRoleHomeConfig> b)
+    {
+        b.ToTable("sys_role_home_config");
+        b.HasKey(x => x.Id);
+        b.HasIndex(x => new { x.TenantId, x.RoleId }).IsUnique();
+        b.Property(x => x.LandingPath).HasMaxLength(200).IsRequired();
+        b.Property(x => x.Note).HasMaxLength(400);
+    }
+}

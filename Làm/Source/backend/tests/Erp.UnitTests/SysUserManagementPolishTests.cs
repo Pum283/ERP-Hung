@@ -42,7 +42,7 @@ public sealed class SysUserManagementPolishTests
         var scope = new DummyScope();
         var authz = new AuthorizationService(db);
 
-        var authSvc = new AuthService(db, jwt, scope, platform, config, NullLogger<AuthService>.Instance);
+        var authSvc = new AuthService(db, jwt, scope, platform, new SysStep154Service(db), config, NullLogger<AuthService>.Instance);
         var sysSvc = new SysMasterService(db, scope, authz, platform);
         return (authSvc, sysSvc, db);
     }

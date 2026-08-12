@@ -56,6 +56,8 @@ public static partial class DbSeeder
         if (admin is not null)
         {
             admin.PasswordHash = PasswordHasher.Hash(DefaultPassword);
+            if (string.IsNullOrWhiteSpace(admin.Email))
+                admin.Email = "admin@local.test";
             await db.SaveChangesAsync(ct);
             log.LogInformation("Demo password synced — admin / {Password}", DefaultPassword);
         }
@@ -257,6 +259,22 @@ public static partial class DbSeeder
             ("SYS", "sys.org.manage", "org", "Manage", "Quản trị tổ chức"),
             ("SYS", "sys.msg.read", "msg", "Read", "Xem tin nhắn"),
             ("SYS", "sys.msg.send", "msg", "Send", "Gửi tin nhắn"),
+            ("SYS", "sys.sso.read", "sso", "Read", "Xem cấu hình SSO / OAuth"),
+            ("SYS", "sys.sso.manage", "sso", "Manage", "Quản trị IdP SSO / OAuth"),
+            ("SYS", "sys.fieldperm.read", "fieldperm", "Read", "Xem quyền trường nhạy cảm"),
+            ("SYS", "sys.fieldperm.manage", "fieldperm", "Manage", "Gán quyền trường nhạy cảm"),
+            ("SYS", "sys.config.version.read", "config", "Read", "Xem phiên bản cấu hình"),
+            ("SYS", "sys.config.version.rollback", "config", "Rollback", "Rollback phiên bản cấu hình"),
+            ("SYS", "sys.push.device.self", "push", "Self", "Đăng ký / thu hồi device push của mình"),
+            ("SYS", "sys.push.manage", "push", "Manage", "Gửi thử push notification"),
+            ("SYS", "sys.file.scan", "file", "Scan", "Quét virus / xem trạng thái bảo mật file"),
+            ("SYS", "sys.export.bulk", "export", "Bulk", "Xuất dữ liệu hàng loạt"),
+            ("SYS", "sys.export.job.read", "export", "Read", "Xem / tải job xuất dữ liệu"),
+            ("SYS", "sys.ip.read", "ip", "Read", "Xem quy tắc IP allow/deny"),
+            ("SYS", "sys.ip.manage", "ip", "Manage", "Quản trị quy tắc IP allow/deny"),
+            ("SYS", "sys.brand.read", "brand", "Read", "Xem theme / branding"),
+            ("SYS", "sys.brand.manage", "brand", "Manage", "Quản trị theme / màu / favicon"),
+            ("SYS", "sys.ui.home.manage", "ui", "Manage", "Cấu hình trang chủ theo vai trò"),
             ("WF", "wf.task.read", "task", "Read", "Xem tác vụ phê duyệt"),
             ("WF", "wf.task.act", "task", "Act", "Xử lý phê duyệt"),
             ("HRM", "hrm.employee.read", "employee", "Read", "Xem hồ sơ nhân sự"),
@@ -1476,6 +1494,113 @@ public static partial class DbSeeder
                     RoutePath = "/app/sys/login-audits", PermissionCode = "sys.license.manage", Icon = "shield", SortOrder = 17
                 }
             );
+        }
+
+        // Bước 153 — SSO / Field ACL / Config versions / Push
+        if (!await db.MenuItems.AnyAsync(x => x.Code == "SYS_SSO", ct))
+        {
+            db.MenuItems.AddRange(
+                new MenuItem
+                {
+                    TenantId = TenantId, Code = "SYS_SSO", ModuleCode = "SYS", Title = "SSO / OAuth",
+                    RoutePath = "/app/sys/sso", PermissionCode = "sys.sso.read", Icon = "key", SortOrder = 18
+                },
+                new MenuItem
+                {
+                    TenantId = TenantId, Code = "SYS_FIELD_PERM", ModuleCode = "SYS", Title = "Quyền trường nhạy cảm",
+                    RoutePath = "/app/sys/field-permissions", PermissionCode = "sys.fieldperm.read", Icon = "shield", SortOrder = 19
+                },
+                new MenuItem
+                {
+                    TenantId = TenantId, Code = "SYS_CFG_VER", ModuleCode = "SYS", Title = "Phiên bản cấu hình",
+                    RoutePath = "/app/sys/config-versions", PermissionCode = "sys.config.version.read", Icon = "layers", SortOrder = 20
+                },
+                new MenuItem
+                {
+                    TenantId = TenantId, Code = "SYS_PUSH", ModuleCode = "SYS", Title = "Push devices",
+                    RoutePath = "/app/sys/push-devices", PermissionCode = "sys.push.device.self", Icon = "message", SortOrder = 21
+                }
+            );
+        }
+
+        if (!await db.MenuItems.AnyAsync(x => x.Code == "SYS_NOTIF_PREF", ct))
+        {
+            db.MenuItems.AddRange(
+                new MenuItem
+                {
+                    TenantId = TenantId, Code = "SYS_NOTIF_PREF", ModuleCode = "SYS", Title = "Tùy chọn thông báo",
+                    RoutePath = "/app/sys/notification-preferences", PermissionCode = "sys.user.read", Icon = "bell", SortOrder = 22
+                },
+                new MenuItem
+                {
+                    TenantId = TenantId, Code = "SYS_FILE_SEC", ModuleCode = "SYS", Title = "Bảo mật file",
+                    RoutePath = "/app/sys/file-security", PermissionCode = "sys.file.scan", Icon = "shield", SortOrder = 23
+                },
+                new MenuItem
+                {
+                    TenantId = TenantId, Code = "SYS_EXPORT_JOBS", ModuleCode = "SYS", Title = "Xuất hàng loạt",
+                    RoutePath = "/app/sys/export-jobs", PermissionCode = "sys.export.job.read", Icon = "download", SortOrder = 24
+                },
+                new MenuItem
+                {
+                    TenantId = TenantId, Code = "SYS_IP_RULES", ModuleCode = "SYS", Title = "IP allow/deny",
+                    RoutePath = "/app/sys/ip-rules", PermissionCode = "sys.ip.read", Icon = "shield", SortOrder = 25
+                }
+            );
+        }
+
+        if (!await db.MenuItems.AnyAsync(x => x.Code == "SYS_BRANDING", ct))
+        {
+            db.MenuItems.AddRange(
+                new MenuItem
+                {
+                    TenantId = TenantId, Code = "SYS_BRANDING", ModuleCode = "SYS", Title = "Theme / Branding",
+                    RoutePath = "/app/sys/branding", PermissionCode = "sys.brand.read", Icon = "layers", SortOrder = 26
+                },
+                new MenuItem
+                {
+                    TenantId = TenantId, Code = "SYS_ROLE_HOME", ModuleCode = "SYS", Title = "Trang chủ theo vai trò",
+                    RoutePath = "/app/sys/role-homes", PermissionCode = "sys.ui.home.manage", Icon = "home", SortOrder = 27
+                }
+            );
+        }
+
+        if (!await db.SysSensitiveFields.AnyAsync(x => x.TenantId == TenantId && !x.IsDeleted, ct))
+        {
+            db.SysSensitiveFields.AddRange(
+                new SysSensitiveField
+                {
+                    TenantId = TenantId, ModuleCode = "HRM", EntityName = "Employee", FieldKey = "salary",
+                    DisplayName = "Lương cơ bản", DefaultMask = "Mask", IsActive = true
+                },
+                new SysSensitiveField
+                {
+                    TenantId = TenantId, ModuleCode = "HRM", EntityName = "Employee", FieldKey = "bankAccount",
+                    DisplayName = "Số tài khoản ngân hàng", DefaultMask = "Mask", IsActive = true
+                },
+                new SysSensitiveField
+                {
+                    TenantId = TenantId, ModuleCode = "SYS", EntityName = "AppUser", FieldKey = "phone",
+                    DisplayName = "Số điện thoại", DefaultMask = "Mask", IsActive = true
+                }
+            );
+        }
+
+        if (!await db.SysSsoProviders.AnyAsync(x => x.TenantId == TenantId && !x.IsDeleted, ct))
+        {
+            db.SysSsoProviders.Add(new SysSsoProvider
+            {
+                TenantId = TenantId,
+                Code = "GOOGLE_DEV",
+                DisplayName = "Google (Day-1 stub)",
+                ClientId = "erp-dev-client",
+                AuthorityUrl = "https://accounts.google.com/o/oauth2/v2",
+                RedirectUri = "http://localhost:3000/login?sso=callback",
+                Scopes = "openid profile email",
+                JitProvisioning = true,
+                IsActive = true,
+                Note = "Dùng callback code=dev:email|subject để giả lập token exchange."
+            });
         }
 
         // Password policy + notification rules mặc định

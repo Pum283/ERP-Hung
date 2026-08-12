@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import {
   fetchMe,
@@ -15,6 +15,14 @@ import {
   isValidOtpFormat,
   loginModeTitle,
 } from "@/shared/api/sys-channel-helpers";
+import {
+  completeSsoCallback,
+  fetchPublicSsoProviders,
+  fetchPublicTheme,
+  type SysSsoProviderPublicDto,
+} from "@/shared/api/sys-api";
+import { buildDevSsoCode } from "@/shared/api/sys-step153-helpers";
+import { applyThemeCssVars } from "@/shared/api/sys-step155-helpers";
 
 type Mode = "login" | "forgot" | "reset";
 
@@ -28,13 +36,65 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [ok, setOk] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [ssoProviders, setSsoProviders] = useState<SysSsoProviderPublicDto[]>([]);
+  const [ssoEmail, setSsoEmail] = useState("admin@local.test");
+  const [brandName, setBrandName] = useState("Pum's ERP");
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const session = useAuthStore();
   const router = useRouter();
+
+  useEffect(() => {
+    void fetchPublicSsoProviders()
+      .then(setSsoProviders)
+      .catch(() => setSsoProviders([]));
+    void fetchPublicTheme()
+      .then((t) => {
+        if (t.tenantName) setBrandName(t.tenantName);
+        if (t.logoUrl) setLogoUrl(t.logoUrl);
+        const vars = applyThemeCssVars(t.primaryColor, t.accentColor);
+        Object.entries(vars).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
+        if (t.faviconUrl) {
+          let link = document.querySelector("link[rel='icon']") as HTMLLinkElement | null;
+          if (!link) {
+            link = document.createElement("link");
+            link.rel = "icon";
+            document.head.appendChild(link);
+          }
+          link.href = t.faviconUrl;
+        }
+      })
+      .catch(() => undefined);
+  }, []);
 
   function switchMode(next: Mode) {
     setMode(next);
     setError(null);
     setOk(null);
+  }
+
+  async function onSsoDev(providerCode: string) {
+    setLoading(true);
+    setError(null);
+    setOk(null);
+    try {
+      const tokenRes = await completeSsoCallback({
+        providerCode,
+        code: buildDevSsoCode(ssoEmail, ssoEmail),
+      });
+      if (typeof window !== "undefined" && tokenRes?.accessToken) {
+        localStorage.setItem("access_token", tokenRes.accessToken);
+      }
+      const me = await fetchMe();
+      session.setSession(me, tokenRes.accessToken);
+      router.replace("/app");
+    } catch (err: unknown) {
+      const msg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ??
+        "Đăng nhập SSO thất bại.";
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function onSubmit(e: React.FormEvent) {
@@ -95,12 +155,15 @@ export default function LoginPage() {
         />
 
         <div className="relative flex items-center gap-3">
-          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand text-sm font-bold text-brand-foreground shadow-sm">
-            P
-          </span>
-          <span className="text-lead font-bold tracking-tight">
-            Pum&apos;s <span className="text-accent">ERP</span>
-          </span>
+          {logoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={logoUrl} alt="logo" className="h-9 w-9 rounded-lg object-contain bg-white/10" />
+          ) : (
+            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand text-sm font-bold text-brand-foreground shadow-sm">
+              P
+            </span>
+          )}
+          <span className="text-lead font-bold tracking-tight">{brandName}</span>
         </div>
 
         <div className="relative space-y-3 max-w-md">
@@ -122,10 +185,15 @@ export default function LoginPage() {
       <div className="flex items-center justify-center bg-background p-8">
         <div className="w-full max-w-md space-y-6">
           <div className="flex items-center gap-2 lg:hidden">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-sm font-bold text-brand-foreground">
-              P
-            </span>
-            <span className="font-bold text-foreground">Pum&apos;s ERP</span>
+            {logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={logoUrl} alt="logo" className="h-8 w-8 rounded-lg object-contain" />
+            ) : (
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand text-sm font-bold text-brand-foreground">
+                P
+              </span>
+            )}
+            <span className="font-bold text-foreground">{brandName}</span>
           </div>
 
           <div className="rounded-xl border border-border bg-surface p-6 shadow-sm">
@@ -234,6 +302,33 @@ export default function LoginPage() {
                 <p className="text-meta text-muted-foreground">Seed: admin / !Abc123</p>
               )}
             </form>
+
+            {mode === "login" && ssoProviders.length > 0 && (
+              <div className="mt-5 space-y-2 border-t border-border pt-4">
+                <p className="text-meta font-medium text-foreground">Đăng nhập SSO (Day-1 stub)</p>
+                <label className="block space-y-1.5">
+                  <span className="text-meta text-muted-foreground">Email SSO</span>
+                  <input
+                    className="h-9 w-full rounded-md border border-border bg-input px-3 text-body"
+                    value={ssoEmail}
+                    onChange={(e) => setSsoEmail(e.target.value)}
+                  />
+                </label>
+                <div className="flex flex-col gap-2">
+                  {ssoProviders.map((p) => (
+                    <button
+                      key={p.code}
+                      type="button"
+                      disabled={loading}
+                      className="h-9 rounded-md border border-border bg-background text-body hover:bg-muted disabled:opacity-60"
+                      onClick={() => void onSsoDev(p.code)}
+                    >
+                      Tiếp tục với {p.displayName}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -14,4 +14,10 @@ public class Tenant : BaseEntity
     public string? LogoUrl { get; set; }
     /// <summary>Storage key (vd cloudinary:public_id) để thay/xóa.</summary>
     public string? LogoStorageKey { get; set; }
+    /// <summary>UC_SYS_093 — màu brand chính (#RRGGBB).</summary>
+    public string? PrimaryColor { get; set; }
+    /// <summary>UC_SYS_093 — màu nhấn.</summary>
+    public string? AccentColor { get; set; }
+    public string? FaviconUrl { get; set; }
+    public string? FaviconStorageKey { get; set; }
 }

@@ -241,20 +241,27 @@ public sealed class MsgService : IMsgService
     {
         var me = await EnsureMemberAsync(tenantId, userId, conversationId, ct);
         me.Muted = muted;
+        me.MuteUntil = null; // mute vô hạn hoặc unmute
         await _db.SaveChangesAsync(ct);
         await _rt.ConversationUpdatedAsync(new[] { userId }, new { conversationId, reason = muted ? "muted" : "unmuted" }, ct);
     }
 
     public async Task<UnreadCountDto> GetUnreadCountAsync(Guid tenantId, Guid userId, CancellationToken ct = default)
     {
+        var now = DateTimeOffset.UtcNow;
         var memberships = await _db.ConversationMembers.AsNoTracking()
-            .Where(m => m.TenantId == tenantId && m.UserId == userId && !m.IsDeleted && !m.Muted)
-            .Select(m => new { m.ConversationId, m.LastReadAt })
+            .Where(m => m.TenantId == tenantId && m.UserId == userId && !m.IsDeleted)
+            .Select(m => new { m.ConversationId, m.LastReadAt, m.Muted, m.MuteUntil })
             .ToListAsync(ct);
 
         var total = 0;
         foreach (var m in memberships)
+        {
+            // UC_SYS_104 — mute hết hạn thì vẫn đếm unread
+            var effectivelyMuted = m.Muted && (m.MuteUntil == null || m.MuteUntil > now);
+            if (effectivelyMuted) continue;
             total += await CountUnreadAsync(tenantId, m.ConversationId, userId, m.LastReadAt, ct);
+        }
         return new UnreadCountDto(total);
     }
 
