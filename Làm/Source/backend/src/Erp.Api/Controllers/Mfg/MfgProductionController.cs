@@ -127,6 +127,11 @@ public sealed class MfgPlanController : ControllerBase
     [AuthorizePermission("mfg.plan.manage")]
     public async Task<ActionResult<ApiResponse<MfgPlanDto>>> Confirm(Guid id, CancellationToken ct)
         => Ok(ApiResponse<MfgPlanDto>.Ok(await _svc.ConfirmPlanAsync(TenantId, UserId, id, ct)));
+
+    [HttpPost("{id:guid}/cancel")]
+    [AuthorizePermission("mfg.plan.manage")]
+    public async Task<ActionResult<ApiResponse<MfgPlanDto>>> Cancel(Guid id, CancellationToken ct)
+        => Ok(ApiResponse<MfgPlanDto>.Ok(await _svc.CancelPlanAsync(TenantId, UserId, id, ct)));
 }
 
 [ApiController]
@@ -165,6 +170,23 @@ public sealed class MfgWorkOrderController : ControllerBase
     [AuthorizePermission("mfg.wo.manage")]
     public async Task<ActionResult<ApiResponse<MfgWorkOrderDto>>> Release(Guid id, CancellationToken ct)
         => Ok(ApiResponse<MfgWorkOrderDto>.Ok(await _svc.ReleaseWorkOrderAsync(TenantId, UserId, id, ct)));
+
+    [HttpPost("{id:guid}/print")]
+    [AuthorizePermission("mfg.wo.manage")]
+    public async Task<ActionResult<ApiResponse<MfgWorkOrderPrintDto>>> Print(Guid id, CancellationToken ct)
+    {
+        var (order, slip) = await _svc.PrintWorkOrderAsync(TenantId, UserId, id, ct);
+        return Ok(ApiResponse<MfgWorkOrderPrintDto>.Ok(new MfgWorkOrderPrintDto(order, slip)));
+    }
+
+    [HttpGet("{id:guid}/export.csv")]
+    [AuthorizePermission("mfg.wo.read")]
+    public async Task<IActionResult> ExportCsv(Guid id, CancellationToken ct)
+    {
+        var (fileName, csv) = await _svc.ExportWorkOrderCsvAsync(TenantId, UserId, id, ct);
+        var bytes = System.Text.Encoding.UTF8.GetBytes(csv);
+        return File(bytes, "text/csv; charset=utf-8", fileName);
+    }
 
     [HttpPost("{id:guid}/issue-materials")]
     [AuthorizePermission("mfg.wo.manage")]

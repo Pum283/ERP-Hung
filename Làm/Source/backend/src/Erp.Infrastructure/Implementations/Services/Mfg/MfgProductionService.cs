@@ -341,6 +341,26 @@ public sealed class MfgProductionService : IMfgProductionService
         return (await MapPlansAsync(tenantId, [plan], ct))[0];
     }
 
+    public async Task<MfgPlanDto> CancelPlanAsync(
+        Guid tenantId, Guid userId, Guid planId, CancellationToken ct = default)
+    {
+        var plan = await RequirePlan(tenantId, planId, ct);
+        if (plan.Status == "Cancelled") throw new AppException("KH đã hủy.");
+        if (plan.Status is not ("Draft" or "Confirmed"))
+            throw new AppException("Chỉ hủy KH Draft/Confirmed.");
+
+        var hasWo = await _db.MfgWorkOrders.AnyAsync(
+            x => x.TenantId == tenantId && x.PlanId == planId && !x.IsDeleted
+                 && x.Status != "Cancelled", ct);
+        if (hasWo)
+            throw new AppException("Không hủy KH khi còn lệnh SX liên kết (chưa hủy).");
+
+        plan.Status = "Cancelled";
+        plan.UpdatedBy = userId;
+        await _db.SaveChangesAsync(ct);
+        return (await MapPlansAsync(tenantId, [plan], ct))[0];
+    }
+
     public async Task<IReadOnlyList<MfgWorkOrderDto>> ListWorkOrdersAsync(
         Guid tenantId, string? q, CancellationToken ct = default)
     {
@@ -446,9 +466,11 @@ public sealed class MfgProductionService : IMfgProductionService
 
         if (req.PlanId is Guid pid)
         {
-            var ok = await _db.MfgPlans.AnyAsync(
-                x => x.Id == pid && x.TenantId == tenantId && !x.IsDeleted, ct);
-            if (!ok) throw new AppException("KH SX không hợp lệ.");
+            var plan = await _db.MfgPlans.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == pid && x.TenantId == tenantId && !x.IsDeleted, ct)
+                ?? throw new AppException("KH SX không hợp lệ.");
+            if (plan.Status != "Confirmed")
+                throw new AppException("Chỉ gắn lệnh vào KH đã xác nhận (Confirmed).");
         }
 
         MfgWorkOrder entity;
@@ -501,10 +523,79 @@ public sealed class MfgProductionService : IMfgProductionService
         if (wo.Status != "Approved") throw new AppException("Chỉ phát hành lệnh đã duyệt.");
         wo.Status = "Released";
         wo.ReleasedAt = DateTimeOffset.UtcNow;
-        wo.PrintedAt = DateTimeOffset.UtcNow;
         wo.UpdatedBy = userId;
         await _db.SaveChangesAsync(ct);
         return (await MapWosAsync(tenantId, [wo], ct))[0];
+    }
+
+    public async Task<(MfgWorkOrderDto Order, string SlipText)> PrintWorkOrderAsync(
+        Guid tenantId, Guid userId, Guid woId, CancellationToken ct = default)
+    {
+        var wo = await RequireWo(tenantId, woId, ct);
+        if (wo.Status is "Draft" or "Approved" or "Cancelled")
+            throw new AppException("Chỉ in phiếu khi lệnh đã phát hành (Released trở lên).");
+
+        wo.PrintedAt = DateTimeOffset.UtcNow;
+        wo.UpdatedBy = userId;
+        await _db.SaveChangesAsync(ct);
+
+        var dto = (await MapWosAsync(tenantId, [wo], ct))[0];
+        var slip = BuildWorkOrderSlipText(dto);
+        return (dto, slip);
+    }
+
+    public async Task<(string FileName, string Csv)> ExportWorkOrderCsvAsync(
+        Guid tenantId, Guid userId, Guid woId, CancellationToken ct = default)
+    {
+        var wo = await RequireWo(tenantId, woId, ct);
+        if (wo.Status is "Draft" or "Cancelled")
+            throw new AppException("Không xuất LSX Draft/Cancelled.");
+
+        wo.PrintedAt = DateTimeOffset.UtcNow;
+        wo.UpdatedBy = userId;
+        await _db.SaveChangesAsync(ct);
+
+        var dto = (await MapWosAsync(tenantId, [wo], ct))[0];
+        var sb = new System.Text.StringBuilder();
+        sb.Append('\uFEFF');
+        sb.AppendLine("Field,Value");
+        sb.AppendLine($"Code,{CsvCell(dto.Code)}");
+        sb.AppendLine($"Status,{CsvCell(dto.Status)}");
+        sb.AppendLine($"ItemCode,{CsvCell(dto.ItemCode)}");
+        sb.AppendLine($"ItemName,{CsvCell(dto.ItemName)}");
+        sb.AppendLine($"Qty,{dto.Qty}");
+        sb.AppendLine($"Workshop,{CsvCell(dto.WorkshopName)}");
+        sb.AppendLine($"Bom,{CsvCell(dto.BomCode)}");
+        sb.AppendLine($"PlanId,{dto.PlanId}");
+        sb.AppendLine($"ApprovedAt,{dto.ApprovedAt:yyyy-MM-dd HH:mm}");
+        sb.AppendLine($"ReleasedAt,{dto.ReleasedAt:yyyy-MM-dd HH:mm}");
+        sb.AppendLine($"PrintedAt,{dto.PrintedAt:yyyy-MM-dd HH:mm}");
+        return ($"LSX_{dto.Code}.csv", sb.ToString());
+    }
+
+    private static string BuildWorkOrderSlipText(MfgWorkOrderDto wo)
+    {
+        var sb = new System.Text.StringBuilder();
+        sb.AppendLine("===== PHIẾU LỆNH SẢN XUẤT =====");
+        sb.AppendLine($"Mã LSX     : {wo.Code}");
+        sb.AppendLine($"Trạng thái : {wo.Status}");
+        sb.AppendLine($"Sản phẩm   : {wo.ItemCode} — {wo.ItemName}");
+        sb.AppendLine($"Số lượng   : {wo.Qty}");
+        sb.AppendLine($"Xưởng      : {wo.WorkshopName ?? "—"}");
+        sb.AppendLine($"BOM        : {wo.BomCode ?? "—"}");
+        sb.AppendLine($"Duyệt lúc  : {wo.ApprovedAt:yyyy-MM-dd HH:mm}");
+        sb.AppendLine($"PH lúc     : {wo.ReleasedAt:yyyy-MM-dd HH:mm}");
+        sb.AppendLine($"In lúc     : {wo.PrintedAt:yyyy-MM-dd HH:mm}");
+        sb.AppendLine("================================");
+        return sb.ToString();
+    }
+
+    private static string CsvCell(string? value)
+    {
+        var v = value ?? "";
+        if (v.Contains('"') || v.Contains(',') || v.Contains('\n'))
+            return $"\"{v.Replace("\"", "\"\"")}\"";
+        return v;
     }
 
     public async Task<MfgWorkOrderDto> IssueMaterialsAsync(

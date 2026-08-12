@@ -2411,8 +2411,8 @@
   },
   "UC_MFG_013": {
     "done": true,
-    "note": "L2 · MfgPlan theo SO",
-    "pct": 85
+    "note": "Bước111 · Plan SO + Confirm/Cancel + line FG/SFG; FE orders + helpers; MfgStep111PolishTests",
+    "pct": 100
   },
   "UC_MFG_015": {
     "done": true,
@@ -2421,18 +2421,18 @@
   },
   "UC_MFG_017": {
     "done": true,
-    "note": "L2 · WorkOrder create",
-    "pct": 85
+    "note": "Bước111 · WO Draft + auto BOM + PlanId phải Confirmed; FE validate; MfgStep111PolishTests",
+    "pct": 100
   },
   "UC_MFG_018": {
     "done": true,
-    "note": "L2 · Approve WO",
-    "pct": 85
+    "note": "Bước111 · Approve Draft→Approved + ApprovedAt; FE canApprove; MfgStep111PolishTests",
+    "pct": 100
   },
   "UC_MFG_019": {
     "done": true,
-    "note": "L2 · Release + PrintedAt",
-    "pct": 85
+    "note": "Bước111 · Release tách PrintedAt; Print slip + export CSV; FE In phiếu; MfgStep111PolishTests",
+    "pct": 100
   },
   "UC_MFG_020": {
     "done": true,

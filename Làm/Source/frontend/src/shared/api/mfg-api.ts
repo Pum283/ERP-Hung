@@ -135,6 +135,10 @@ export async function confirmMfgPlan(id: string) {
   const { data } = await api.post<Envelope<MfgPlanDto>>(`/api/mfg/plans/${id}/confirm`);
   return data.data;
 }
+export async function cancelMfgPlan(id: string) {
+  const { data } = await api.post<Envelope<MfgPlanDto>>(`/api/mfg/plans/${id}/cancel`);
+  return data.data;
+}
 export async function fetchMfgWorkOrders(q?: string) {
   const { data } = await api.get<Envelope<MfgWorkOrderDto[]>>("/api/mfg/work-orders", { params: { q } });
   return data.data;
@@ -157,6 +161,14 @@ export async function approveMfgWorkOrder(id: string) {
 export async function releaseMfgWorkOrder(id: string) {
   const { data } = await api.post<Envelope<MfgWorkOrderDto>>(`/api/mfg/work-orders/${id}/release`);
   return data.data;
+}
+export async function printMfgWorkOrder(id: string) {
+  const { data } = await api.post<Envelope<{ order: MfgWorkOrderDto; slipText: string }>>(`/api/mfg/work-orders/${id}/print`);
+  return data.data;
+}
+export async function downloadMfgWorkOrderCsv(id: string) {
+  const res = await api.get(`/api/mfg/work-orders/${id}/export.csv`, { responseType: "blob" });
+  return res.data as Blob;
 }
 export async function issueMfgMaterials(id: string, body: { itemId: string; qty: number; unit?: string; note?: string | null }) {
   const { data } = await api.post<Envelope<MfgWorkOrderDto>>(`/api/mfg/work-orders/${id}/issue-materials`, body);

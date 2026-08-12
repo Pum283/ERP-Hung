@@ -21,12 +21,15 @@ public interface IMfgProductionService
     Task<MfgPlanDto> UpsertPlanAsync(Guid tenantId, Guid userId, MfgPlanUpsertRequest req, CancellationToken ct = default);
     Task<MfgPlanLineDto> UpsertPlanLineAsync(Guid tenantId, Guid userId, Guid planId, MfgPlanLineUpsertRequest req, CancellationToken ct = default);
     Task<MfgPlanDto> ConfirmPlanAsync(Guid tenantId, Guid userId, Guid planId, CancellationToken ct = default);
+    Task<MfgPlanDto> CancelPlanAsync(Guid tenantId, Guid userId, Guid planId, CancellationToken ct = default);
 
     Task<IReadOnlyList<MfgWorkOrderDto>> ListWorkOrdersAsync(Guid tenantId, string? q, CancellationToken ct = default);
     Task<MfgWorkOrderDetailDto> GetWorkOrderDetailAsync(Guid tenantId, Guid woId, CancellationToken ct = default);
     Task<MfgWorkOrderDto> UpsertWorkOrderAsync(Guid tenantId, Guid userId, MfgWorkOrderUpsertRequest req, CancellationToken ct = default);
     Task<MfgWorkOrderDto> ApproveWorkOrderAsync(Guid tenantId, Guid userId, Guid woId, CancellationToken ct = default);
     Task<MfgWorkOrderDto> ReleaseWorkOrderAsync(Guid tenantId, Guid userId, Guid woId, CancellationToken ct = default);
+    Task<(MfgWorkOrderDto Order, string SlipText)> PrintWorkOrderAsync(Guid tenantId, Guid userId, Guid woId, CancellationToken ct = default);
+    Task<(string FileName, string Csv)> ExportWorkOrderCsvAsync(Guid tenantId, Guid userId, Guid woId, CancellationToken ct = default);
     Task<MfgWorkOrderDto> IssueMaterialsAsync(Guid tenantId, Guid userId, Guid woId, MfgMaterialIssueRequest req, CancellationToken ct = default);
     Task<MfgWorkOrderDto> ReceiveFgAsync(Guid tenantId, Guid userId, Guid woId, MfgFgReceiptRequest req, CancellationToken ct = default);
     Task<MfgWorkOrderDto> RecordScrapAsync(Guid tenantId, Guid userId, Guid woId, MfgScrapRequest req, CancellationToken ct = default);

@@ -26,6 +26,7 @@ public sealed record MfgPlanLineDto(
 public sealed record MfgPlanLineUpsertRequest(
     Guid? Id, Guid ItemId, decimal Qty, Guid? WorkshopId, string? Note);
 public sealed record MfgPlanDetailDto(MfgPlanDto Plan, IReadOnlyList<MfgPlanLineDto> Lines);
+public sealed record MfgWorkOrderPrintDto(MfgWorkOrderDto Order, string SlipText);
 
 public sealed record MfgWorkOrderDto(
     Guid Id, string Code, Guid ItemId, string? ItemCode, string? ItemName, decimal Qty,

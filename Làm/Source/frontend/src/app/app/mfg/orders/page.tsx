@@ -4,9 +4,11 @@ import { FormEvent, useCallback, useEffect, useState } from "react";
 import {
   approveMfgWorkOrder,
   calculateMfgCost,
+  cancelMfgPlan,
   cancelMfgWorkOrder,
   closeMfgWorkOrder,
   confirmMfgPlan,
+  downloadMfgWorkOrderCsv,
   fetchMfgItems,
   fetchMfgPlanDetail,
   fetchMfgPlans,
@@ -15,6 +17,7 @@ import {
   fetchMfgWorkshops,
   issueMfgMaterials,
   pauseMfgWorkOrder,
+  printMfgWorkOrder,
   pushMfgCost,
   receiveMfgFg,
   recordMfgScrap,
@@ -30,6 +33,15 @@ import {
   type MfgWorkOrderDto,
   type MfgWorkshopDto,
 } from "@/shared/api/mfg-api";
+import {
+  canApproveWorkOrder,
+  canCancelPlan,
+  canConfirmPlan,
+  canPrintWorkOrder,
+  canReleaseWorkOrder,
+  validatePlanSourceOrder,
+  validateWorkOrderCreate,
+} from "@/shared/api/mfg-step111-helpers";
 import { fetchFinAccounts, fetchFinPeriods, type FinAccountDto, type FinPeriodDto } from "@/shared/api/fin-api";
 import { usePermissions } from "@/shared/hooks/use-permissions";
 import { btn } from "@/shared/ui/btn";
@@ -72,6 +84,7 @@ export default function MfgOrdersPage() {
   const [scrapQty, setScrapQty] = useState("1");
   const [scrapType, setScrapType] = useState("Scrap");
   const [cancelReason, setCancelReason] = useState("Hủy theo yêu cầu SX");
+  const [slipPreview, setSlipPreview] = useState<string | null>(null);
   const [periods, setPeriods] = useState<FinPeriodDto[]>([]);
   const [accounts, setAccounts] = useState<FinAccountDto[]>([]);
   const [periodId, setPeriodId] = useState("");
@@ -164,6 +177,8 @@ export default function MfgOrdersPage() {
               <form
                 onSubmit={(e: FormEvent) => {
                   e.preventDefault();
+                  const v = validatePlanSourceOrder(so);
+                  if (!v.isValid) { setError(v.error ?? "SO không hợp lệ."); return; }
                   run(async () => {
                     const p = await upsertMfgPlan({ sourceOrderCode: so });
                     setSelectedPlanId(p.id);
@@ -232,10 +247,47 @@ export default function MfgOrdersPage() {
                       </select>
                       <button type="submit" className={btn.ghost}>Thêm</button>
                     </form>
-                    <button type="button" className={btn.ghost} onClick={() => run(() => confirmMfgPlan(planDetail.plan.id), "Đã xác nhận KH.")}>
-                      Xác nhận KH
-                    </button>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        className={btn.ghost}
+                        disabled={!canConfirmPlan(planDetail.plan.status, planDetail.lines.length).canConfirm}
+                        onClick={() => {
+                          const c = canConfirmPlan(planDetail.plan.status, planDetail.lines.length);
+                          if (!c.canConfirm) { setError(c.reason ?? "Không xác nhận được."); return; }
+                          run(() => confirmMfgPlan(planDetail.plan.id), "Đã xác nhận KH.");
+                        }}
+                      >
+                        Xác nhận KH
+                      </button>
+                      <button
+                        type="button"
+                        className={btn.ghost}
+                        disabled={!canCancelPlan(planDetail.plan.status, 0).canCancel}
+                        onClick={() => run(() => cancelMfgPlan(planDetail.plan.id), "Đã hủy KH.")}
+                      >
+                        Hủy KH
+                      </button>
+                    </div>
                   </>
+                )}
+                {canPlanManage && planDetail.plan.status === "Confirmed" && (
+                  <button
+                    type="button"
+                    className={btn.ghost}
+                    disabled={!canCancelPlan(
+                      planDetail.plan.status,
+                      wos.filter((w) => w.planId === planDetail.plan.id && w.status !== "Cancelled").length,
+                    ).canCancel}
+                    onClick={() => {
+                      const linked = wos.filter((w) => w.planId === planDetail.plan.id && w.status !== "Cancelled").length;
+                      const c = canCancelPlan(planDetail.plan.status, linked);
+                      if (!c.canCancel) { setError(c.reason ?? "Không hủy được."); return; }
+                      run(() => cancelMfgPlan(planDetail.plan.id), "Đã hủy KH.");
+                    }}
+                  >
+                    Hủy KH
+                  </button>
                 )}
               </div>
             )}
@@ -249,6 +301,14 @@ export default function MfgOrdersPage() {
               <form
                 onSubmit={(e: FormEvent) => {
                   e.preventDefault();
+                  const planStatus = plans.find((p) => p.id === selectedPlanId)?.status ?? null;
+                  const v = validateWorkOrderCreate(
+                    woItemId,
+                    Number(woQty) || 0,
+                    selectedPlanId || null,
+                    selectedPlanId ? planStatus : null,
+                  );
+                  if (!v.isValid) { setError(v.error ?? "LSX không hợp lệ."); return; }
                   run(async () => {
                     const wo = await upsertMfgWorkOrder({
                       itemId: woItemId,
@@ -323,17 +383,51 @@ export default function MfgOrdersPage() {
                 </ul>
                 {canWoManage && (
                   <div className="mb-3 flex flex-wrap gap-2">
-                    {woDetail.order.status === "Draft" && (
+                    {canApproveWorkOrder(woDetail.order.status).canApprove && (
                       <button type="button" className={btn.ghost} onClick={() => run(() => approveMfgWorkOrder(woDetail.order.id), "Đã duyệt.")}>
                         Duyệt
                       </button>
                     )}
-                    {woDetail.order.status === "Approved" && (
-                      <button type="button" className={btn.ghost} onClick={() => run(() => releaseMfgWorkOrder(woDetail.order.id), "Đã phát hành / in phiếu.")}>
+                    {canReleaseWorkOrder(woDetail.order.status).canRelease && (
+                      <button type="button" className={btn.ghost} onClick={() => run(() => releaseMfgWorkOrder(woDetail.order.id), "Đã phát hành lệnh.")}>
                         Phát hành
                       </button>
                     )}
+                    {canPrintWorkOrder(woDetail.order.status).canPrint && (
+                      <>
+                        <button
+                          type="button"
+                          className={btn.ghost}
+                          onClick={() => run(async () => {
+                            const printed = await printMfgWorkOrder(woDetail.order.id);
+                            setSlipPreview(printed.slipText);
+                          }, "Đã in phiếu LSX.")}
+                        >
+                          In phiếu
+                        </button>
+                        <button
+                          type="button"
+                          className={btn.ghost}
+                          onClick={() => run(async () => {
+                            const blob = await downloadMfgWorkOrderCsv(woDetail.order.id);
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement("a");
+                            a.href = url;
+                            a.download = `LSX_${woDetail.order.code}.csv`;
+                            a.click();
+                            URL.revokeObjectURL(url);
+                          }, "Đã xuất CSV phiếu LSX.")}
+                        >
+                          Xuất CSV
+                        </button>
+                      </>
+                    )}
                   </div>
+                )}
+                {slipPreview && (
+                  <pre className="mb-3 max-h-48 overflow-auto rounded-md bg-[var(--surface-2)] p-3 text-xs whitespace-pre-wrap">
+                    {slipPreview}
+                  </pre>
                 )}
                 {canWoManage && (woDetail.order.status === "Released" || woDetail.order.status === "MaterialsIssued") && (
                   <form

@@ -450,160 +450,160 @@
 |              | `UC_POS_034` | Thanh toán chuyển khoản / QR — Polish BE/FE & Unit Test                     |    100%    |
 |              | `UC_POS_035` | Thanh toán thẻ / ví điện tử — Polish BE/FE & Unit Test                      |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 81**  | `UC_POS_037` | In hóa đơn — Polish BE/FE & Unit Test                                       | 90% ➔ 100% |
-|              | `UC_POS_038` | Hủy sản phẩm — Polish BE/FE & Unit Test                                     | 85% ➔ 100% |
-|              | `UC_POS_039` | Hủy cả bill — Polish BE/FE & Unit Test                                      | 85% ➔ 100% |
-|              | `UC_POS_040` | Trả hàng / hoàn tiền — Polish BE/FE & Unit Test                             | 85% ➔ 100% |
+| **Bước 81**  | `UC_POS_037` | In hóa đơn — Polish BE/FE & Unit Test                                       |    100%    |
+|   `[XONG]`   | `UC_POS_038` | Hủy sản phẩm — Polish BE/FE & Unit Test                                     |    100%    |
+|              | `UC_POS_039` | Hủy cả bill — Polish BE/FE & Unit Test                                      |    100%    |
+|              | `UC_POS_040` | Trả hàng / hoàn tiền — Polish BE/FE & Unit Test                             |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 82**  | `UC_POS_042` | Mở ca thu ngân — Polish BE/FE & Unit Test                                   | 90% ➔ 100% |
-|              | `UC_POS_043` | Nhập tiền đầu ca — Polish BE/FE & Unit Test                                 | 90% ➔ 100% |
-|              | `UC_POS_045` | Xem doanh thu trong ca — Polish BE/FE & Unit Test                           | 85% ➔ 100% |
-|              | `UC_POS_046` | Đóng ca & đếm quỹ — Polish BE/FE & Unit Test                                | 90% ➔ 100% |
+| **Bước 82**  | `UC_POS_042` | Mở ca thu ngân — Polish BE/FE & Unit Test                                   |    100%    |
+|   `[XONG]`   | `UC_POS_043` | Nhập tiền đầu ca — Polish BE/FE & Unit Test                                 |    100%    |
+|              | `UC_POS_045` | Xem doanh thu trong ca — Polish BE/FE & Unit Test                           |    100%    |
+|              | `UC_POS_046` | Đóng ca & đếm quỹ — Polish BE/FE & Unit Test                                |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 83**  | `UC_POS_047` | Đối soát lệch quỹ — Polish BE/FE & Unit Test                                | 85% ➔ 100% |
-|              | `UC_POS_048` | In báo cáo ca — Polish BE/FE & Unit Test                                    | 90% ➔ 100% |
-|              | `UC_POS_054` | Trừ tồn theo BOM khi bán — Polish BE/FE & Unit Test                         | 90% ➔ 100% |
-|              | `UC_POS_055` | Cảnh báo hết / sắp hết — Polish BE/FE & Unit Test                           | 90% ➔ 100% |
+| **Bước 83**  | `UC_POS_047` | Đối soát lệch quỹ — Polish BE/FE & Unit Test                                |    100%    |
+|   `[XONG]`   | `UC_POS_048` | In báo cáo ca — Polish BE/FE & Unit Test                                    |    100%    |
+|              | `UC_POS_054` | Trừ tồn theo BOM khi bán — Polish BE/FE & Unit Test                         |    100%    |
+|              | `UC_POS_055` | Cảnh báo hết / sắp hết — Polish BE/FE & Unit Test                           |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 84**  | `UC_POS_059` | Đồng bộ doanh thu ca sang FIN — Polish BE/FE & Unit Test                    | 90% ➔ 100% |
-|              | `UC_POS_061` | Doanh thu theo giờ / ngày / ca — Polish BE/FE & Unit Test                   | 90% ➔ 100% |
-|              | `UC_POS_062` | Doanh thu theo sản phẩm — Polish BE/FE & Unit Test                          | 90% ➔ 100% |
-|              | `UC_POS_063` | Doanh thu theo thu ngân — Polish BE/FE & Unit Test                          | 90% ➔ 100% |
+| **Bước 84**  | `UC_POS_059` | Đồng bộ doanh thu ca sang FIN — Polish BE/FE & Unit Test                    |    100%    |
+|   `[XONG]`   | `UC_POS_061` | Doanh thu theo giờ / ngày / ca — Polish BE/FE & Unit Test                   |    100%    |
+|              | `UC_POS_062` | Doanh thu theo sản phẩm — Polish BE/FE & Unit Test                          |    100%    |
+|              | `UC_POS_063` | Doanh thu theo thu ngân — Polish BE/FE & Unit Test                          |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 85**  | `UC_POS_064` | Tỷ lệ hủy / giảm giá — Polish BE/FE & Unit Test                             | 90% ➔ 100% |
-|              | `UC_POS_065` | Cost lý thuyết vs thực tế — Polish BE/FE & Unit Test                        | 90% ➔ 100% |
-|              | `UC_POS_066` | Top sản phẩm bán chạy — Polish BE/FE & Unit Test                            | 90% ➔ 100% |
-|              | `UC_POS_067` | So sánh điểm bán — Polish BE/FE & Unit Test                                 | 90% ➔ 100% |
+| **Bước 85**  | `UC_POS_064` | Tỷ lệ hủy / giảm giá — Polish BE/FE & Unit Test                             |    100%    |
+|   `[XONG]`   | `UC_POS_065` | Cost lý thuyết vs thực tế — Polish BE/FE & Unit Test                        |    100%    |
+|              | `UC_POS_066` | Top sản phẩm bán chạy — Polish BE/FE & Unit Test                            |    100%    |
+|              | `UC_POS_067` | So sánh điểm bán — Polish BE/FE & Unit Test                                 |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 86**  | `UC_POS_068` | Xuất báo cáo POS — Polish BE/FE & Unit Test                                 | 90% ➔ 100% |
-|              | `UC_POS_069` | Giám sát doanh thu chuỗi realtime — Polish BE/FE & Unit Test                | 90% ➔ 100% |
-|              | `UC_POS_072` | Cấu hình target doanh thu — Polish BE/FE & Unit Test                        | 90% ➔ 100% |
-|              | `UC_PUR_001` | Tạo / cập nhật nhà cung cấp — Polish BE/FE & Unit Test                      | 85% ➔ 100% |
+| **Bước 86**  | `UC_POS_068` | Xuất báo cáo POS — Polish BE/FE & Unit Test                                 |    100%    |
+|   `[XONG]`   | `UC_POS_069` | Giám sát doanh thu chuỗi realtime — Polish BE/FE & Unit Test                |    100%    |
+|              | `UC_POS_072` | Cấu hình target doanh thu — Polish BE/FE & Unit Test                        |    100%    |
+|              | `UC_PUR_001` | Tạo / cập nhật nhà cung cấp — Polish BE/FE & Unit Test                      |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 87**  | `UC_PUR_003` | Người liên hệ & điều khoản — Polish BE/FE & Unit Test                       | 85% ➔ 100% |
-|              | `UC_PUR_009` | Gắn sản phẩm – nhà cung cấp — Polish BE/FE & Unit Test                      | 85% ➔ 100% |
-|              | `UC_PUR_014` | Tạo PR từ đơn vị — Polish BE/FE & Unit Test                                 | 95% ➔ 100% |
-|              | `UC_PUR_017` | Luồng duyệt PR — Polish BE/FE & Unit Test                                   | 85% ➔ 100% |
+| **Bước 87**  | `UC_PUR_003` | Người liên hệ & điều khoản — Polish BE/FE & Unit Test                       |    100%    |
+|   `[XONG]`   | `UC_PUR_009` | Gắn sản phẩm – nhà cung cấp — Polish BE/FE & Unit Test                      |    100%    |
+|              | `UC_PUR_014` | Tạo PR từ đơn vị — Polish BE/FE & Unit Test                                 |    100%    |
+|              | `UC_PUR_017` | Luồng duyệt PR — Polish BE/FE & Unit Test                                   |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 88**  | `UC_PUR_018` | Từ chối / trả lại PR — Polish BE/FE & Unit Test                             | 85% ➔ 100% |
-|              | `UC_PUR_019` | Theo dõi trạng thái PR — Polish BE/FE & Unit Test                           | 85% ➔ 100% |
-|              | `UC_PUR_026` | Tạo PO từ PR/RFQ — Polish BE/FE & Unit Test                                 | 85% ➔ 100% |
-|              | `UC_PUR_027` | Duyệt PO theo hạn mức — Polish BE/FE & Unit Test                            | 80% ➔ 100% |
+| **Bước 88**  | `UC_PUR_018` | Từ chối / trả lại PR — Polish BE/FE & Unit Test                             |    100%    |
+|   `[XONG]`   | `UC_PUR_019` | Theo dõi trạng thái PR — Polish BE/FE & Unit Test                           |    100%    |
+|              | `UC_PUR_026` | Tạo PO từ PR/RFQ — Polish BE/FE & Unit Test                                 |    100%    |
+|              | `UC_PUR_027` | Duyệt PO theo hạn mức — Polish BE/FE & Unit Test                            |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 89**  | `UC_PUR_028` | Gửi PO cho nhà cung cấp — Polish BE/FE & Unit Test                          | 85% ➔ 100% |
-|              | `UC_PUR_030` | Sửa PO phiên bản — Polish BE/FE & Unit Test                                 | 95% ➔ 100% |
-|              | `UC_PUR_031` | Theo dõi nhận hàng từng phần — Polish BE/FE & Unit Test                     | 90% ➔ 100% |
-|              | `UC_PUR_032` | Đóng / hủy PO — Polish BE/FE & Unit Test                                    | 90% ➔ 100% |
+| **Bước 89**  | `UC_PUR_028` | Gửi PO cho nhà cung cấp — Polish BE/FE & Unit Test                          |    100%    |
+|   `[XONG]`   | `UC_PUR_030` | Sửa PO phiên bản — Polish BE/FE & Unit Test                                 |    100%    |
+|              | `UC_PUR_031` | Theo dõi nhận hàng từng phần — Polish BE/FE & Unit Test                     |    100%    |
+|              | `UC_PUR_032` | Đóng / hủy PO — Polish BE/FE & Unit Test                                    |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 90**  | `UC_PUR_033` | In / xuất PO — Polish BE/FE & Unit Test                                     | 90% ➔ 100% |
-|              | `UC_PUR_034` | Tạo phiếu nhận hàng theo PO — Polish BE/FE & Unit Test                      | 90% ➔ 100% |
-|              | `UC_PUR_035` | Nhận hàng lệch số lượng / chất lượng — Polish BE/FE & Unit Test             | 85% ➔ 100% |
-|              | `UC_PUR_037` | Đẩy nhập kho sang INV — Polish BE/FE & Unit Test                            | 90% ➔ 100% |
+| **Bước 90**  | `UC_PUR_033` | In / xuất PO — Polish BE/FE & Unit Test                                     |    100%    |
+|   `[XONG]`   | `UC_PUR_034` | Tạo phiếu nhận hàng theo PO — Polish BE/FE & Unit Test                      |    100%    |
+|              | `UC_PUR_035` | Nhận hàng lệch số lượng / chất lượng — Polish BE/FE & Unit Test             |    100%    |
+|              | `UC_PUR_037` | Đẩy nhập kho sang INV — Polish BE/FE & Unit Test                            |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 91**  | `UC_PUR_040` | Nhập hóa đơn nhà cung cấp — Polish BE/FE & Unit Test                        | 90% ➔ 100% |
-|              | `UC_PUR_041` | Đối soát 3 chiều PO–GRN–Invoice — Polish BE/FE & Unit Test                  | 85% ➔ 100% |
-|              | `UC_PUR_043` | Đẩy công nợ sang FIN AP — Polish BE/FE & Unit Test                          | 90% ➔ 100% |
-|              | `UC_PUR_048` | Báo cáo mua theo nhà cung cấp / SP — Polish BE/FE & Unit Test               | 90% ➔ 100% |
+| **Bước 91**  | `UC_PUR_040` | Nhập hóa đơn nhà cung cấp — Polish BE/FE & Unit Test                        |    100%    |
+|   `[XONG]`   | `UC_PUR_041` | Đối soát 3 chiều PO–GRN–Invoice — Polish BE/FE & Unit Test                  |    100%    |
+|              | `UC_PUR_043` | Đẩy công nợ sang FIN AP — Polish BE/FE & Unit Test                          |    100%    |
+|              | `UC_PUR_048` | Báo cáo mua theo nhà cung cấp / SP — Polish BE/FE & Unit Test               |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 92**  | `UC_PUR_051` | Open PR / Open PO aging — Polish BE/FE & Unit Test                          | 90% ➔ 100% |
-|              | `UC_PUR_052` | Xuất báo cáo mua hàng — Polish BE/FE & Unit Test                            | 90% ➔ 100% |
-|              | `UC_INV_001` | Tạo / sửa SKU sản phẩm — Polish BE/FE & Unit Test                           | 85% ➔ 100% |
-|              | `UC_INV_002` | Phân nhóm hàng / ngành hàng — Polish BE/FE & Unit Test                      | 85% ➔ 100% |
+| **Bước 92**  | `UC_PUR_051` | Open PR / Open PO aging — Polish BE/FE & Unit Test                          |    100%    |
+|   `[XONG]`   | `UC_PUR_052` | Xuất báo cáo mua hàng — Polish BE/FE & Unit Test                            |    100%    |
+|              | `UC_INV_001` | Tạo / sửa SKU sản phẩm — Polish BE/FE & Unit Test                           |    100%    |
+|              | `UC_INV_002` | Phân nhóm hàng / ngành hàng — Polish BE/FE & Unit Test                      |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 93**  | `UC_INV_003` | Đơn vị tính & quy đổi — Polish BE/FE & Unit Test                            | 85% ➔ 100% |
-|              | `UC_INV_004` | Thuộc tính hàng (lô, serial, HSD) — Polish BE/FE & Unit Test                | 80% ➔ 100% |
-|              | `UC_INV_005` | Giá vốn / phương pháp tính giá — Polish BE/FE & Unit Test                   | 80% ➔ 100% |
-|              | `UC_INV_007` | Ngưng sử dụng SKU — Polish BE/FE & Unit Test                                | 85% ➔ 100% |
+| **Bước 93**  | `UC_INV_003` | Đơn vị tính & quy đổi — Polish BE/FE & Unit Test                            |    100%    |
+|   `[XONG]`   | `UC_INV_004` | Thuộc tính hàng (lô, serial, HSD) — Polish BE/FE & Unit Test                |    100%    |
+|              | `UC_INV_005` | Giá vốn / phương pháp tính giá — Polish BE/FE & Unit Test                   |    100%    |
+|              | `UC_INV_007` | Ngưng sử dụng SKU — Polish BE/FE & Unit Test                                |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 94**  | `UC_INV_008` | Import / export danh mục SP — Polish BE/FE & Unit Test                      | 85% ➔ 100% |
-|              | `UC_INV_011` | Tạo kho — Polish BE/FE & Unit Test                                          | 85% ➔ 100% |
-|              | `UC_INV_014` | Gán thủ kho / quyền — Polish BE/FE & Unit Test                              | 95% ➔ 100% |
-|              | `UC_INV_015` | Cấu hình FEFO / FIFO — Polish BE/FE & Unit Test                             | 85% ➔ 100% |
+| **Bước 94**  | `UC_INV_008` | Import / export danh mục SP — Polish BE/FE & Unit Test                      |    100%    |
+|   `[XONG]`   | `UC_INV_011` | Tạo kho — Polish BE/FE & Unit Test                                          |    100%    |
+|              | `UC_INV_014` | Gán thủ kho / quyền — Polish BE/FE & Unit Test                              |    100%    |
+|              | `UC_INV_015` | Cấu hình FEFO / FIFO — Polish BE/FE & Unit Test                             |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 95**  | `UC_INV_016` | Cho phép tồn âm hay không — Polish BE/FE & Unit Test                        | 85% ➔ 100% |
-|              | `UC_INV_017` | Nhập từ mua hàng — Polish BE/FE & Unit Test                                 | 95% ➔ 100% |
-|              | `UC_INV_018` | Nhập từ sản xuất — Polish BE/FE & Unit Test                                 | 80% ➔ 100% |
-|              | `UC_INV_019` | Nhập điều chỉnh / kiểm kê — Polish BE/FE & Unit Test                        | 85% ➔ 100% |
+| **Bước 95**  | `UC_INV_016` | Cho phép tồn âm hay không — Polish BE/FE & Unit Test                        |    100%    |
+|   `[XONG]`   | `UC_INV_017` | Nhập từ mua hàng — Polish BE/FE & Unit Test                                 |    100%    |
+|              | `UC_INV_018` | Nhập từ sản xuất — Polish BE/FE & Unit Test                                 |    100%    |
+|              | `UC_INV_019` | Nhập điều chỉnh / kiểm kê — Polish BE/FE & Unit Test                        |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 96**  | `UC_INV_020` | Nhập chuyển đến — Polish BE/FE & Unit Test                                  | 80% ➔ 100% |
-|              | `UC_INV_022` | Nhập theo lô / HSD / serial — Polish BE/FE & Unit Test                      | 80% ➔ 100% |
-|              | `UC_INV_024` | Xuất bán / giao hàng — Polish BE/FE & Unit Test                             | 80% ➔ 100% |
-|              | `UC_INV_025` | Xuất sản xuất — Polish BE/FE & Unit Test                                    | 80% ➔ 100% |
+| **Bước 96**  | `UC_INV_020` | Nhập chuyển đến — Polish BE/FE & Unit Test                                  |    100%    |
+|   `[XONG]`   | `UC_INV_022` | Nhập theo lô / HSD / serial — Polish BE/FE & Unit Test                      |    100%    |
+|              | `UC_INV_024` | Xuất bán / giao hàng — Polish BE/FE & Unit Test                             |    100%    |
+|              | `UC_INV_025` | Xuất sản xuất — Polish BE/FE & Unit Test                                    |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 97**  | `UC_INV_026` | Xuất nội bộ / tiêu hao — Polish BE/FE & Unit Test                           | 85% ➔ 100% |
-|              | `UC_INV_029` | Xuất theo FEFO tự động — Polish BE/FE & Unit Test                           | 90% ➔ 100% |
-|              | `UC_INV_030` | Xuất điều chỉnh — Polish BE/FE & Unit Test                                  | 85% ➔ 100% |
-|              | `UC_INV_031` | Tạo phiếu chuyển kho — Polish BE/FE & Unit Test                             | 90% ➔ 100% |
+| **Bước 97**  | `UC_INV_026` | Xuất nội bộ / tiêu hao — Polish BE/FE & Unit Test                           |    100%    |
+|   `[XONG]`   | `UC_INV_029` | Xuất theo FEFO tự động — Polish BE/FE & Unit Test                           |    100%    |
+|              | `UC_INV_030` | Xuất điều chỉnh — Polish BE/FE & Unit Test                                  |    100%    |
+|              | `UC_INV_031` | Tạo phiếu chuyển kho — Polish BE/FE & Unit Test                             |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 98**  | `UC_INV_033` | Xuất bên gửi / nhập bên nhận — Polish BE/FE & Unit Test                     | 90% ➔ 100% |
-|              | `UC_INV_035` | Theo dõi hàng đang chuyển — Polish BE/FE & Unit Test                        | 85% ➔ 100% |
-|              | `UC_INV_036` | Chuyển từ kho trung tâm — Polish BE/FE & Unit Test                          | 80% ➔ 100% |
-|              | `UC_INV_037` | Giữ hàng theo đơn đã duyệt — Polish BE/FE & Unit Test                       | 90% ➔ 100% |
+| **Bước 98**  | `UC_INV_033` | Xuất bên gửi / nhập bên nhận — Polish BE/FE & Unit Test                     |    100%    |
+|   `[XONG]`   | `UC_INV_035` | Theo dõi hàng đang chuyển — Polish BE/FE & Unit Test                        |    100%    |
+|              | `UC_INV_036` | Chuyển từ kho trung tâm — Polish BE/FE & Unit Test                          |    100%    |
+|              | `UC_INV_037` | Giữ hàng theo đơn đã duyệt — Polish BE/FE & Unit Test                       |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 99**  | `UC_INV_038` | Giải phóng giữ hàng — Polish BE/FE & Unit Test                              | 90% ➔ 100% |
-|              | `UC_INV_039` | Xem tồn thực tế — Polish BE/FE & Unit Test                                  | 90% ➔ 100% |
-|              | `UC_INV_041` | Xem tồn đang giữ / đang chuyển — Polish BE/FE & Unit Test                   | 80% ➔ 100% |
-|              | `UC_INV_042` | Cảnh báo không đủ tồn — Polish BE/FE & Unit Test                            | 90% ➔ 100% |
+| **Bước 99**  | `UC_INV_038` | Giải phóng giữ hàng — Polish BE/FE & Unit Test                              |    100%    |
+|   `[XONG]`   | `UC_INV_039` | Xem tồn thực tế — Polish BE/FE & Unit Test                                  |    100%    |
+|              | `UC_INV_041` | Xem tồn đang giữ / đang chuyển — Polish BE/FE & Unit Test                   |    100%    |
+|              | `UC_INV_042` | Cảnh báo không đủ tồn — Polish BE/FE & Unit Test                            |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 100** | `UC_INV_043` | Theo dõi tồn theo lô — Polish BE/FE & Unit Test                             | 90% ➔ 100% |
-|              | `UC_INV_044` | Cảnh báo cận date / quá date — Polish BE/FE & Unit Test                     | 90% ➔ 100% |
-|              | `UC_INV_045` | Chặn xuất hàng quá HSD — Polish BE/FE & Unit Test                           | 90% ➔ 100% |
-|              | `UC_INV_048` | Báo cáo hàng sắp hết hạn — Polish BE/FE & Unit Test                         | 90% ➔ 100% |
+| **Bước 100** | `UC_INV_043` | Theo dõi tồn theo lô — Polish BE/FE & Unit Test                             |    100%    |
+|   `[XONG]`   | `UC_INV_044` | Cảnh báo cận date / quá date — Polish BE/FE & Unit Test                     |    100%    |
+|              | `UC_INV_045` | Chặn xuất hàng quá HSD — Polish BE/FE & Unit Test                           |    100%    |
+|              | `UC_INV_048` | Báo cáo hàng sắp hết hạn — Polish BE/FE & Unit Test                         |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 101** | `UC_INV_049` | Tạo phiếu kiểm kê — Polish BE/FE & Unit Test                                | 90% ➔ 100% |
-|              | `UC_INV_050` | Nhập số đếm thực tế — Polish BE/FE & Unit Test                              | 85% ➔ 100% |
-|              | `UC_INV_052` | Đối chiếu lệch kiểm kê — Polish BE/FE & Unit Test                           | 85% ➔ 100% |
-|              | `UC_INV_053` | Duyệt điều chỉnh sau kiểm kê — Polish BE/FE & Unit Test                     | 85% ➔ 100% |
+| **Bước 101** | `UC_INV_049` | Tạo phiếu kiểm kê — Polish BE/FE & Unit Test                                |    100%    |
+|   `[XONG]`   | `UC_INV_050` | Nhập số đếm thực tế — Polish BE/FE & Unit Test                              |    100%    |
+|              | `UC_INV_052` | Đối chiếu lệch kiểm kê — Polish BE/FE & Unit Test                           |    100%    |
+|              | `UC_INV_053` | Duyệt điều chỉnh sau kiểm kê — Polish BE/FE & Unit Test                     |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 102** | `UC_INV_055` | Báo cáo kết quả kiểm kê — Polish BE/FE & Unit Test                          | 90% ➔ 100% |
-|              | `UC_INV_060` | Xem giá trị tồn — Polish BE/FE & Unit Test                                  | 90% ➔ 100% |
-|              | `UC_INV_062` | Đẩy bút toán kho sang FIN — Polish BE/FE & Unit Test                        | 80% ➔ 100% |
-|              | `UC_INV_063` | Báo cáo giá trị tồn — Polish BE/FE & Unit Test                              | 90% ➔ 100% |
+| **Bước 102** | `UC_INV_055` | Báo cáo kết quả kiểm kê — Polish BE/FE & Unit Test                          |    100%    |
+|   `[XONG]`   | `UC_INV_060` | Xem giá trị tồn — Polish BE/FE & Unit Test                                  |    100%    |
+|              | `UC_INV_062` | Đẩy bút toán kho sang FIN — Polish BE/FE & Unit Test                        |    100%    |
+|              | `UC_INV_063` | Báo cáo giá trị tồn — Polish BE/FE & Unit Test                              |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 103** | `UC_INV_064` | Xuất nhập tồn theo kỳ — Polish BE/FE & Unit Test                            | 90% ➔ 100% |
-|              | `UC_INV_065` | Thẻ kho / lịch sử sản phẩm — Polish BE/FE & Unit Test                       | 90% ➔ 100% |
-|              | `UC_INV_067` | Hàng dưới min / trên max — Polish BE/FE & Unit Test                         | 90% ➔ 100% |
-|              | `UC_INV_069` | Dashboard tồn & cảnh báo — Polish BE/FE & Unit Test                         | 90% ➔ 100% |
+| **Bước 103** | `UC_INV_064` | Xuất nhập tồn theo kỳ — Polish BE/FE & Unit Test                            |    100%    |
+|   `[XONG]`   | `UC_INV_065` | Thẻ kho / lịch sử sản phẩm — Polish BE/FE & Unit Test                       |    100%    |
+|              | `UC_INV_067` | Hàng dưới min / trên max — Polish BE/FE & Unit Test                         |    100%    |
+|              | `UC_INV_069` | Dashboard tồn & cảnh báo — Polish BE/FE & Unit Test                         |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 104** | `UC_INV_070` | Xuất báo cáo kho Excel — Polish BE/FE & Unit Test                           | 90% ➔ 100% |
-|              | `UC_LOG_001` | Danh mục đơn vị vận chuyển — Polish BE/FE & Unit Test                       | 85% ➔ 100% |
-|              | `UC_LOG_006` | Tạo lệnh giao từ đơn hàng — Polish BE/FE & Unit Test                        | 85% ➔ 100% |
-|              | `UC_LOG_008` | Tách lệnh giao nhiều đợt — Polish BE/FE & Unit Test                         | 85% ➔ 100% |
+| **Bước 104** | `UC_INV_070` | Xuất báo cáo kho Excel — Polish BE/FE & Unit Test                           |    100%    |
+|   `[XONG]`   | `UC_LOG_001` | Danh mục đơn vị vận chuyển — Polish BE/FE & Unit Test                       |    100%    |
+|              | `UC_LOG_006` | Tạo lệnh giao từ đơn hàng — Polish BE/FE & Unit Test                        |    100%    |
+|              | `UC_LOG_008` | Tách lệnh giao nhiều đợt — Polish BE/FE & Unit Test                         |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 105** | `UC_LOG_009` | Pick list / soạn hàng — Polish BE/FE & Unit Test                            | 85% ➔ 100% |
-|              | `UC_LOG_011` | In vận đơn / phiếu giao — Polish BE/FE & Unit Test                          | 95% ➔ 100% |
-|              | `UC_LOG_012` | Hủy / hoàn lệnh giao — Polish BE/FE & Unit Test                             | 85% ➔ 100% |
-|              | `UC_LOG_013` | Phân công tài xế / đơn vị vận chuyển — Polish BE/FE & Unit Test             | 85% ➔ 100% |
+| **Bước 105** | `UC_LOG_009` | Pick list / soạn hàng — Polish BE/FE & Unit Test                            |    100%    |
+|   `[XONG]`   | `UC_LOG_011` | In vận đơn / phiếu giao — Polish BE/FE & Unit Test                          |    100%    |
+|              | `UC_LOG_012` | Hủy / hoàn lệnh giao — Polish BE/FE & Unit Test                             |    100%    |
+|              | `UC_LOG_013` | Phân công tài xế / đơn vị vận chuyển — Polish BE/FE & Unit Test             |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 106** | `UC_LOG_014` | Cập nhật trạng thái vận đơn — Polish BE/FE & Unit Test                      | 95% ➔ 100% |
-|              | `UC_LOG_017` | Ghi nhận giao thất bại — Polish BE/FE & Unit Test                           | 85% ➔ 100% |
-|              | `UC_LOG_021` | Ghi nhận số tiền COD — Polish BE/FE & Unit Test                             | 90% ➔ 100% |
-|              | `UC_LOG_022` | Xác nhận đã thu COD — Polish BE/FE & Unit Test                              | 90% ➔ 100% |
+| **Bước 106** | `UC_LOG_014` | Cập nhật trạng thái vận đơn — Polish BE/FE & Unit Test                      |    100%    |
+|   `[XONG]`   | `UC_LOG_017` | Ghi nhận giao thất bại — Polish BE/FE & Unit Test                           |    100%    |
+|              | `UC_LOG_021` | Ghi nhận số tiền COD — Polish BE/FE & Unit Test                             |    100%    |
+|              | `UC_LOG_022` | Xác nhận đã thu COD — Polish BE/FE & Unit Test                              |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 107** | `UC_LOG_023` | Bàn giao tiền COD — Polish BE/FE & Unit Test                                | 90% ➔ 100% |
-|              | `UC_LOG_024` | Đối soát 3 chiều COD — Polish BE/FE & Unit Test                             | 90% ➔ 100% |
-|              | `UC_LOG_026` | Xử lý lệch COD — Polish BE/FE & Unit Test                                   | 85% ➔ 100% |
-|              | `UC_LOG_027` | Tạo phiếu hoàn về kho — Polish BE/FE & Unit Test                            | 90% ➔ 100% |
+| **Bước 107** | `UC_LOG_023` | Bàn giao tiền COD — Polish BE/FE & Unit Test                                |    100%    |
+|   `[XONG]`   | `UC_LOG_024` | Đối soát 3 chiều COD — Polish BE/FE & Unit Test                             |    100%    |
+|              | `UC_LOG_026` | Xử lý lệch COD — Polish BE/FE & Unit Test                                   |    100%    |
+|              | `UC_LOG_027` | Tạo phiếu hoàn về kho — Polish BE/FE & Unit Test                            |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 108** | `UC_LOG_028` | Kiểm đếm hàng hoàn — Polish BE/FE & Unit Test                               | 90% ➔ 100% |
-|              | `UC_LOG_029` | Nhập kho hàng hoàn — Polish BE/FE & Unit Test                               | 90% ➔ 100% |
-|              | `UC_LOG_034` | Tỷ lệ giao đúng hạn — Polish BE/FE & Unit Test                              | 90% ➔ 100% |
-|              | `UC_LOG_035` | Tỷ lệ hoàn / thất bại — Polish BE/FE & Unit Test                            | 85% ➔ 100% |
+| **Bước 108** | `UC_LOG_028` | Kiểm đếm hàng hoàn — Polish BE/FE & Unit Test                               |    100%    |
+|   `[XONG]`   | `UC_LOG_029` | Nhập kho hàng hoàn — Polish BE/FE & Unit Test                               |    100%    |
+|              | `UC_LOG_034` | Tỷ lệ giao đúng hạn — Polish BE/FE & Unit Test                              |    100%    |
+|              | `UC_LOG_035` | Tỷ lệ hoàn / thất bại — Polish BE/FE & Unit Test                            |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 109** | `UC_LOG_038` | Báo cáo COD tồn / đã nộp — Polish BE/FE & Unit Test                         | 90% ➔ 100% |
-|              | `UC_LOG_039` | Dashboard giao vận — Polish BE/FE & Unit Test                               | 85% ➔ 100% |
-|              | `UC_MFG_001` | Danh mục thành phẩm / bán thành phẩm — Polish BE/FE & Unit Test             | 85% ➔ 100% |
-|              | `UC_MFG_002` | Danh mục nguyên vật liệu — Polish BE/FE & Unit Test                         | 85% ➔ 100% |
+| **Bước 109** | `UC_LOG_038` | Báo cáo COD tồn / đã nộp — Polish BE/FE & Unit Test                         |    100%    |
+|   `[XONG]`   | `UC_LOG_039` | Dashboard giao vận — Polish BE/FE & Unit Test                               |    100%    |
+|              | `UC_MFG_001` | Danh mục thành phẩm / bán thành phẩm — Polish BE/FE & Unit Test             |    100%    |
+|              | `UC_MFG_002` | Danh mục nguyên vật liệu — Polish BE/FE & Unit Test                         |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 110** | `UC_MFG_003` | Danh mục xưởng / dây chuyền — Polish BE/FE & Unit Test                      | 85% ➔ 100% |
-|              | `UC_MFG_006` | Tạo BOM nhiều cấp — Polish BE/FE & Unit Test                                | 85% ➔ 100% |
-|              | `UC_MFG_007` | Phiên bản BOM — Polish BE/FE & Unit Test                                    | 85% ➔ 100% |
-|              | `UC_MFG_008` | Định mức nguyên vật liệu — Polish BE/FE & Unit Test                         | 85% ➔ 100% |
+| **Bước 110** | `UC_MFG_003` | Danh mục xưởng / dây chuyền — Polish BE/FE & Unit Test                      |    100%    |
+|   `[XONG]`   | `UC_MFG_006` | Tạo BOM nhiều cấp — Polish BE/FE & Unit Test                                |    100%    |
+|              | `UC_MFG_007` | Phiên bản BOM — Polish BE/FE & Unit Test                                    |    100%    |
+|              | `UC_MFG_008` | Định mức nguyên vật liệu — Polish BE/FE & Unit Test                         |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 111** | `UC_MFG_013` | Kế hoạch SX theo đơn hàng — Polish BE/FE & Unit Test                        | 85% ➔ 100% |
-|              | `UC_MFG_017` | Tạo lệnh sản xuất — Polish BE/FE & Unit Test                                | 85% ➔ 100% |
-|              | `UC_MFG_018` | Duyệt lệnh sản xuất — Polish BE/FE & Unit Test                              | 85% ➔ 100% |
-|              | `UC_MFG_019` | Phát hành lệnh / in phiếu — Polish BE/FE & Unit Test                        | 85% ➔ 100% |
+| **Bước 111** | `UC_MFG_013` | Kế hoạch SX theo đơn hàng — Polish BE/FE & Unit Test                        |    100%    |
+|   `[XONG]`   | `UC_MFG_017` | Tạo lệnh sản xuất — Polish BE/FE & Unit Test                                |    100%    |
+|              | `UC_MFG_018` | Duyệt lệnh sản xuất — Polish BE/FE & Unit Test                              |    100%    |
+|              | `UC_MFG_019` | Phát hành lệnh / in phiếu — Polish BE/FE & Unit Test                        |    100%    |
 |     ---      | ---          | ---                                                                         |    ---     |
 | **Bước 112** | `UC_MFG_022` | Ghi nhận thành phẩm nhập kho — Polish BE/FE & Unit Test                     | 95% ➔ 100% |
 |              | `UC_MFG_023` | Ghi nhận phế phẩm / hao hụt — Polish BE/FE & Unit Test                      | 90% ➔ 100% |
