@@ -952,70 +952,70 @@
 |              | `UC_CRM_119` | Báo cáo retention / tái mua — Khởi tạo Entity, Migration, API & UI          |    90%    |
 |              | `UC_CRM_120` | Cấu hình rule hoa hồng — Khởi tạo Entity, Migration, API & UI               |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 177** | `UC_CRM_121` | Tính hoa hồng theo kỳ — Khởi tạo Entity, Migration, API & UI                |  0% ➔ 90%  |
-|              | `UC_CRM_122` | Duyệt bảng hoa hồng — Khởi tạo Entity, Migration, API & UI                  |  0% ➔ 90%  |
-|              | `UC_CRM_123` | Đồng bộ hoa hồng sang HRM/FIN — Khởi tạo Entity, Migration, API & UI        |  0% ➔ 90%  |
-|              | `UC_CRM_125` | Bảng xếp hạng sales — Khởi tạo Entity, Migration, API & UI                  |  0% ➔ 90%  |
+| **Bước 177** | `UC_CRM_121` | Tính hoa hồng theo kỳ — Khởi tạo Entity, Migration, API & UI                |    90%    |
+|   `[XONG]`   | `UC_CRM_122` | Duyệt bảng hoa hồng — Khởi tạo Entity, Migration, API & UI                  |    90%    |
+|              | `UC_CRM_123` | Đồng bộ hoa hồng sang HRM/FIN — Khởi tạo Entity, Migration, API & UI        |    90%    |
+|              | `UC_CRM_125` | Bảng xếp hạng sales — Khởi tạo Entity, Migration, API & UI                  |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 178** | `UC_CRM_130` | Báo cáo công nợ bán — Khởi tạo Entity, Migration, API & UI                  |  0% ➔ 90%  |
-|              | `UC_CRM_131` | Xuất báo cáo định kỳ — Khởi tạo Entity, Migration, API & UI                 |  0% ➔ 90%  |
-|              | `UC_POS_004` | Cấu hình máy in bếp/khu vực — Khởi tạo Entity, Migration, API & UI          |  0% ➔ 90%  |
-|              | `UC_POS_005` | Cấu hình ngăn kéo tiền — Khởi tạo Entity, Migration, API & UI               |  0% ➔ 90%  |
+| **Bước 178** | `UC_CRM_130` | Báo cáo công nợ bán — Khởi tạo Entity, Migration, API & UI                  |    90%    |
+|   `[XONG]`   | `UC_CRM_131` | Xuất báo cáo định kỳ — Khởi tạo Entity, Migration, API & UI                 |    90%    |
+|              | `UC_POS_004` | Cấu hình máy in bếp/khu vực — Khởi tạo Entity, Migration, API & UI          |    90%    |
+|              | `UC_POS_005` | Cấu hình ngăn kéo tiền — Khởi tạo Entity, Migration, API & UI               |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 179** | `UC_POS_006` | Cấu hình thiết bị quét mã — Khởi tạo Entity, Migration, API & UI            |  0% ➔ 90%  |
-|              | `UC_POS_008` | Chế độ offline tạm — Khởi tạo Entity, Migration, API & UI                   |  0% ➔ 90%  |
-|              | `UC_POS_011` | Thuộc tính sản phẩm — Khởi tạo Entity, Migration, API & UI                  |  0% ➔ 90%  |
-|              | `UC_POS_013` | Ảnh sản phẩm / thứ tự hiển thị — Khởi tạo Entity, Migration, API & UI       |  0% ➔ 90%  |
+| **Bước 179** | `UC_POS_006` | Cấu hình thiết bị quét mã — Khởi tạo Entity, Migration, API & UI            |    90%    |
+|   `[XONG]`   | `UC_POS_008` | Chế độ offline tạm — Khởi tạo Entity, Migration, API & UI                   |    90%    |
+|              | `UC_POS_011` | Thuộc tính sản phẩm — Khởi tạo Entity, Migration, API & UI                  |    90%    |
+|              | `UC_POS_013` | Ảnh sản phẩm / thứ tự hiển thị — Khởi tạo Entity, Migration, API & UI       |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 180** | `UC_POS_017` | Giá theo khung giờ — Khởi tạo Entity, Migration, API & UI                   |  0% ➔ 90%  |
-|              | `UC_POS_018` | Giá theo ngày trong tuần — Khởi tạo Entity, Migration, API & UI             |  0% ➔ 90%  |
-|              | `UC_POS_020` | Làm tròn tiền — Khởi tạo Entity, Migration, API & UI                        |  0% ➔ 90%  |
-|              | `UC_POS_023` | Khuyến mại theo combo — Khởi tạo Entity, Migration, API & UI                |  0% ➔ 90%  |
+| **Bước 180** | `UC_POS_017` | Giá theo khung giờ — Khởi tạo Entity, Migration, API & UI                   |    90%    |
+|   `[XONG]`   | `UC_POS_018` | Giá theo ngày trong tuần — Khởi tạo Entity, Migration, API & UI             |    90%    |
+|              | `UC_POS_020` | Làm tròn tiền — Khởi tạo Entity, Migration, API & UI                        |    90%    |
+|              | `UC_POS_023` | Khuyến mại theo combo — Khởi tạo Entity, Migration, API & UI                |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 181** | `UC_POS_025` | Báo cáo khuyến mại — Khởi tạo Entity, Migration, API & UI                   |  0% ➔ 90%  |
-|              | `UC_POS_028` | Tách bill / gộp bill — Khởi tạo Entity, Migration, API & UI                 |  0% ➔ 90%  |
-|              | `UC_POS_029` | Chuyển đơn giữa quầy — Khởi tạo Entity, Migration, API & UI                 |  0% ➔ 90%  |
-|              | `UC_POS_030` | Ghi chú đơn hàng — Khởi tạo Entity, Migration, API & UI                     |  0% ➔ 90%  |
+| **Bước 181** | `UC_POS_025` | Báo cáo khuyến mại — Khởi tạo Entity, Migration, API & UI                   |    90%    |
+|   `[XONG]`   | `UC_POS_028` | Tách bill / gộp bill — Khởi tạo Entity, Migration, API & UI                 |    90%    |
+|              | `UC_POS_029` | Chuyển đơn giữa quầy — Khởi tạo Entity, Migration, API & UI                 |    90%    |
+|              | `UC_POS_030` | Ghi chú đơn hàng — Khởi tạo Entity, Migration, API & UI                     |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 182** | `UC_POS_031` | Gửi lệnh khu vực chế biến — Khởi tạo Entity, Migration, API & UI            |  0% ➔ 90%  |
-|              | `UC_POS_036` | Thanh toán hỗn hợp — Khởi tạo Entity, Migration, API & UI                   |  0% ➔ 90%  |
-|              | `UC_POS_041` | Gợi ý bán kèm — Khởi tạo Entity, Migration, API & UI                        |  0% ➔ 90%  |
-|              | `UC_POS_044` | Nộp tiền / rút tiền ca — Khởi tạo Entity, Migration, API & UI               |  0% ➔ 90%  |
+| **Bước 182** | `UC_POS_031` | Gửi lệnh khu vực chế biến — Khởi tạo Entity, Migration, API & UI            |    90%    |
+|   `[XONG]`   | `UC_POS_036` | Thanh toán hỗn hợp — Khởi tạo Entity, Migration, API & UI                   |    90%    |
+|              | `UC_POS_041` | Gợi ý bán kèm — Khởi tạo Entity, Migration, API & UI                        |    90%    |
+|              | `UC_POS_044` | Nộp tiền / rút tiền ca — Khởi tạo Entity, Migration, API & UI               |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 183** | `UC_POS_049` | Duyệt xác nhận ca — Khởi tạo Entity, Migration, API & UI                    |  0% ➔ 90%  |
-|              | `UC_POS_050` | Gắn khách hàng vào đơn — Khởi tạo Entity, Migration, API & UI               |  0% ➔ 90%  |
-|              | `UC_POS_051` | Tích điểm loyalty — Khởi tạo Entity, Migration, API & UI                    |  0% ➔ 90%  |
-|              | `UC_POS_052` | Đổi điểm / ưu đãi — Khởi tạo Entity, Migration, API & UI                    |  0% ➔ 90%  |
+| **Bước 183** | `UC_POS_049` | Duyệt xác nhận ca — Khởi tạo Entity, Migration, API & UI                    |    90%    |
+|   `[XONG]`   | `UC_POS_050` | Gắn khách hàng vào đơn — Khởi tạo Entity, Migration, API & UI               |    90%    |
+|              | `UC_POS_051` | Tích điểm loyalty — Khởi tạo Entity, Migration, API & UI                    |    90%    |
+|              | `UC_POS_052` | Đổi điểm / ưu đãi — Khởi tạo Entity, Migration, API & UI                    |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 184** | `UC_POS_053` | Tra cứu lịch sử mua — Khởi tạo Entity, Migration, API & UI                  |  0% ➔ 90%  |
-|              | `UC_POS_056` | Tạo đề nghị nhập hàng — Khởi tạo Entity, Migration, API & UI                |  0% ➔ 90%  |
-|              | `UC_POS_057` | Nhận hàng từ kho trung tâm — Khởi tạo Entity, Migration, API & UI           |  0% ➔ 90%  |
-|              | `UC_POS_058` | Kiểm kê nhanh — Khởi tạo Entity, Migration, API & UI                        |  0% ➔ 90%  |
+| **Bước 184** | `UC_POS_053` | Tra cứu lịch sử mua — Khởi tạo Entity, Migration, API & UI                  |    90%    |
+|   `[XONG]`   | `UC_POS_056` | Tạo đề nghị nhập hàng — Khởi tạo Entity, Migration, API & UI                |    90%    |
+|              | `UC_POS_057` | Nhận hàng từ kho trung tâm — Khởi tạo Entity, Migration, API & UI           |    90%    |
+|              | `UC_POS_058` | Kiểm kê nhanh — Khởi tạo Entity, Migration, API & UI                        |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 185** | `UC_POS_060` | Đồng bộ đơn sang CRM — Khởi tạo Entity, Migration, API & UI                 |  0% ➔ 90%  |
-|              | `UC_PUR_002` | Phân loại nhóm nhà cung cấp — Khởi tạo Entity, Migration, API & UI          |  0% ➔ 90%  |
-|              | `UC_PUR_004` | Lead time & MOQ — Khởi tạo Entity, Migration, API & UI                      |  0% ➔ 90%  |
-|              | `UC_PUR_005` | Đánh giá chất lượng nhà cung cấp — Khởi tạo Entity, Migration, API & UI     |  0% ➔ 90%  |
+| **Bước 185** | `UC_POS_060` | Đồng bộ đơn sang CRM — Khởi tạo Entity, Migration, API & UI                 |    90%    |
+|   `[XONG]`   | `UC_PUR_002` | Phân loại nhóm nhà cung cấp — Khởi tạo Entity, Migration, API & UI          |    90%    |
+|              | `UC_PUR_004` | Lead time & MOQ — Khởi tạo Entity, Migration, API & UI                      |    90%    |
+|              | `UC_PUR_005` | Đánh giá chất lượng nhà cung cấp — Khởi tạo Entity, Migration, API & UI     |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 186** | `UC_PUR_006` | Blacklist / ngưng dùng — Khởi tạo Entity, Migration, API & UI               |  0% ➔ 90%  |
-|              | `UC_PUR_007` | Import danh sách nhà cung cấp — Khởi tạo Entity, Migration, API & UI        |  0% ➔ 90%  |
-|              | `UC_PUR_008` | Hồ sơ pháp lý — Khởi tạo Entity, Migration, API & UI                        |  0% ➔ 90%  |
-|              | `UC_PUR_011` | Hiệu lực bảng giá mua — Khởi tạo Entity, Migration, API & UI                |  0% ➔ 90%  |
+| **Bước 186** | `UC_PUR_006` | Blacklist / ngưng dùng — Khởi tạo Entity, Migration, API & UI               |    90%    |
+|   `[XONG]`   | `UC_PUR_007` | Import danh sách nhà cung cấp — Khởi tạo Entity, Migration, API & UI        |    90%    |
+|              | `UC_PUR_008` | Hồ sơ pháp lý — Khởi tạo Entity, Migration, API & UI                        |    90%    |
+|              | `UC_PUR_011` | Hiệu lực bảng giá mua — Khởi tạo Entity, Migration, API & UI                |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 187** | `UC_PUR_012` | Lịch sử giá mua — Khởi tạo Entity, Migration, API & UI                      |  0% ➔ 90%  |
-|              | `UC_PUR_013` | Cảnh báo tăng giá bất thường — Khởi tạo Entity, Migration, API & UI         |  0% ➔ 90%  |
-|              | `UC_PUR_016` | Gộp nhiều nhu cầu thành PR — Khởi tạo Entity, Migration, API & UI           |  0% ➔ 90%  |
-|              | `UC_PUR_021` | Tạo RFQ gửi nhiều nhà cung cấp — Khởi tạo Entity, Migration, API & UI       |  0% ➔ 90%  |
+| **Bước 187** | `UC_PUR_012` | Lịch sử giá mua — Khởi tạo Entity, Migration, API & UI                      |    90%    |
+|   `[XONG]`   | `UC_PUR_013` | Cảnh báo tăng giá bất thường — Khởi tạo Entity, Migration, API & UI         |    90%    |
+|              | `UC_PUR_016` | Gộp nhiều nhu cầu thành PR — Khởi tạo Entity, Migration, API & UI           |    90%    |
+|              | `UC_PUR_021` | Tạo RFQ gửi nhiều nhà cung cấp — Khởi tạo Entity, Migration, API & UI       |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 188** | `UC_PUR_022` | Nhập báo giá từ nhà cung cấp — Khởi tạo Entity, Migration, API & UI         |  0% ➔ 90%  |
-|              | `UC_PUR_023` | So sánh giá / điều kiện — Khởi tạo Entity, Migration, API & UI              |  0% ➔ 90%  |
-|              | `UC_PUR_024` | Chọn nhà cung cấp thắng — Khởi tạo Entity, Migration, API & UI              |  0% ➔ 90%  |
-|              | `UC_PUR_029` | Xác nhận PO từ nhà cung cấp — Khởi tạo Entity, Migration, API & UI          |  0% ➔ 90%  |
+| **Bước 188** | `UC_PUR_022` | Nhập báo giá từ nhà cung cấp — Khởi tạo Entity, Migration, API & UI         |    90%    |
+|   `[XONG]`   | `UC_PUR_023` | So sánh giá / điều kiện — Khởi tạo Entity, Migration, API & UI              |    90%    |
+|              | `UC_PUR_024` | Chọn nhà cung cấp thắng — Khởi tạo Entity, Migration, API & UI              |    90%    |
+|              | `UC_PUR_029` | Xác nhận PO từ nhà cung cấp — Khởi tạo Entity, Migration, API & UI          |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 189** | `UC_PUR_036` | Từ chối lô hàng không đạt — Khởi tạo Entity, Migration, API & UI            |  0% ➔ 90%  |
-|              | `UC_PUR_038` | Trả hàng nhà cung cấp — Khởi tạo Entity, Migration, API & UI                |  0% ➔ 90%  |
-|              | `UC_PUR_039` | Biên bản giao nhận — Khởi tạo Entity, Migration, API & UI                   |  0% ➔ 90%  |
-|              | `UC_PUR_042` | Xử lý chênh lệch — Khởi tạo Entity, Migration, API & UI                     |  0% ➔ 90%  |
+| **Bước 189** | `UC_PUR_036` | Từ chối lô hàng không đạt — Khởi tạo Entity, Migration, API & UI            |    90%    |
+|   `[XONG]`   | `UC_PUR_038` | Trả hàng nhà cung cấp — Khởi tạo Entity, Migration, API & UI                |    90%    |
+|              | `UC_PUR_039` | Biên bản giao nhận — Khởi tạo Entity, Migration, API & UI                   |    90%    |
+|              | `UC_PUR_042` | Xử lý chênh lệch — Khởi tạo Entity, Migration, API & UI                     |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
 | **Bước 190** | `UC_PUR_044` | Tạm ứng nhà cung cấp — Khởi tạo Entity, Migration, API & UI                 |  0% ➔ 90%  |
 |              | `UC_PUR_045` | Hợp đồng mua khung — Khởi tạo Entity, Migration, API & UI                   |  0% ➔ 90%  |

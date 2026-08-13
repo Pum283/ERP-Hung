@@ -172,6 +172,20 @@ public static class DependencyInjection
         services.AddScoped<ICrmSalesContractAdminService, CrmSalesContractAdminService>();
         services.AddScoped<ICrmCreditFsmCareLoyaltyService, CrmCreditFsmCareLoyaltyService>();
         services.AddScoped<ICrmRewardSurveyRetentionCommissionService, CrmRewardSurveyRetentionCommissionService>();
+        services.AddScoped<ICrmCommissionSyncLeaderboardService, CrmCommissionSyncLeaderboardService>();
+        services.AddScoped<ICrmSalesReceivablesReportService, CrmSalesReceivablesReportService>();
+        services.AddScoped<IPosHardwarePrinterDrawerService, PosHardwarePrinterDrawerService>();
+        services.AddScoped<IPosScannerOfflineAttrProductService, PosScannerOfflineAttrProductService>();
+        services.AddScoped<IPosPricingRoundingComboService, PosPricingRoundingComboService>();
+        services.AddScoped<IPosPromoReportBillOrderOpsService, PosPromoReportBillOrderOpsService>();
+        services.AddScoped<IPosKitchenMixedPayCrossSellDrawerService, PosKitchenMixedPayCrossSellDrawerService>();
+        services.AddScoped<IPosShiftApproveCustomerLoyaltyRedeemService, PosShiftApproveCustomerLoyaltyRedeemService>();
+        services.AddScoped<IPosHistoryReplenishReceiveAuditService, PosHistoryReplenishReceiveAuditService>();
+        services.AddScoped<IPurSupplierCategoryQualityPosSyncService, PurSupplierCategoryQualityPosSyncService>();
+        services.AddScoped<IPurBlacklistImportLegalPricelistService, PurBlacklistImportLegalPricelistService>();
+        services.AddScoped<IPurPriceHistoryAlertPrConsolidateRfqService, PurPriceHistoryAlertPrConsolidateRfqService>();
+        services.AddScoped<IPurQuotationCompareAwardPoConfirmService, PurQuotationCompareAwardPoConfirmService>();
+        services.AddScoped<IPurRejectReturnDeliveryProtocolDiscrepancyService, PurRejectReturnDeliveryProtocolDiscrepancyService>();
         return services;
     }
 
