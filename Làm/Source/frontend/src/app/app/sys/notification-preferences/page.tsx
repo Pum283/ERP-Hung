@@ -6,7 +6,7 @@ import {
   upsertMyNotificationPreferences,
   type SysNotificationPreferenceDto,
 } from "@/shared/api/sys-api";
-import { validateQuietHours } from "@/shared/api/sys-step154-helpers";
+import { validateQuietHours } from "@/shared/api/sys-notif-scan-export-ip-helpers";
 import { Bell, RefreshCw } from "lucide-react";
 import { btn } from "@/shared/ui/btn";
 import { field, panel } from "@/shared/ui/field";

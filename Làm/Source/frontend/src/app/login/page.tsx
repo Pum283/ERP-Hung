@@ -21,8 +21,8 @@ import {
   fetchPublicTheme,
   type SysSsoProviderPublicDto,
 } from "@/shared/api/sys-api";
-import { buildDevSsoCode } from "@/shared/api/sys-step153-helpers";
-import { applyThemeCssVars } from "@/shared/api/sys-step155-helpers";
+import { buildDevSsoCode } from "@/shared/api/sys-sso-field-config-push-helpers";
+import { applyThemeCssVars } from "@/shared/api/sys-theme-role-home-msg-helpers";
 
 type Mode = "login" | "forgot" | "reset";
 

@@ -7,7 +7,7 @@ import {
   downloadExportJob,
   type SysBulkExportJobDto,
 } from "@/shared/api/sys-api";
-import { validateBulkExportRequest } from "@/shared/api/sys-step154-helpers";
+import { validateBulkExportRequest } from "@/shared/api/sys-notif-scan-export-ip-helpers";
 import { getJobStatusLabel } from "@/shared/api/sys-export-helpers";
 import { Download, RefreshCw } from "lucide-react";
 import { btn } from "@/shared/ui/btn";

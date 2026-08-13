@@ -8,7 +8,7 @@ import {
   checkIpRule,
   type SysIpRuleDto,
 } from "@/shared/api/sys-api";
-import { validateIpRuleForm } from "@/shared/api/sys-step154-helpers";
+import { validateIpRuleForm } from "@/shared/api/sys-notif-scan-export-ip-helpers";
 import { RefreshCw, Shield } from "lucide-react";
 import { btn } from "@/shared/ui/btn";
 import { field, panel } from "@/shared/ui/field";

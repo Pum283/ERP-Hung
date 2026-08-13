@@ -117,9 +117,9 @@ public static class DependencyInjection
         services.AddScoped<IDataScopeService, DataScopeService>();
         services.AddScoped<ISysMasterService, SysMasterService>();
         services.AddScoped<ISysPlatformService, SysPlatformService>();
-        services.AddScoped<ISysStep153Service, SysStep153Service>();
-        services.AddScoped<ISysStep154Service, SysStep154Service>();
-        services.AddScoped<ISysStep155Service, SysStep155Service>();
+        services.AddScoped<ISysSsoFieldConfigPushService, SysSsoFieldConfigPushService>();
+        services.AddScoped<ISysNotifScanExportIpService, SysNotifScanExportIpService>();
+        services.AddScoped<ISysThemeRoleHomeMsgService, SysThemeRoleHomeMsgService>();
         services.AddScoped<IMsgService, MsgService>();
         services.AddScoped<IOutboxWriter, OutboxWriter>();
         services.AddScoped<IInboxStore, InboxStore>();
@@ -151,14 +151,27 @@ public static class DependencyInjection
         services.AddScoped<IHrmRewardDisciplineService, HrmRewardDisciplineService>();
         services.AddScoped<IHrmOffboardingService, HrmOffboardingService>();
         services.AddScoped<IHrmDashboardService, HrmDashboardService>();
-        services.AddScoped<IHrmStep156Service, HrmStep156Service>();
-        services.AddScoped<IHrmStep157Service, HrmStep157Service>();
-        services.AddScoped<IHrmStep158Service, HrmStep158Service>();
-        services.AddScoped<IHrmStep159Service, HrmStep159Service>();
-        services.AddScoped<IStep160Service, Step160Service>();
-        services.AddScoped<IStep161Service, Step161Service>();
-        services.AddScoped<IStep162Service, Step162Service>();
-        services.AddScoped<IStep163Service, Step163Service>();
+        services.AddScoped<IHrmOrgDepartmentService, HrmOrgDepartmentService>();
+        services.AddScoped<IHrmSkillQualificationService, HrmSkillQualificationService>();
+        services.AddScoped<IHrmShiftImportService, HrmShiftImportService>();
+        services.AddScoped<IHrmEvalTemplateService, HrmEvalTemplateService>();
+        services.AddScoped<IHrmLmsEvalCatalogService, HrmLmsEvalCatalogService>();
+        services.AddScoped<ILmsExamMentoringService, LmsExamMentoringService>();
+        services.AddScoped<ILmsEngageCertService, LmsEngageCertService>();
+        services.AddScoped<ILmsCertSyncOpsService, LmsCertSyncOpsService>();
+        services.AddScoped<ILmsContentComplianceService, LmsContentComplianceService>();
+        services.AddScoped<ILmsPathTrackingService, LmsPathTrackingService>();
+        services.AddScoped<ILmsTrainingReportsService, LmsTrainingReportsService>();
+        services.AddScoped<ILmsAiAssistService, LmsAiAssistService>();
+        services.AddScoped<ICrmLeadCampaignInboxService, CrmLeadCampaignInboxService>();
+        services.AddScoped<ICrmOmnichannelRoutingSlaService, CrmOmnichannelRoutingSlaService>();
+        services.AddScoped<ICrmChatbotLeadCsatOrderService, CrmChatbotLeadCsatOrderService>();
+        services.AddScoped<ICrmRouteSalesVisitGpsService, CrmRouteSalesVisitGpsService>();
+        services.AddScoped<ICrmFieldVisitOutcomeOrderService, CrmFieldVisitOutcomeOrderService>();
+        services.AddScoped<ICrmFieldSalesOpsDisputeService, CrmFieldSalesOpsDisputeService>();
+        services.AddScoped<ICrmSalesContractAdminService, CrmSalesContractAdminService>();
+        services.AddScoped<ICrmCreditFsmCareLoyaltyService, CrmCreditFsmCareLoyaltyService>();
+        services.AddScoped<ICrmRewardSurveyRetentionCommissionService, CrmRewardSurveyRetentionCommissionService>();
         return services;
     }
 

@@ -21,13 +21,13 @@ public sealed class AuthService : IAuthService
     private readonly IJwtTokenService _jwt;
     private readonly IDataScopeService _scope;
     private readonly ISysPlatformService _platform;
-    private readonly ISysStep154Service _step154;
+    private readonly ISysNotifScanExportIpService _step154;
     private readonly IConfiguration _config;
     private readonly ILogger<AuthService> _log;
 
     public AuthService(
         AppDbContext db, IJwtTokenService jwt, IDataScopeService scope,
-        ISysPlatformService platform, ISysStep154Service step154, IConfiguration config, ILogger<AuthService> log)
+        ISysPlatformService platform, ISysNotifScanExportIpService step154, IConfiguration config, ILogger<AuthService> log)
     {
         _db = db;
         _jwt = jwt;

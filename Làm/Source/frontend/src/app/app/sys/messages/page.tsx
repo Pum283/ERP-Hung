@@ -33,7 +33,7 @@ import {
   highlightSearchSnippet,
   validateMessageSearchQuery,
   validateMuteUntil,
-} from "@/shared/api/sys-step155-helpers";
+} from "@/shared/api/sys-theme-role-home-msg-helpers";
 import { MsgBubble } from "@/components/msg/MsgBubble";
 import { useAuthStore } from "@/shared/auth/auth-store";
 import { usePermissions } from "@/shared/hooks/use-permissions";

@@ -41,6 +41,16 @@
      - **BE (Backend) làm gì:** Liệt kê chi tiết các Services, Entities, Controllers, API Endpoints, Validation Rules và Exception handling đã triển khai/cập nhật.
      - **FE (Frontend) làm gì:** Liệt kê chi tiết Giao diện UI (pages/components), Helper Modules, Form validation và API Integrations.
      - **Test (Kiểm thử) làm gì:** Báo cáo số lượng và danh sách Test Cases Backend (.NET xUnit) & Frontend (Node.js test runner), cùng kết quả thực thi PASSED/FAILED.
+10. **Quy tắc Đặt tên File / Thư mục / API / Class (Bắt buộc — nghiêm túc, theo nghiệp vụ):**
+   - **Cấm tên “Step N”:** Không đặt tên file, thư mục, route, class, interface, DTO bundle, helper, test theo số bước kế hoạch (`Step153`, `SysStep154`, `HrmStep156`, `step160`, `sys-step153-helpers`, `/app/(dashboard)/step161`, `api/step162`, …). Số bước chỉ dùng trong tài liệu Timeline (`KE_HOACH`, checklist), **không** vào source.
+   - **Bắt buộc tên theo domain / UC:** Dùng mã module + khái niệm nghiệp vụ rõ nghĩa (ví dụ: `SysSsoFieldConfigPush`, `SysNotifScanExportIp`, `HrmOrgDepartment`, `LmsExamMentoring`, `lms/ai-assist`, `api/lms/path-tracking`).
+   - **Chuẩn đặt tên:**
+     - **BE:** `{Module}{Domain}Controller|Service|Dtos|Entities|{Domain}PolishTests` — route REST theo module/domain (`api/sys/...`, `api/hrm/...`, `api/lms/...`), không `api/stepNN`.
+     - **FE:** thư mục trang `app/.../{module}/{domain-kebab}/`; helper ` {module}-{domain-kebab}-helpers.ts` + `*.node-test.mts`.
+     - **Entity/table:** tên nghiệp vụ (`SysSsoProvider`, `SysPushDevice`) — không gắn số bước.
+   - **Ngoại lệ:** class Migration EF đã apply (`AddSysStep153…`) **giữ nguyên** để không phá lịch sử DB; migration **mới** đặt tên theo domain (`AddSysSsoProviders`, …).
+   - **Nợ cũ:** file `*StepNN*` / `*-stepNN-*` từ Cap trước — khi chạm lại UC đó phải rename sang domain trong cùng PR; không tạo thêm artifact kiểu Step.
+   - **Trước khi đánh `[XONG]` / 100%:** rà không còn path/class mới theo pattern Step số bước cho slice vừa làm.
 
 ---
 
@@ -865,70 +875,70 @@
 |              | `UC_LMS_053` | Thống kê doanh thu theo khóa — Khởi tạo Entity, Migration, API & UI         |    90%    |
 |              | `UC_LMS_054` | Chống chia sẻ tài khoản — Khởi tạo Entity, Migration, API & UI              |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 164** | `UC_LMS_055` | Chặn tải video — Khởi tạo Entity, Migration, API & UI                       |  0% ➔ 90%  |
-|              | `UC_LMS_056` | Tạo khảo sát hiểu bài — Khởi tạo Entity, Migration, API & UI                |  0% ➔ 90%  |
-|              | `UC_LMS_057` | Khảo sát tuân thủ — Khởi tạo Entity, Migration, API & UI                    |  0% ➔ 90%  |
-|              | `UC_LMS_059` | Bắt buộc hoàn thành trước ca — Khởi tạo Entity, Migration, API & UI         |  0% ➔ 90%  |
+| **Bước 164** | `UC_LMS_055` | Chặn tải video — Khởi tạo Entity, Migration, API & UI                       |    90%    |
+|   `[XONG]`   | `UC_LMS_056` | Tạo khảo sát hiểu bài — Khởi tạo Entity, Migration, API & UI                |    90%    |
+|              | `UC_LMS_057` | Khảo sát tuân thủ — Khởi tạo Entity, Migration, API & UI                    |    90%    |
+|              | `UC_LMS_059` | Bắt buộc hoàn thành trước ca — Khởi tạo Entity, Migration, API & UI         |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 165** | `UC_LMS_060` | Báo cáo tỷ lệ xác nhận — Khởi tạo Entity, Migration, API & UI               |  0% ➔ 90%  |
-|              | `UC_LMS_061` | Gán lộ trình theo chức danh — Khởi tạo Entity, Migration, API & UI          |  0% ➔ 90%  |
-|              | `UC_LMS_062` | Tự gán khóa bắt buộc khi nhận việc — Khởi tạo Entity, Migration, API & UI   |  0% ➔ 90%  |
-|              | `UC_LMS_063` | Theo dõi hoàn thành lộ trình — Khởi tạo Entity, Migration, API & UI         |  0% ➔ 90%  |
+| **Bước 165** | `UC_LMS_060` | Báo cáo tỷ lệ xác nhận — Khởi tạo Entity, Migration, API & UI               |    90%    |
+|   `[XONG]`   | `UC_LMS_061` | Gán lộ trình theo chức danh — Khởi tạo Entity, Migration, API & UI          |    90%    |
+|              | `UC_LMS_062` | Tự gán khóa bắt buộc khi nhận việc — Khởi tạo Entity, Migration, API & UI   |    90%    |
+|              | `UC_LMS_063` | Theo dõi hoàn thành lộ trình — Khởi tạo Entity, Migration, API & UI         |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 166** | `UC_LMS_064` | Cảnh báo quá hạn đào tạo — Khởi tạo Entity, Migration, API & UI             |  0% ➔ 90%  |
-|              | `UC_LMS_067` | Báo cáo điểm thi / tỷ lệ đạt — Khởi tạo Entity, Migration, API & UI         |  0% ➔ 90%  |
-|              | `UC_LMS_068` | Báo cáo học viên bỏ dở — Khởi tạo Entity, Migration, API & UI               |  0% ➔ 90%  |
-|              | `UC_LMS_069` | Báo cáo hiệu quả khóa — Khởi tạo Entity, Migration, API & UI                |  0% ➔ 90%  |
+| **Bước 166** | `UC_LMS_064` | Cảnh báo quá hạn đào tạo — Khởi tạo Entity, Migration, API & UI             |    90%    |
+|   `[XONG]`   | `UC_LMS_067` | Báo cáo điểm thi / tỷ lệ đạt — Khởi tạo Entity, Migration, API & UI         |    90%    |
+|              | `UC_LMS_068` | Báo cáo học viên bỏ dở — Khởi tạo Entity, Migration, API & UI               |    90%    |
+|              | `UC_LMS_069` | Báo cáo hiệu quả khóa — Khởi tạo Entity, Migration, API & UI                |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 167** | `UC_LMS_071` | Gợi ý khóa học tiếp theo — Khởi tạo Entity, Migration, API & UI             |  0% ➔ 90%  |
-|              | `UC_LMS_072` | Tóm tắt bài học bằng AI — Khởi tạo Entity, Migration, API & UI              |  0% ➔ 90%  |
-|              | `UC_LMS_073` | AI tạo quiz từ nội dung — Khởi tạo Entity, Migration, API & UI              |  0% ➔ 90%  |
-|              | `UC_LMS_074` | Trợ lý hỏi đáp — Khởi tạo Entity, Migration, API & UI                       |  0% ➔ 90%  |
+| **Bước 167** | `UC_LMS_071` | Gợi ý khóa học tiếp theo — Khởi tạo Entity, Migration, API & UI             |    90%    |
+|   `[XONG]`   | `UC_LMS_072` | Tóm tắt bài học bằng AI — Khởi tạo Entity, Migration, API & UI              |    90%    |
+|              | `UC_LMS_073` | AI tạo quiz từ nội dung — Khởi tạo Entity, Migration, API & UI              |    90%    |
+|              | `UC_LMS_074` | Trợ lý hỏi đáp — Khởi tạo Entity, Migration, API & UI                       |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 168** | `UC_CRM_007` | Đánh giá tiềm năng — Khởi tạo Entity, Migration, API & UI                   |  0% ➔ 90%  |
-|              | `UC_CRM_022` | Nhân bản campaign — Khởi tạo Entity, Migration, API & UI                    |  0% ➔ 90%  |
-|              | `UC_CRM_039` | Hộp thư tập trung đa kênh — Khởi tạo Entity, Migration, API & UI            |  0% ➔ 90%  |
-|              | `UC_CRM_040` | Tiếp nhận hội thoại mới — Khởi tạo Entity, Migration, API & UI              |  0% ➔ 90%  |
+| **Bước 168** | `UC_CRM_007` | Đánh giá tiềm năng — Khởi tạo Entity, Migration, API & UI                   |    90%    |
+|   `[XONG]`   | `UC_CRM_022` | Nhân bản campaign — Khởi tạo Entity, Migration, API & UI                    |    90%    |
+|              | `UC_CRM_039` | Hộp thư tập trung đa kênh — Khởi tạo Entity, Migration, API & UI            |    90%    |
+|              | `UC_CRM_040` | Tiếp nhận hội thoại mới — Khởi tạo Entity, Migration, API & UI              |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 169** | `UC_CRM_041` | Phân phối hội thoại theo rule — Khởi tạo Entity, Migration, API & UI        |  0% ➔ 90%  |
-|              | `UC_CRM_042` | Chuyển hội thoại giữa agent — Khởi tạo Entity, Migration, API & UI          |  0% ➔ 90%  |
-|              | `UC_CRM_043` | SLA phản hồi & cảnh báo — Khởi tạo Entity, Migration, API & UI              |  0% ➔ 90%  |
-|              | `UC_CRM_044` | Chatbot kịch bản — Khởi tạo Entity, Migration, API & UI                     |  0% ➔ 90%  |
+| **Bước 169** | `UC_CRM_041` | Phân phối hội thoại theo rule — Khởi tạo Entity, Migration, API & UI        |    90%    |
+|   `[XONG]`   | `UC_CRM_042` | Chuyển hội thoại giữa agent — Khởi tạo Entity, Migration, API & UI          |    90%    |
+|              | `UC_CRM_043` | SLA phản hồi & cảnh báo — Khởi tạo Entity, Migration, API & UI              |    90%    |
+|              | `UC_CRM_044` | Chatbot kịch bản — Khởi tạo Entity, Migration, API & UI                     |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 170** | `UC_CRM_045` | Chatbot thu thập lead — Khởi tạo Entity, Migration, API & UI                |  0% ➔ 90%  |
-|              | `UC_CRM_046` | Chuyển bot sang agent — Khởi tạo Entity, Migration, API & UI                |  0% ➔ 90%  |
-|              | `UC_CRM_048` | Đánh giá CSAT — Khởi tạo Entity, Migration, API & UI                        |  0% ➔ 90%  |
-|              | `UC_CRM_080` | Tiếp nhận đơn từ kênh online — Khởi tạo Entity, Migration, API & UI         |  0% ➔ 90%  |
+| **Bước 170** | `UC_CRM_045` | Chatbot thu thập lead — Khởi tạo Entity, Migration, API & UI                |    90%    |
+|   `[XONG]`   | `UC_CRM_046` | Chuyển bot sang agent — Khởi tạo Entity, Migration, API & UI                |    90%    |
+|              | `UC_CRM_048` | Đánh giá CSAT — Khởi tạo Entity, Migration, API & UI                        |    90%    |
+|              | `UC_CRM_080` | Tiếp nhận đơn từ kênh online — Khởi tạo Entity, Migration, API & UI         |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 171** | `UC_CRM_089` | Phân vùng / tuyến bán hàng — Khởi tạo Entity, Migration, API & UI           |  0% ➔ 90%  |
-|              | `UC_CRM_090` | Phân loại tần suất visit — Khởi tạo Entity, Migration, API & UI             |  0% ➔ 90%  |
-|              | `UC_CRM_091` | Lập kế hoạch visit — Khởi tạo Entity, Migration, API & UI                   |  0% ➔ 90%  |
-|              | `UC_CRM_092` | Check-in / check-out GPS — Khởi tạo Entity, Migration, API & UI             |  0% ➔ 90%  |
+| **Bước 171** | `UC_CRM_089` | Phân vùng / tuyến bán hàng — Khởi tạo Entity, Migration, API & UI           |    90%    |
+|   `[XONG]`   | `UC_CRM_090` | Phân loại tần suất visit — Khởi tạo Entity, Migration, API & UI             |    90%    |
+|              | `UC_CRM_091` | Lập kế hoạch visit — Khởi tạo Entity, Migration, API & UI                   |    90%    |
+|              | `UC_CRM_092` | Check-in / check-out GPS — Khởi tạo Entity, Migration, API & UI             |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 172** | `UC_CRM_093` | Ghi nhận mục đích – kết quả visit — Khởi tạo Entity, Migration, API & UI    |  0% ➔ 90%  |
-|              | `UC_CRM_094` | Ghi nhận nhu cầu khách hàng — Khởi tạo Entity, Migration, API & UI          |  0% ➔ 90%  |
-|              | `UC_CRM_095` | Đặt hàng tại điểm thăm — Khởi tạo Entity, Migration, API & UI               |  0% ➔ 90%  |
-|              | `UC_CRM_096` | Xem lịch sử visit — Khởi tạo Entity, Migration, API & UI                    |  0% ➔ 90%  |
+| **Bước 172** | `UC_CRM_093` | Ghi nhận mục đích – kết quả visit — Khởi tạo Entity, Migration, API & UI    |    90%    |
+|   `[XONG]`   | `UC_CRM_094` | Ghi nhận nhu cầu khách hàng — Khởi tạo Entity, Migration, API & UI          |    90%    |
+|              | `UC_CRM_095` | Đặt hàng tại điểm thăm — Khởi tạo Entity, Migration, API & UI               |    90%    |
+|              | `UC_CRM_096` | Xem lịch sử visit — Khởi tạo Entity, Migration, API & UI                    |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 173** | `UC_CRM_097` | AI gợi ý việc ưu tiên — Khởi tạo Entity, Migration, API & UI                |  0% ➔ 90%  |
-|              | `UC_CRM_098` | Dashboard doanh số field — Khởi tạo Entity, Migration, API & UI             |  0% ➔ 90%  |
-|              | `UC_CRM_102` | Đối soát chứng từ đơn — Khởi tạo Entity, Migration, API & UI                |  0% ➔ 90%  |
-|              | `UC_CRM_103` | Xử lý khiếu nại đơn hàng — Khởi tạo Entity, Migration, API & UI             |  0% ➔ 90%  |
+| **Bước 173** | `UC_CRM_097` | AI gợi ý việc ưu tiên — Khởi tạo Entity, Migration, API & UI                |    90%    |
+|   `[XONG]`   | `UC_CRM_098` | Dashboard doanh số field — Khởi tạo Entity, Migration, API & UI             |    90%    |
+|              | `UC_CRM_102` | Đối soát chứng từ đơn — Khởi tạo Entity, Migration, API & UI                |    90%    |
+|              | `UC_CRM_103` | Xử lý khiếu nại đơn hàng — Khởi tạo Entity, Migration, API & UI             |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 174** | `UC_CRM_105` | Báo cáo năng suất Sales Admin — Khởi tạo Entity, Migration, API & UI        |  0% ➔ 90%  |
-|              | `UC_CRM_106` | Quản lý hợp đồng bán — Khởi tạo Entity, Migration, API & UI                 |  0% ➔ 90%  |
-|              | `UC_CRM_107` | Đính kèm file hợp đồng — Khởi tạo Entity, Migration, API & UI               |  0% ➔ 90%  |
-|              | `UC_CRM_108` | Theo dõi hiệu lực / tái tục — Khởi tạo Entity, Migration, API & UI          |  0% ➔ 90%  |
+| **Bước 174** | `UC_CRM_105` | Báo cáo năng suất Sales Admin — Khởi tạo Entity, Migration, API & UI        |    90%    |
+|   `[XONG]`   | `UC_CRM_106` | Quản lý hợp đồng bán — Khởi tạo Entity, Migration, API & UI                 |    90%    |
+|              | `UC_CRM_107` | Đính kèm file hợp đồng — Khởi tạo Entity, Migration, API & UI               |    90%    |
+|              | `UC_CRM_108` | Theo dõi hiệu lực / tái tục — Khởi tạo Entity, Migration, API & UI          |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 175** | `UC_CRM_111` | Chặn bán khi vượt công nợ — Khởi tạo Entity, Migration, API & UI            |  0% ➔ 90%  |
-|              | `UC_CRM_114` | Chuyển ticket sang FSM — Khởi tạo Entity, Migration, API & UI               |  0% ➔ 90%  |
-|              | `UC_CRM_115` | Lịch chăm sóc / nhắc tái mua — Khởi tạo Entity, Migration, API & UI         |  0% ➔ 90%  |
-|              | `UC_CRM_116` | Chương trình loyalty — Khởi tạo Entity, Migration, API & UI                 |  0% ➔ 90%  |
+| **Bước 175** | `UC_CRM_111` | Chặn bán khi vượt công nợ — Khởi tạo Entity, Migration, API & UI            |    90%    |
+|   `[XONG]`   | `UC_CRM_114` | Chuyển ticket sang FSM — Khởi tạo Entity, Migration, API & UI               |    90%    |
+|              | `UC_CRM_115` | Lịch chăm sóc / nhắc tái mua — Khởi tạo Entity, Migration, API & UI         |    90%    |
+|              | `UC_CRM_116` | Chương trình loyalty — Khởi tạo Entity, Migration, API & UI                 |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
-| **Bước 176** | `UC_CRM_117` | Tích điểm / đổi quà — Khởi tạo Entity, Migration, API & UI                  |  0% ➔ 90%  |
-|              | `UC_CRM_118` | Khảo sát hài lòng — Khởi tạo Entity, Migration, API & UI                    |  0% ➔ 90%  |
-|              | `UC_CRM_119` | Báo cáo retention / tái mua — Khởi tạo Entity, Migration, API & UI          |  0% ➔ 90%  |
-|              | `UC_CRM_120` | Cấu hình rule hoa hồng — Khởi tạo Entity, Migration, API & UI               |  0% ➔ 90%  |
+| **Bước 176** | `UC_CRM_117` | Tích điểm / đổi quà — Khởi tạo Entity, Migration, API & UI                  |    90%    |
+|   `[XONG]`   | `UC_CRM_118` | Khảo sát hài lòng — Khởi tạo Entity, Migration, API & UI                    |    90%    |
+|              | `UC_CRM_119` | Báo cáo retention / tái mua — Khởi tạo Entity, Migration, API & UI          |    90%    |
+|              | `UC_CRM_120` | Cấu hình rule hoa hồng — Khởi tạo Entity, Migration, API & UI               |    90%    |
 |     ---      | ---          | ---                                                                         |    ---     |
 | **Bước 177** | `UC_CRM_121` | Tính hoa hồng theo kỳ — Khởi tạo Entity, Migration, API & UI                |  0% ➔ 90%  |
 |              | `UC_CRM_122` | Duyệt bảng hoa hồng — Khởi tạo Entity, Migration, API & UI                  |  0% ➔ 90%  |

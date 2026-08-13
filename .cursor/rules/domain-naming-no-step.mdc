@@ -1,0 +1,35 @@
+---
+description: Cấm đặt tên file/thư mục/API/class theo số bước kế hoạch (StepNN); bắt buộc tên nghiệp vụ.
+alwaysApply: true
+---
+
+# Đặt tên theo domain — không dùng Step N
+
+Áp dụng mọi lần tạo/sửa code UC. Nguồn: `KE_HOACH_TRIEN_KHAI_UC.md` §10.
+
+## Cấm
+
+- Class/file: `Step160Service`, `SysStep153Controller`, `HrmStep156PolishTests`
+- FE: `sys-step153-helpers.ts`, `app/(dashboard)/step161/`, `hrm/step156`
+- API: `api/step160`, `api/hrm/step157`
+
+Số bước (`Bước 153`) chỉ xuất hiện trong Timeline docs, không trong source.
+
+## Bắt buộc
+
+- BE: `{Module}{Domain}Controller|Service|Dtos|…PolishTests` + route `api/{module}/{domain}`
+- FE: `{module}/{domain-kebab}/page.tsx` + `{module}-{domain-kebab}-helpers.ts`
+- Entity theo nghiệp vụ (`SysSsoProvider`), không theo số bước
+
+## Khi chạm code cũ `*StepNN*`
+
+Rename sang domain trong cùng thay đổi (trừ EF Migration đã apply).
+
+## Ví dụ đúng (đã chuẩn hóa 153–167)
+
+| Sai | Đúng |
+| --- | ---- |
+| `SysStep153Service` | `SysSsoFieldConfigPushService` |
+| `sys-step154-helpers` | `sys-notif-scan-export-ip-helpers` |
+| `api/step160` | `api/hrm-lms/eval-catalog` |
+| `/step167` | `/lms/ai-assist` |

@@ -14,7 +14,7 @@ import {
 import {
   applyFieldMaskUi,
   isAllowedFieldAccess,
-} from "@/shared/api/sys-step153-helpers";
+} from "@/shared/api/sys-sso-field-config-push-helpers";
 import { RefreshCw, Shield } from "lucide-react";
 import { btn } from "@/shared/ui/btn";
 import { field, panel } from "@/shared/ui/field";

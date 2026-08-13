@@ -394,7 +394,7 @@ public sealed class SysPlatformService : ISysPlatformService
                 prefsEntity.UserId, prefsEntity.ChannelInApp, prefsEntity.ChannelEmail,
                 prefsEntity.ChannelSms, prefsEntity.ChannelPush, prefsEntity.MuteAll,
                 prefsEntity.QuietHoursStart, prefsEntity.QuietHoursEnd);
-        if (!SysStep154Service.ShouldDeliverInAppStatic(prefs, eventType, DateTimeOffset.UtcNow))
+        if (!SysNotifScanExportIpService.ShouldDeliverInAppStatic(prefs, eventType, DateTimeOffset.UtcNow))
             return;
 
         var rule = await _db.NotificationRules.AsNoTracking()

@@ -9,7 +9,7 @@ import {
   type RoleDto,
   type SysRoleHomeDto,
 } from "@/shared/api/sys-api";
-import { validateLandingPath } from "@/shared/api/sys-step155-helpers";
+import { validateLandingPath } from "@/shared/api/sys-theme-role-home-msg-helpers";
 import { Home, RefreshCw } from "lucide-react";
 import { btn } from "@/shared/ui/btn";
 import { field, panel } from "@/shared/ui/field";

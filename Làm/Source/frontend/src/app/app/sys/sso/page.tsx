@@ -6,7 +6,7 @@ import {
   upsertSsoProvider,
   type SysSsoProviderDto,
 } from "@/shared/api/sys-api";
-import { validateSsoProviderForm } from "@/shared/api/sys-step153-helpers";
+import { validateSsoProviderForm } from "@/shared/api/sys-sso-field-config-push-helpers";
 import { KeyRound, Plus, RefreshCw } from "lucide-react";
 import { btn } from "@/shared/ui/btn";
 import { field, panel } from "@/shared/ui/field";

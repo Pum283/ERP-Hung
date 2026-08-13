@@ -3771,62 +3771,62 @@
   },
   "UC_SYS_009": {
     "done": false,
-    "note": "Bước 153 init Cap · Entity/Migration/API/FE · SysStep153PolishTests (15 BE) + sys-step153-helpers (10 FE) · Day-1 SSO code exchange / FCM stub — chưa IdP thật",
+    "note": "Bước 153 init Cap · Entity/Migration/API/FE · SysSsoFieldConfigPushPolishTests (15 BE) + sys-sso-field-config-push-helpers (10 FE) · Day-1 SSO code exchange / FCM stub — chưa IdP thật",
     "pct": 90
   },
   "UC_SYS_031": {
     "done": false,
-    "note": "Bước 153 init Cap · Entity/Migration/API/FE · SysStep153PolishTests (15 BE) + sys-step153-helpers (10 FE) · Day-1 SSO code exchange / FCM stub — chưa IdP thật",
+    "note": "Bước 153 init Cap · Entity/Migration/API/FE · SysSsoFieldConfigPushPolishTests (15 BE) + sys-sso-field-config-push-helpers (10 FE) · Day-1 SSO code exchange / FCM stub — chưa IdP thật",
     "pct": 90
   },
   "UC_SYS_058": {
     "done": false,
-    "note": "Bước 153 init Cap · Entity/Migration/API/FE · SysStep153PolishTests (15 BE) + sys-step153-helpers (10 FE) · Day-1 SSO code exchange / FCM stub — chưa IdP thật",
+    "note": "Bước 153 init Cap · Entity/Migration/API/FE · SysSsoFieldConfigPushPolishTests (15 BE) + sys-sso-field-config-push-helpers (10 FE) · Day-1 SSO code exchange / FCM stub — chưa IdP thật",
     "pct": 90
   },
   "UC_SYS_062": {
     "done": false,
-    "note": "Bước 153 init Cap · Entity/Migration/API/FE · SysStep153PolishTests (15 BE) + sys-step153-helpers (10 FE) · Day-1 SSO code exchange / FCM stub — chưa IdP thật",
+    "note": "Bước 153 init Cap · Entity/Migration/API/FE · SysSsoFieldConfigPushPolishTests (15 BE) + sys-sso-field-config-push-helpers (10 FE) · Day-1 SSO code exchange / FCM stub — chưa IdP thật",
     "pct": 90
   },
   "UC_SYS_064": {
     "done": false,
-    "note": "Bước 154 init Cap · Entity/Migration/API/FE · SysStep154PolishTests (15 BE) + sys-step154-helpers (10 FE) · stub scanner/EICAR · IP enforce login",
+    "note": "Bước 154 init Cap · Entity/Migration/API/FE · SysNotifScanExportIpPolishTests (15 BE) + sys-notif-scan-export-ip-helpers (10 FE) · stub scanner/EICAR · IP enforce login",
     "pct": 90
   },
   "UC_SYS_071": {
     "done": false,
-    "note": "Bước 154 init Cap · Entity/Migration/API/FE · SysStep154PolishTests (15 BE) + sys-step154-helpers (10 FE) · stub scanner/EICAR · IP enforce login",
+    "note": "Bước 154 init Cap · Entity/Migration/API/FE · SysNotifScanExportIpPolishTests (15 BE) + sys-notif-scan-export-ip-helpers (10 FE) · stub scanner/EICAR · IP enforce login",
     "pct": 90
   },
   "UC_SYS_077": {
     "done": false,
-    "note": "Bước 154 init Cap · Entity/Migration/API/FE · SysStep154PolishTests (15 BE) + sys-step154-helpers (10 FE) · stub scanner/EICAR · IP enforce login",
+    "note": "Bước 154 init Cap · Entity/Migration/API/FE · SysNotifScanExportIpPolishTests (15 BE) + sys-notif-scan-export-ip-helpers (10 FE) · stub scanner/EICAR · IP enforce login",
     "pct": 90
   },
   "UC_SYS_082": {
     "done": false,
-    "note": "Bước 154 init Cap · Entity/Migration/API/FE · SysStep154PolishTests (15 BE) + sys-step154-helpers (10 FE) · stub scanner/EICAR · IP enforce login",
+    "note": "Bước 154 init Cap · Entity/Migration/API/FE · SysNotifScanExportIpPolishTests (15 BE) + sys-notif-scan-export-ip-helpers (10 FE) · stub scanner/EICAR · IP enforce login",
     "pct": 90
   },
   "UC_SYS_093": {
     "done": false,
-    "note": "Bước 155 init Cap · Theme/RoleHome/MsgSearch/MuteUntil · SysStep155PolishTests (15 BE) + sys-step155-helpers (10 FE)",
+    "note": "Bước 155 init Cap · Theme/RoleHome/MsgSearch/MuteUntil · SysThemeRoleHomeMsgPolishTests (15 BE) + sys-theme-role-home-msg-helpers (10 FE)",
     "pct": 90
   },
   "UC_SYS_094": {
     "done": false,
-    "note": "Bước 155 init Cap · Theme/RoleHome/MsgSearch/MuteUntil · SysStep155PolishTests (15 BE) + sys-step155-helpers (10 FE)",
+    "note": "Bước 155 init Cap · Theme/RoleHome/MsgSearch/MuteUntil · SysThemeRoleHomeMsgPolishTests (15 BE) + sys-theme-role-home-msg-helpers (10 FE)",
     "pct": 90
   },
   "UC_SYS_103": {
     "done": false,
-    "note": "Bước 155 init Cap · Theme/RoleHome/MsgSearch/MuteUntil · SysStep155PolishTests (15 BE) + sys-step155-helpers (10 FE)",
+    "note": "Bước 155 init Cap · Theme/RoleHome/MsgSearch/MuteUntil · SysThemeRoleHomeMsgPolishTests (15 BE) + sys-theme-role-home-msg-helpers (10 FE)",
     "pct": 90
   },
   "UC_SYS_104": {
     "done": false,
-    "note": "Bước 155 init Cap · Theme/RoleHome/MsgSearch/MuteUntil · SysStep155PolishTests (15 BE) + sys-step155-helpers (10 FE)",
+    "note": "Bước 155 init Cap · Theme/RoleHome/MsgSearch/MuteUntil · SysThemeRoleHomeMsgPolishTests (15 BE) + sys-theme-role-home-msg-helpers (10 FE)",
     "pct": 90
   }
 }

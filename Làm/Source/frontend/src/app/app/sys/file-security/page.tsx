@@ -7,7 +7,7 @@ import {
   fetchFileScanStatus,
   type SysFileScanStatusDto,
 } from "@/shared/api/sys-api";
-import { canDownloadFile, formatScanStatusLabel } from "@/shared/api/sys-step154-helpers";
+import { canDownloadFile, formatScanStatusLabel } from "@/shared/api/sys-notif-scan-export-ip-helpers";
 import { RefreshCw, ShieldAlert } from "lucide-react";
 import { btn } from "@/shared/ui/btn";
 import { panel } from "@/shared/ui/field";

@@ -30,7 +30,7 @@ function Read-PublishProfile([string]$path) {
   }
 }
 
-function Invoke-MsDeploy([string]$source, [string]$destContentPath, $profile, [string[]]$extraArgs = @()) {
+function Invoke-MsDeploy([string]$source, [string]$destContentPath, $profile, [string[]]$extraArgs = @(), [int]$maxAttempts = 3) {
   if (-not (Test-Path $MsDeploy)) {
     throw "Khong tim thay msdeploy.exe. Cai Web Deploy 3 truoc."
   }
@@ -43,8 +43,14 @@ function Invoke-MsDeploy([string]$source, [string]$destContentPath, $profile, [s
     "-allowUntrusted",
     "-enableRule:AppOffline"
   ) + $extraArgs
-  & $MsDeploy @args
-  if ($LASTEXITCODE -ne 0) { throw "msdeploy failed (exit $LASTEXITCODE) -> $destContentPath" }
+
+  for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+    & $MsDeploy @args
+    if ($LASTEXITCODE -eq 0) { return }
+    Write-Host "msdeploy attempt $attempt/$maxAttempts failed (exit $LASTEXITCODE) -> $destContentPath" -ForegroundColor Yellow
+    if ($attempt -lt $maxAttempts) { Start-Sleep -Seconds (5 * $attempt) }
+  }
+  throw "msdeploy failed (exit $LASTEXITCODE) -> $destContentPath"
 }
 
 function Write-Utf8NoBom([string]$path, [string]$content) {

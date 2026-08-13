@@ -48,7 +48,7 @@ public sealed class SysChannelPolishTests : IDisposable
         _master = new SysMasterService(_db, new NoopScope(), new NoopAuthz(), _platform);
         var cfg = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>()).Build();
         _auth = new AuthService(
-            _db, new JwtTokenService(cfg), new NoopScope(), _platform, new SysStep154Service(_db), cfg, NullLogger<AuthService>.Instance);
+            _db, new JwtTokenService(cfg), new NoopScope(), _platform, new SysNotifScanExportIpService(_db), cfg, NullLogger<AuthService>.Instance);
 
         _db.Tenants.Add(new Tenant { Id = _tenant, Code = "T1", Name = "T1", CreatedBy = _actor });
         _db.Licenses.Add(new License

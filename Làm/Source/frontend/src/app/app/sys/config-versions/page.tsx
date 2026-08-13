@@ -7,7 +7,7 @@ import {
   rollbackConfigVersion,
   type SysConfigVersionDto,
 } from "@/shared/api/sys-api";
-import { canRollbackVersion, validateConfigKey } from "@/shared/api/sys-step153-helpers";
+import { canRollbackVersion, validateConfigKey } from "@/shared/api/sys-sso-field-config-push-helpers";
 import { History, RefreshCw } from "lucide-react";
 import { btn } from "@/shared/ui/btn";
 import { field, panel } from "@/shared/ui/field";
