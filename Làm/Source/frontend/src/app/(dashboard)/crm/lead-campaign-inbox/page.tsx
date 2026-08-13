@@ -87,7 +87,7 @@ export default function CrmLeadCampaignInboxPage() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="p-6 space-y-6">
       {/* Toast */}
       {toast && (
         <div
@@ -100,13 +100,13 @@ export default function CrmLeadCampaignInboxPage() {
       )}
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-orange-950 via-amber-950 to-slate-900 p-6 rounded-2xl text-white shadow-xl">
+      <div className="bg-brand p-5 rounded-xl text-brand-foreground shadow-sm">
         <div className="flex justify-between items-center">
           <div>
             <span className="bg-amber-500/30 text-amber-200 text-xs px-3 py-1 rounded-full font-semibold border border-amber-400/30">
               CRM - LEAD POTENTIAL SCORING & OMNICHANNEL INBOX
             </span>
-            <h1 className="text-2xl font-bold mt-2">Bước 168: CRM Sales Leads & Omnichannel Messaging</h1>
+            <h1 className="text-2xl font-bold mt-2">CRM Sales Leads & Omnichannel Messaging</h1>
             <p className="text-amber-100 text-sm mt-1">
               Đánh giá tiềm năng Lead, Nhân bản Campaign Marketing, Hộp thư Đa kênh & Tiếp nhận hội thoại mới
             </p>
@@ -287,7 +287,7 @@ export default function CrmLeadCampaignInboxPage() {
               </button>
               <button
                 onClick={() => setChannelFilter('Facebook')}
-                className={`px-3 py-1.5 rounded-lg border font-medium ${channelFilter === 'Facebook' ? 'bg-indigo-600 text-white' : 'bg-white text-slate-700'}`}
+                className={`px-3 py-1.5 rounded-lg border font-medium ${channelFilter === 'Facebook' ? 'bg-brand text-white' : 'bg-white text-slate-700'}`}
               >
                 Facebook
               </button>

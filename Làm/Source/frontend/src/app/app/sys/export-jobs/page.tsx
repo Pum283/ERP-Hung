@@ -75,13 +75,13 @@ export default function ExportJobsPage() {
   }
 
   return (
-    <div className="p-6 max-w-5xl space-y-6">
+    <div className="max-w-5xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Download className="w-6 h-6 text-indigo-600" /> Xuất hàng loạt (UC_SYS_077)
+          <h1 className="font-display text-title font-bold text-foreground flex items-center gap-2">
+            <Download className="w-6 h-6 text-brand" /> Xuất hàng loạt (UC_SYS_077)
           </h1>
-          <p className="text-slate-500 text-sm mt-1">Chọn nhiều entity → job BulkExport → tải trong 7 ngày.</p>
+          <p className="text-body text-muted-foreground mt-1">Chọn nhiều entity → job BulkExport → tải trong 7 ngày.</p>
         </div>
         <button type="button" className={btn.soft} onClick={() => void load()}>
           <RefreshCw className="w-4 h-4 mr-1 inline" /> Làm mới
@@ -107,9 +107,9 @@ export default function ExportJobsPage() {
         <button type="submit" className={btn.primary}>Bắt đầu xuất</button>
       </form>
 
-      <div className="bg-white dark:bg-slate-900 shadow rounded-xl border overflow-hidden">
+      <div className="bg-surface shadow rounded-xl border overflow-hidden">
         {loading ? (
-          <div className="p-4 text-sm text-slate-500">Đang tải…</div>
+          <div className="p-4 text-sm text-muted-foreground">Đang tải…</div>
         ) : (
           <table className="w-full text-sm">
             <thead className="bg-slate-50 text-left">

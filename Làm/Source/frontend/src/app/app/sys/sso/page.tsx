@@ -72,13 +72,13 @@ export default function SsoProvidersPage() {
   }
 
   return (
-    <div className="p-6 max-w-5xl space-y-6">
+    <div className="max-w-5xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <KeyRound className="w-6 h-6 text-indigo-600" /> SSO / OAuth (UC_SYS_009)
+          <h1 className="font-display text-title font-bold text-foreground flex items-center gap-2">
+            <KeyRound className="w-6 h-6 text-brand" /> SSO / OAuth (UC_SYS_009)
           </h1>
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="text-body text-muted-foreground mt-1">
             Cấu hình IdP. Đăng nhập Day-1 dùng mã <code>dev:email|subject</code> trên trang Login.
           </p>
         </div>
@@ -91,34 +91,34 @@ export default function SsoProvidersPage() {
       {msg && <div className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{msg}</div>}
 
       <form onSubmit={(e) => void onSave(e)} className={`${panel} space-y-3`}>
-        <div className="text-sm font-semibold text-slate-700">Thêm / cập nhật IdP</div>
+        <div className="text-sm font-semibold text-foreground">Thêm / cập nhật IdP</div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <label className="block space-y-1">
-            <span className="text-xs text-slate-500">Mã</span>
+            <span className="text-xs text-muted-foreground">Mã</span>
             <input className={field} value={code} onChange={(e) => setCode(e.target.value)} />
           </label>
           <label className="block space-y-1">
-            <span className="text-xs text-slate-500">Tên hiển thị</span>
+            <span className="text-xs text-muted-foreground">Tên hiển thị</span>
             <input className={field} value={displayName} onChange={(e) => setDisplayName(e.target.value)} />
           </label>
           <label className="block space-y-1">
-            <span className="text-xs text-slate-500">Client ID</span>
+            <span className="text-xs text-muted-foreground">Client ID</span>
             <input className={field} value={clientId} onChange={(e) => setClientId(e.target.value)} />
           </label>
           <label className="block space-y-1">
-            <span className="text-xs text-slate-500">Client Secret (tuỳ chọn)</span>
+            <span className="text-xs text-muted-foreground">Client Secret (tuỳ chọn)</span>
             <input className={field} type="password" value={clientSecret} onChange={(e) => setClientSecret(e.target.value)} />
           </label>
           <label className="block space-y-1 md:col-span-2">
-            <span className="text-xs text-slate-500">Authority URL</span>
+            <span className="text-xs text-muted-foreground">Authority URL</span>
             <input className={field} value={authorityUrl} onChange={(e) => setAuthorityUrl(e.target.value)} />
           </label>
           <label className="block space-y-1 md:col-span-2">
-            <span className="text-xs text-slate-500">Redirect URI</span>
+            <span className="text-xs text-muted-foreground">Redirect URI</span>
             <input className={field} value={redirectUri} onChange={(e) => setRedirectUri(e.target.value)} />
           </label>
           <label className="block space-y-1">
-            <span className="text-xs text-slate-500">Scopes</span>
+            <span className="text-xs text-muted-foreground">Scopes</span>
             <input className={field} value={scopes} onChange={(e) => setScopes(e.target.value)} />
           </label>
           <div className="flex items-end gap-4 pb-1">
@@ -135,11 +135,11 @@ export default function SsoProvidersPage() {
         </button>
       </form>
 
-      <div className="bg-white dark:bg-slate-900 shadow rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+      <div className="bg-surface shadow rounded-xl border border-border overflow-hidden">
         {loading ? (
-          <div className="p-4 text-sm text-slate-500">Đang tải…</div>
+          <div className="p-4 text-sm text-muted-foreground">Đang tải…</div>
         ) : rows.length === 0 ? (
-          <div className="p-4 text-sm text-slate-500">Chưa có IdP.</div>
+          <div className="p-4 text-sm text-muted-foreground">Chưa có IdP.</div>
         ) : (
           <table className="w-full text-sm">
             <thead className="bg-slate-50 dark:bg-slate-800/50 text-left">

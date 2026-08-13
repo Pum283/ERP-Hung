@@ -157,14 +157,14 @@ export default function HrmSkillQualificationPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-            Bước 157: Kỹ năng, Biến động nhân sự, Mẫu hợp đồng & Import ứng viên
+            Kỹ năng, Biến động nhân sự, Mẫu hợp đồng & Import ứng viên
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Quản lý trình độ (UC_HRM_024), Báo cáo biến động (UC_HRM_037), In hợp đồng (UC_HRM_044) & Import hàng loạt (UC_HRM_058).
           </p>
         </div>
         <div>
-          <span className="px-3 py-1 bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 rounded-full text-xs font-semibold">
+          <span className="px-3 py-1 bg-brand-muted text-brand-strong  rounded-full text-xs font-semibold">
             Tiến độ Kế hoạch: 90% [XONG]
           </span>
         </div>
@@ -182,7 +182,7 @@ export default function HrmSkillQualificationPage() {
       )}
 
       {/* Navigation Tabs */}
-      <div className="flex border-b border-slate-200 dark:border-slate-800 gap-6">
+      <div className="flex border-b border-border gap-6">
         {[
           { key: 'skills', label: '1. Kỹ năng & Trình độ (UC_HRM_024)' },
           { key: 'movement', label: '2. Báo cáo Biến động (UC_HRM_037)' },
@@ -194,8 +194,8 @@ export default function HrmSkillQualificationPage() {
             onClick={() => setActiveTab(tab.key as any)}
             className={`pb-3 text-sm font-semibold border-b-2 transition-colors ${
               activeTab === tab.key
-                ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
-                : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                ? 'border-brand text-brand '
+                : 'border-transparent text-muted-foreground hover:text-foreground dark:hover:text-slate-300'
             }`}
           >
             {tab.label}
@@ -215,15 +215,15 @@ export default function HrmSkillQualificationPage() {
                 setSkillForm({ employeeId: 'emp-101', skillName: '', level: 'Intermediate', cert: '' });
                 setIsSkillModalOpen(true);
               }}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition"
+              className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium hover:bg-brand-hover transition"
             >
               + Thêm kỹ năng mới
             </button>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 shadow rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800">
+          <div className="bg-surface shadow rounded-lg overflow-hidden border border-border">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+              <thead className="bg-slate-50 dark:bg-slate-800 text-muted-foreground dark:text-slate-300">
                 <tr>
                   <th className="p-3">Tên kỹ năng</th>
                   <th className="p-3">Cấp độ thành thạo</th>
@@ -239,16 +239,16 @@ export default function HrmSkillQualificationPage() {
                       <span
                         className={`px-2.5 py-0.5 text-xs rounded font-bold ${
                           s.proficiencyLevel === 'Expert'
-                            ? 'bg-purple-100 text-purple-800'
+                            ? 'bg-brand-muted text-brand-strong'
                             : s.proficiencyLevel === 'Advanced'
-                            ? 'bg-indigo-100 text-indigo-800'
+                            ? 'bg-brand-muted text-brand-strong'
                             : 'bg-emerald-100 text-emerald-800'
                         }`}
                       >
                         {s.proficiencyLevel}
                       </span>
                     </td>
-                    <td className="p-3 font-mono text-xs text-slate-500">{s.certificateRef || 'N/A'}</td>
+                    <td className="p-3 font-mono text-xs text-muted-foreground">{s.certificateRef || 'N/A'}</td>
                     <td className="p-3 text-right space-x-2">
                       <button
                         onClick={() => {
@@ -261,7 +261,7 @@ export default function HrmSkillQualificationPage() {
                           });
                           setIsSkillModalOpen(true);
                         }}
-                        className="text-xs text-indigo-600 hover:underline"
+                        className="text-xs text-brand hover:underline"
                       >
                         Sửa
                       </button>
@@ -284,12 +284,12 @@ export default function HrmSkillQualificationPage() {
         <div className="space-y-6">
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-semibold">Báo cáo Biến động Nhân sự (Tháng 08/2026)</h2>
-            <span className="text-xs text-slate-500">Từ 01/08/2026 đến 31/08/2026</span>
+            <span className="text-xs text-muted-foreground">Từ 01/08/2026 đến 31/08/2026</span>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="p-4 bg-white dark:bg-slate-900 border rounded-xl shadow-sm">
-              <p className="text-xs text-slate-500 font-medium">Tổng số nhân sự</p>
+            <div className="p-4 bg-surface border rounded-xl shadow-sm">
+              <p className="text-xs text-muted-foreground font-medium">Tổng số nhân sự</p>
               <p className="text-2xl font-bold mt-1 text-slate-900 dark:text-slate-100">{movementStats.total}</p>
             </div>
             <div className="p-4 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 rounded-xl shadow-sm">
@@ -339,14 +339,14 @@ export default function HrmSkillQualificationPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <label className="text-xs font-semibold text-foreground dark:text-slate-300">
               Nhập dữ liệu CSV (Họ tên, Email, Số điện thoại, Mã tin tuyển dụng):
             </label>
             <textarea
               rows={4}
               value={rawImportText}
               onChange={(e) => setRawImportText(e.target.value)}
-              className="w-full p-3 font-mono text-xs border rounded-lg dark:bg-slate-900 border-slate-300 dark:border-slate-700"
+              className="w-full p-3 font-mono text-xs border rounded-lg border-border dark:border-slate-700"
             />
             <button
               onClick={handleParseImport}
@@ -362,13 +362,13 @@ export default function HrmSkillQualificationPage() {
                 <h3 className="text-sm font-bold">Kết quả Phân tích ({importRows.length} dòng)</h3>
                 <button
                   onClick={handleExecuteImport}
-                  className="px-4 py-2 bg-indigo-600 text-white text-xs font-medium rounded-lg hover:bg-indigo-700 transition"
+                  className="px-4 py-2 bg-brand text-white text-xs font-medium rounded-lg hover:bg-brand-hover transition"
                 >
                   🚀 Tiến hành Import
                 </button>
               </div>
 
-              <div className="bg-white dark:bg-slate-900 shadow rounded-lg overflow-hidden border">
+              <div className="bg-surface shadow rounded-lg overflow-hidden border">
                 <table className="w-full text-left text-xs">
                   <thead className="bg-slate-50 dark:bg-slate-800">
                     <tr>
@@ -402,7 +402,7 @@ export default function HrmSkillQualificationPage() {
           )}
 
           {importResultSummary && (
-            <div className="p-4 bg-indigo-50 border border-indigo-200 text-indigo-900 text-xs rounded-xl space-y-1 font-medium">
+            <div className="p-4 bg-brand-muted border border-brand/30 text-brand-strong text-xs rounded-xl space-y-1 font-medium">
               <p className="font-bold text-sm">🎉 Kết quả thực thi Import:</p>
               <p>• Tổng số ứng viên xử lý: {importResultSummary.total}</p>
               <p className="text-emerald-600 font-bold">• Thành công: {importResultSummary.success}</p>
@@ -415,7 +415,7 @@ export default function HrmSkillQualificationPage() {
       {/* SKILL MODAL */}
       {isSkillModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center p-4 z-50">
-          <form onSubmit={handleSaveSkill} className="bg-white dark:bg-slate-900 rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
+          <form onSubmit={handleSaveSkill} className="bg-surface rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
             <h3 className="text-lg font-bold">{skillForm.id ? 'Sửa kỹ năng' : 'Thêm kỹ năng nhân sự'}</h3>
             <div>
               <label className="text-xs font-semibold">Tên kỹ năng</label>
@@ -453,7 +453,7 @@ export default function HrmSkillQualificationPage() {
               <button type="button" onClick={() => setIsSkillModalOpen(false)} className="px-4 py-2 border rounded-lg text-sm">
                 Hủy
               </button>
-              <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium">
+              <button type="submit" className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium">
                 Lưu lại
               </button>
             </div>

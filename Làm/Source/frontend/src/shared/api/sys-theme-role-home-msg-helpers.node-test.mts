@@ -24,6 +24,11 @@ describe("sys-theme-role-home-msg UC_SYS_093 theme", () => {
     const v = applyThemeCssVars("#0EA5E9", "#F59E0B");
     assert.equal(v["--brand"], "#0EA5E9");
     assert.equal(v["--accent"], "#F59E0B");
+    assert.ok(v["--brand-hover"]);
+    assert.ok(v["--brand-muted"]);
+    assert.ok(v["--brand-strong"]);
+    assert.equal(v["--ring"], "#0EA5E9");
+    assert.ok(v["--accent-muted"]);
   });
 });
 

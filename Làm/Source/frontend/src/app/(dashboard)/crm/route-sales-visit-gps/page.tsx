@@ -114,7 +114,7 @@ export default function CrmRouteSalesVisitGpsPage() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="p-6 space-y-6">
       {/* Toast */}
       {toast && (
         <div
@@ -127,13 +127,13 @@ export default function CrmRouteSalesVisitGpsPage() {
       )}
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-emerald-950 via-teal-900 to-cyan-950 p-6 rounded-2xl text-white shadow-xl">
+      <div className="bg-brand p-5 rounded-xl text-brand-foreground shadow-sm">
         <div className="flex justify-between items-center">
           <div>
             <span className="bg-cyan-500/30 text-cyan-200 text-xs px-3 py-1 rounded-full font-semibold border border-cyan-400/30">
               CRM - FIELD SALES ROUTE & GPS VISIT
             </span>
-            <h1 className="text-2xl font-bold mt-2">Bước 171: CRM Phân Vùng Bán Hàng & Định Vị GPS Viếng Thăm</h1>
+            <h1 className="text-2xl font-bold mt-2">CRM Phân Vùng Bán Hàng & Định Vị GPS Viếng Thăm</h1>
             <p className="text-cyan-100 text-sm mt-1">
               Phân vùng tuyến bán hàng, Phân loại tần suất thăm, Lập kế hoạch visit & Check-in / Check-out GPS điểm bán
             </p>

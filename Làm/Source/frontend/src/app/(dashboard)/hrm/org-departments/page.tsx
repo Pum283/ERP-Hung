@@ -223,9 +223,9 @@ export default function HrmOrgDepartmentPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-            Bước 156: Cấu trúc Bộ phận, Vị trí, Chi phí & Người thân
+            Cấu trúc Bộ phận, Vị trí, Chi phí & Người thân
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Quản lý bộ phận đơn vị (UC_HRM_005), Vị trí công việc (UC_HRM_008), Trung tâm chi phí (UC_HRM_011) & Liên hệ khẩn (UC_HRM_023).
           </p>
         </div>
@@ -248,7 +248,7 @@ export default function HrmOrgDepartmentPage() {
       )}
 
       {/* Navigation Tabs */}
-      <div className="flex border-b border-slate-200 dark:border-slate-800 gap-6">
+      <div className="flex border-b border-border gap-6">
         {[
           { key: 'departments', label: '1. Bộ phận Đơn vị (UC_HRM_005)' },
           { key: 'positions', label: '2. Vị trí Công việc (UC_HRM_008)' },
@@ -260,8 +260,8 @@ export default function HrmOrgDepartmentPage() {
             onClick={() => setActiveTab(tab.key as any)}
             className={`pb-3 text-sm font-semibold border-b-2 transition-colors ${
               activeTab === tab.key
-                ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
-                : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                ? 'border-brand text-brand '
+                : 'border-transparent text-muted-foreground hover:text-foreground dark:hover:text-slate-300'
             }`}
           >
             {tab.label}
@@ -281,15 +281,15 @@ export default function HrmOrgDepartmentPage() {
                 setDeptForm({ code: '', name: '', sortOrder: departments.length + 1 });
                 setIsDeptModalOpen(true);
               }}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition"
+              className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium hover:bg-brand-hover transition"
             >
               + Thêm bộ phận mới
             </button>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 shadow rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800">
+          <div className="bg-surface shadow rounded-lg overflow-hidden border border-border">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+              <thead className="bg-slate-50 dark:bg-slate-800 text-muted-foreground dark:text-slate-300">
                 <tr>
                   <th className="p-3">Mã bộ phận</th>
                   <th className="p-3">Tên bộ phận</th>
@@ -302,9 +302,9 @@ export default function HrmOrgDepartmentPage() {
               <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
                 {departments.map((d) => (
                   <tr key={d.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                    <td className="p-3 font-mono font-medium text-indigo-600 dark:text-indigo-400">{d.code}</td>
+                    <td className="p-3 font-mono font-medium text-brand ">{d.code}</td>
                     <td className="p-3 font-semibold">{d.name}</td>
-                    <td className="p-3 text-slate-500">
+                    <td className="p-3 text-muted-foreground">
                       {d.parentId ? departments.find((p) => p.id === d.parentId)?.name || '-' : '(Gốc / Ban Giám Đốc)'}
                     </td>
                     <td className="p-3">{d.sortOrder}</td>
@@ -319,7 +319,7 @@ export default function HrmOrgDepartmentPage() {
                           setDeptForm({ id: d.id, code: d.code, name: d.name, parentId: d.parentId || undefined, sortOrder: d.sortOrder });
                           setIsDeptModalOpen(true);
                         }}
-                        className="text-xs text-indigo-600 hover:underline"
+                        className="text-xs text-brand hover:underline"
                       >
                         Sửa
                       </button>
@@ -347,15 +347,15 @@ export default function HrmOrgDepartmentPage() {
                 setPosForm({ code: '', name: '', sortOrder: positions.length + 1 });
                 setIsPosModalOpen(true);
               }}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition"
+              className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium hover:bg-brand-hover transition"
             >
               + Thêm vị trí mới
             </button>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 shadow rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800">
+          <div className="bg-surface shadow rounded-lg overflow-hidden border border-border">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+              <thead className="bg-slate-50 dark:bg-slate-800 text-muted-foreground dark:text-slate-300">
                 <tr>
                   <th className="p-3">Mã vị trí</th>
                   <th className="p-3">Tên vị trí công việc</th>
@@ -367,7 +367,7 @@ export default function HrmOrgDepartmentPage() {
               <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
                 {positions.map((p) => (
                   <tr key={p.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                    <td className="p-3 font-mono font-medium text-indigo-600 dark:text-indigo-400">{p.code}</td>
+                    <td className="p-3 font-mono font-medium text-brand ">{p.code}</td>
                     <td className="p-3 font-semibold">{p.name}</td>
                     <td className="p-3">{p.sortOrder}</td>
                     <td className="p-3">
@@ -381,7 +381,7 @@ export default function HrmOrgDepartmentPage() {
                           setPosForm({ id: p.id, code: p.code, name: p.name, sortOrder: p.sortOrder });
                           setIsPosModalOpen(true);
                         }}
-                        className="text-xs text-indigo-600 hover:underline"
+                        className="text-xs text-brand hover:underline"
                       >
                         Sửa
                       </button>
@@ -402,7 +402,7 @@ export default function HrmOrgDepartmentPage() {
           <div className="flex justify-between items-center">
             <div>
               <h2 className="text-lg font-semibold">Trung tâm Chi phí NS (Cost Centers)</h2>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-muted-foreground mt-0.5">
                 Tổng % phân bổ hiện tại:{' '}
                 <strong className={ccAllocationStatus.isValid ? 'text-emerald-600' : 'text-rose-600'}>
                   {ccAllocationStatus.totalPercentage}%
@@ -414,7 +414,7 @@ export default function HrmOrgDepartmentPage() {
                 setCcForm({ code: '', name: '', percentage: 10 });
                 setIsCcModalOpen(true);
               }}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition"
+              className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium hover:bg-brand-hover transition"
             >
               + Thêm trung tâm chi phí
             </button>
@@ -426,9 +426,9 @@ export default function HrmOrgDepartmentPage() {
             </div>
           )}
 
-          <div className="bg-white dark:bg-slate-900 shadow rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800">
+          <div className="bg-surface shadow rounded-lg overflow-hidden border border-border">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+              <thead className="bg-slate-50 dark:bg-slate-800 text-muted-foreground dark:text-slate-300">
                 <tr>
                   <th className="p-3">Mã trung tâm</th>
                   <th className="p-3">Tên trung tâm chi phí</th>
@@ -440,9 +440,9 @@ export default function HrmOrgDepartmentPage() {
               <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
                 {costCenters.map((c) => (
                   <tr key={c.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                    <td className="p-3 font-mono font-medium text-indigo-600 dark:text-indigo-400">{c.code}</td>
+                    <td className="p-3 font-mono font-medium text-brand ">{c.code}</td>
                     <td className="p-3 font-semibold">{c.name}</td>
-                    <td className="p-3 font-bold text-slate-800 dark:text-slate-200">{c.allocationPercentage}%</td>
+                    <td className="p-3 font-bold text-foreground dark:text-brand-foreground/80">{c.allocationPercentage}%</td>
                     <td className="p-3">
                       <span className="px-2 py-0.5 text-xs rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
                         Đang hoạt động
@@ -454,7 +454,7 @@ export default function HrmOrgDepartmentPage() {
                           setCcForm({ id: c.id, code: c.code, name: c.name, percentage: c.allocationPercentage });
                           setIsCcModalOpen(true);
                         }}
-                        className="text-xs text-indigo-600 hover:underline"
+                        className="text-xs text-brand hover:underline"
                       >
                         Sửa
                       </button>
@@ -475,12 +475,12 @@ export default function HrmOrgDepartmentPage() {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-4">
               <h2 className="text-lg font-semibold">Người thân & Liên hệ khẩn cấp</h2>
-              <label className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400 cursor-pointer">
+              <label className="flex items-center gap-2 text-xs text-muted-foreground dark:text-slate-400 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={emergencyOnly}
                   onChange={(e) => setEmergencyOnly(e.target.checked)}
-                  className="rounded border-slate-300"
+                  className="rounded border-border"
                 />
                 Chỉ hiển thị liên hệ khẩn cấp
               </label>
@@ -498,15 +498,15 @@ export default function HrmOrgDepartmentPage() {
                 });
                 setIsRelModalOpen(true);
               }}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition"
+              className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium hover:bg-brand-hover transition"
             >
               + Thêm người thân / liên hệ
             </button>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 shadow rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800">
+          <div className="bg-surface shadow rounded-lg overflow-hidden border border-border">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+              <thead className="bg-slate-50 dark:bg-slate-800 text-muted-foreground dark:text-slate-300">
                 <tr>
                   <th className="p-3">Họ tên người thân</th>
                   <th className="p-3">Mối quan hệ</th>
@@ -520,7 +520,7 @@ export default function HrmOrgDepartmentPage() {
                 {displayedRelatives.map((r) => (
                   <tr key={r.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
                     <td className="p-3 font-semibold">{r.fullName}</td>
-                    <td className="p-3 font-mono text-slate-600 dark:text-slate-400">{r.relationship}</td>
+                    <td className="p-3 font-mono text-muted-foreground dark:text-slate-400">{r.relationship}</td>
                     <td className="p-3">{r.phone || '-'}</td>
                     <td className="p-3">
                       {r.isEmergencyContact ? (
@@ -551,7 +551,7 @@ export default function HrmOrgDepartmentPage() {
                           });
                           setIsRelModalOpen(true);
                         }}
-                        className="text-xs text-indigo-600 hover:underline"
+                        className="text-xs text-brand hover:underline"
                       >
                         Sửa
                       </button>
@@ -569,7 +569,7 @@ export default function HrmOrgDepartmentPage() {
       {/* ──────────────────────────────────────────────────────────────────────────── */}
       {isDeptModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center p-4 z-50">
-          <form onSubmit={handleSaveDept} className="bg-white dark:bg-slate-900 rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
+          <form onSubmit={handleSaveDept} className="bg-surface rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
             <h3 className="text-lg font-bold">{deptForm.id ? 'Sửa bộ phận' : 'Tạo bộ phận mới'}</h3>
             <div>
               <label className="text-xs font-semibold">Mã bộ phận</label>
@@ -612,7 +612,7 @@ export default function HrmOrgDepartmentPage() {
               <button type="button" onClick={() => setIsDeptModalOpen(false)} className="px-4 py-2 border rounded-lg text-sm">
                 Hủy
               </button>
-              <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium">
+              <button type="submit" className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium">
                 Lưu lại
               </button>
             </div>
@@ -623,7 +623,7 @@ export default function HrmOrgDepartmentPage() {
       {/* POS MODAL */}
       {isPosModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center p-4 z-50">
-          <form onSubmit={handleSavePos} className="bg-white dark:bg-slate-900 rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
+          <form onSubmit={handleSavePos} className="bg-surface rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
             <h3 className="text-lg font-bold">{posForm.id ? 'Sửa vị trí công việc' : 'Tạo vị trí công việc'}</h3>
             <div>
               <label className="text-xs font-semibold">Mã vị trí</label>
@@ -649,7 +649,7 @@ export default function HrmOrgDepartmentPage() {
               <button type="button" onClick={() => setIsPosModalOpen(false)} className="px-4 py-2 border rounded-lg text-sm">
                 Hủy
               </button>
-              <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium">
+              <button type="submit" className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium">
                 Lưu lại
               </button>
             </div>
@@ -660,7 +660,7 @@ export default function HrmOrgDepartmentPage() {
       {/* CC MODAL */}
       {isCcModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center p-4 z-50">
-          <form onSubmit={handleSaveCc} className="bg-white dark:bg-slate-900 rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
+          <form onSubmit={handleSaveCc} className="bg-surface rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
             <h3 className="text-lg font-bold">{ccForm.id ? 'Sửa trung tâm chi phí' : 'Thêm trung tâm chi phí'}</h3>
             <div>
               <label className="text-xs font-semibold">Mã trung tâm</label>
@@ -698,7 +698,7 @@ export default function HrmOrgDepartmentPage() {
               <button type="button" onClick={() => setIsCcModalOpen(false)} className="px-4 py-2 border rounded-lg text-sm">
                 Hủy
               </button>
-              <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium">
+              <button type="submit" className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium">
                 Lưu lại
               </button>
             </div>
@@ -709,7 +709,7 @@ export default function HrmOrgDepartmentPage() {
       {/* REL MODAL */}
       {isRelModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center p-4 z-50">
-          <form onSubmit={handleSaveRel} className="bg-white dark:bg-slate-900 rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
+          <form onSubmit={handleSaveRel} className="bg-surface rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
             <h3 className="text-lg font-bold">{relForm.id ? 'Sửa thông tin người thân' : 'Thêm người thân / liên hệ khẩn'}</h3>
             <div>
               <label className="text-xs font-semibold">Họ tên người thân</label>
@@ -766,7 +766,7 @@ export default function HrmOrgDepartmentPage() {
               <button type="button" onClick={() => setIsRelModalOpen(false)} className="px-4 py-2 border rounded-lg text-sm">
                 Hủy
               </button>
-              <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium">
+              <button type="submit" className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium">
                 Lưu lại
               </button>
             </div>

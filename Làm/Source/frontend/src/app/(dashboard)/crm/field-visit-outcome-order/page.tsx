@@ -118,7 +118,7 @@ export default function CrmFieldVisitOutcomeOrderPage() {
   ]);
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="p-6 space-y-6">
       {/* Toast */}
       {toast && (
         <div
@@ -131,13 +131,13 @@ export default function CrmFieldVisitOutcomeOrderPage() {
       )}
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-emerald-950 via-teal-950 to-indigo-950 p-6 rounded-2xl text-white shadow-xl">
+      <div className="bg-brand p-5 rounded-xl text-brand-foreground shadow-sm">
         <div className="flex justify-between items-center">
           <div>
-            <span className="bg-indigo-500/30 text-indigo-200 text-xs px-3 py-1 rounded-full font-semibold border border-indigo-400/30">
+            <span className="bg-brand-muted0/30 text-indigo-200 text-xs px-3 py-1 rounded-full font-semibold border border-indigo-400/30">
               CRM - FIELD VISIT OUTCOME & ON-SITE ORDERING
             </span>
-            <h1 className="text-2xl font-bold mt-2">Bước 172: CRM Kết Quả Viếng Thăm, Nhu Cầu & Đặt Hàng Tại Điểm Thăm</h1>
+            <h1 className="text-2xl font-bold mt-2">CRM Kết Quả Viếng Thăm, Nhu Cầu & Đặt Hàng Tại Điểm Thăm</h1>
             <p className="text-indigo-100 text-sm mt-1">
               Ghi nhận mục đích & kết quả visit, Thu thập nhu cầu khách hàng, Đặt hàng trực tiếp & Nhật ký viếng thăm
             </p>

@@ -22,7 +22,7 @@ import {
   type SysSsoProviderPublicDto,
 } from "@/shared/api/sys-api";
 import { buildDevSsoCode } from "@/shared/api/sys-sso-field-config-push-helpers";
-import { applyThemeCssVars } from "@/shared/api/sys-theme-role-home-msg-helpers";
+import { applyThemeToDocument } from "@/shared/api/sys-theme-role-home-msg-helpers";
 
 type Mode = "login" | "forgot" | "reset";
 
@@ -51,17 +51,7 @@ export default function LoginPage() {
       .then((t) => {
         if (t.tenantName) setBrandName(t.tenantName);
         if (t.logoUrl) setLogoUrl(t.logoUrl);
-        const vars = applyThemeCssVars(t.primaryColor, t.accentColor);
-        Object.entries(vars).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
-        if (t.faviconUrl) {
-          let link = document.querySelector("link[rel='icon']") as HTMLLinkElement | null;
-          if (!link) {
-            link = document.createElement("link");
-            link.rel = "icon";
-            document.head.appendChild(link);
-          }
-          link.href = t.faviconUrl;
-        }
+        applyThemeToDocument(t.primaryColor, t.accentColor, t.faviconUrl);
       })
       .catch(() => undefined);
   }, []);

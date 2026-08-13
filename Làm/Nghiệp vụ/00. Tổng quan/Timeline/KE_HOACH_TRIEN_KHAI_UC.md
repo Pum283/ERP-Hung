@@ -3,7 +3,7 @@
 | Thuộc tính        | Giá trị                                                                            |
 | ----------------- | ---------------------------------------------------------------------------------- |
 | Mã tài liệu       | `KE_HOACH_TRIEN_KHAI_UC_V2_CHI_TIET`                                               |
-| Cập nhật          | 11/08/2026                                                                         |
+| Cập nhật          | 13/08/2026                                                                         |
 | Quy tắc trình bày | **Mỗi UC 1 dòng riêng trong bảng**, đường gạch ngang `---` phân chia giữa các bước |
 | Tổng số UC        | **1.092 UC** (206 đã xong 100%, 540 UC dở dang cần polish, 346 UC chưa làm 0%)     |
 
@@ -51,6 +51,18 @@
    - **Ngoại lệ:** class Migration EF đã apply (`AddSysStep153…`) **giữ nguyên** để không phá lịch sử DB; migration **mới** đặt tên theo domain (`AddSysSsoProviders`, …).
    - **Nợ cũ:** file `*StepNN*` / `*-stepNN-*` từ Cap trước — khi chạm lại UC đó phải rename sang domain trong cùng PR; không tạo thêm artifact kiểu Step.
    - **Trước khi đánh `[XONG]` / 100%:** rà không còn path/class mới theo pattern Step số bước cho slice vừa làm.
+11. **Quy tắc Thiết kế Giao diện Thống nhất (Bắt buộc — bám Branding):**
+   - **Một hệ thống UI:** Mọi trang FE mới/polish phải cùng format với ERP đã có: `AppShell`, tiêu đề `font-display text-title`, mô tả `text-muted-foreground`, panel/table chuẩn — **không** trang one-off (gradient tím/indigo, hero “Bước N”, emoji cluster, layout lệch shell).
+   - **Màu theo Branding (điều chỉnh được):** Nguồn sự thật là trang **Theme / Branding** (`/app/sys/branding`, UC_SYS_093). Primary → `--brand` (+ `--brand-hover` / `--brand-muted` / `--brand-strong` / `--ring`); Accent → `--accent`. Áp dụng qua `ThemeBootstrap` + `applyThemeToDocument` — **không** hard-code `indigo-*`, `purple-*`, `#4F46E5`, v.v. cho màu nhấn chính.
+   - **Token & class bắt buộc dùng:**
+     - Nút: `btn.primary` / `btn.soft` / `btn.secondary` / `btn.danger` / `btn.ghost` (`shared/ui/btn.ts`).
+     - Form: `field` / `field.label` / `field.select` / `field.textarea` (`shared/ui/field.ts`).
+     - Khối nội dung: `panel`, `tableWrap`, `th`/`td`, `statusPill(...)`.
+     - Màu: `bg-brand`, `text-brand`, `text-brand-strong`, `bg-brand-muted`, `border-brand`, `text-foreground`, `text-muted-foreground`, `border-border`, `bg-surface`.
+   - **File cấu hình giao diện:** palette mặc định `shared/theme/brand-kit.css`; map Tailwind `app/globals.css`. Đổi màu tenant **chỉ** qua Branding API/UI, không fork CSS theo module.
+   - **Shell:** trang chức năng nằm dưới `AppShell` (route `/app/...` hoặc `(dashboard)` có layout shell). Không tự vẽ sidebar/header riêng.
+   - **Tab / header trang:** dùng pattern gọn (vd. `shared/ui/page-chrome.ts` — `pageTitle`, `pageDesc`, `tabBtn`) hoặc tương đương; header nhấn dùng `bg-brand` / `text-brand-foreground` nếu cần dải màu, không gradient đa sắc cố định.
+   - **Trước khi đánh `[XONG]` / 100%:** đổi Primary trên Branding → Ctrl+F5 → xác nhận nút/sidebar/header slice vừa làm đổi theo màu mới.
 
 ---
 

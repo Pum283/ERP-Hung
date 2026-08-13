@@ -60,13 +60,13 @@ export default function NotificationPreferencesPage() {
   }
 
   return (
-    <div className="p-6 max-w-3xl space-y-6">
+    <div className="max-w-3xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Bell className="w-6 h-6 text-indigo-600" /> Tùy chọn thông báo (UC_SYS_064)
+          <h1 className="font-display text-title font-bold text-foreground flex items-center gap-2">
+            <Bell className="w-6 h-6 text-brand" /> Tùy chọn thông báo (UC_SYS_064)
           </h1>
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="text-body text-muted-foreground mt-1">
             Kênh In-app / Email / SMS / Push · Mute all · Quiet hours. Sự kiện bảo mật luôn gửi.
           </p>
         </div>
@@ -79,7 +79,7 @@ export default function NotificationPreferencesPage() {
       {msg && <div className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{msg}</div>}
 
       {loading || !prefs ? (
-        <div className="text-sm text-slate-500">Đang tải…</div>
+        <div className="text-sm text-muted-foreground">Đang tải…</div>
       ) : (
         <form onSubmit={(e) => void onSave(e)} className={`${panel} space-y-4`}>
           <label className="flex items-center gap-2 text-sm">
@@ -106,11 +106,11 @@ export default function NotificationPreferencesPage() {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <label className="block space-y-1">
-              <span className="text-xs text-slate-500">Quiet start (HH:mm UTC)</span>
+              <span className="text-xs text-muted-foreground">Quiet start (HH:mm UTC)</span>
               <input className={field} placeholder="22:00" value={prefs.quietHoursStart ?? ""} onChange={(e) => setPrefs({ ...prefs, quietHoursStart: e.target.value })} />
             </label>
             <label className="block space-y-1">
-              <span className="text-xs text-slate-500">Quiet end (HH:mm UTC)</span>
+              <span className="text-xs text-muted-foreground">Quiet end (HH:mm UTC)</span>
               <input className={field} placeholder="06:00" value={prefs.quietHoursEnd ?? ""} onChange={(e) => setPrefs({ ...prefs, quietHoursEnd: e.target.value })} />
             </label>
           </div>

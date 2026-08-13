@@ -76,13 +76,13 @@ export default function ConfigVersionsPage() {
   }
 
   return (
-    <div className="p-6 max-w-5xl space-y-6">
+    <div className="max-w-5xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <History className="w-6 h-6 text-indigo-600" /> Phiên bản cấu hình (UC_SYS_058)
+          <h1 className="font-display text-title font-bold text-foreground flex items-center gap-2">
+            <History className="w-6 h-6 text-brand" /> Phiên bản cấu hình (UC_SYS_058)
           </h1>
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="text-body text-muted-foreground mt-1">
             Mỗi lần upsert setting tạo version mới; rollback tạo version kế tiếp từ bản cũ.
           </p>
         </div>
@@ -97,16 +97,16 @@ export default function ConfigVersionsPage() {
       <form onSubmit={(e) => void onSave(e)} className={`${panel} space-y-3`}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <label className="block space-y-1">
-            <span className="text-xs text-slate-500">Config key</span>
+            <span className="text-xs text-muted-foreground">Config key</span>
             <input className={field} value={key} onChange={(e) => setKey(e.target.value)} />
           </label>
           <label className="block space-y-1">
-            <span className="text-xs text-slate-500">Commit note</span>
+            <span className="text-xs text-muted-foreground">Commit note</span>
             <input className={field} value={commitNote} onChange={(e) => setCommitNote(e.target.value)} />
           </label>
         </div>
         <label className="block space-y-1">
-          <span className="text-xs text-slate-500">Value JSON</span>
+          <span className="text-xs text-muted-foreground">Value JSON</span>
           <textarea
             className={`${field} min-h-[120px] font-mono text-xs`}
             value={valueJson}
@@ -119,11 +119,11 @@ export default function ConfigVersionsPage() {
         </div>
       </form>
 
-      <div className="bg-white dark:bg-slate-900 shadow rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+      <div className="bg-surface shadow rounded-xl border border-border overflow-hidden">
         {loading ? (
-          <div className="p-4 text-sm text-slate-500">Đang tải…</div>
+          <div className="p-4 text-sm text-muted-foreground">Đang tải…</div>
         ) : versions.length === 0 ? (
-          <div className="p-4 text-sm text-slate-500">Chưa có version — bấm Lưu hoặc Tải lịch sử.</div>
+          <div className="p-4 text-sm text-muted-foreground">Chưa có version — bấm Lưu hoặc Tải lịch sử.</div>
         ) : (
           <table className="w-full text-sm">
             <thead className="bg-slate-50 dark:bg-slate-800/50 text-left">

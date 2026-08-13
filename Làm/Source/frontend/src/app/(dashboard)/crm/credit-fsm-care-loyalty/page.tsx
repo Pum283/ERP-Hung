@@ -91,7 +91,7 @@ export default function CrmCreditFsmCareLoyaltyPage() {
   ]);
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="p-6 space-y-6">
       {/* Toast */}
       {toast && (
         <div
@@ -104,13 +104,13 @@ export default function CrmCreditFsmCareLoyaltyPage() {
       )}
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-rose-950 via-slate-900 to-indigo-950 p-6 rounded-2xl text-white shadow-xl">
+      <div className="bg-brand p-5 rounded-xl text-brand-foreground shadow-sm">
         <div className="flex justify-between items-center">
           <div>
             <span className="bg-rose-500/30 text-rose-200 text-xs px-3 py-1 rounded-full font-semibold border border-rose-400/30">
               CRM - CREDIT GUARD, FSM HANDOFF, CARE & LOYALTY
             </span>
-            <h1 className="text-2xl font-bold mt-2">Bước 175: CRM Kiểm Soát Công Nợ, Chuyển FSM, Chăm Sóc KH & Loyalty</h1>
+            <h1 className="text-2xl font-bold mt-2">CRM Kiểm Soát Công Nợ, Chuyển FSM, Chăm Sóc KH & Loyalty</h1>
             <p className="text-rose-100 text-sm mt-1">
               Chặn bán vượt công nợ, Bàn giao Ticket sang FSM, Lịch chăm sóc nhắc tái mua & Chương trình Loyalty
             </p>
@@ -281,7 +281,7 @@ export default function CrmCreditFsmCareLoyaltyPage() {
                   rows={2}
                 />
               </div>
-              <button type="submit" className="w-full py-2.5 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700">
+              <button type="submit" className="w-full py-2.5 bg-brand text-white rounded-lg font-semibold hover:bg-brand-hover">
                 Chuyển Ticket Sang FSM
               </button>
             </form>

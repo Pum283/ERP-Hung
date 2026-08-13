@@ -114,7 +114,7 @@ export default function LmsPathTrackingPage() {
   ]);
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Toast */}
       {toast && (
         <div
@@ -127,30 +127,30 @@ export default function LmsPathTrackingPage() {
       )}
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-900 p-6 rounded-2xl text-white shadow-xl">
+      <div className="bg-brand p-5 rounded-xl text-brand-foreground shadow-sm">
         <div className="flex justify-between items-center">
           <div>
-            <span className="bg-indigo-500/30 text-indigo-200 text-xs px-3 py-1 rounded-full font-semibold border border-indigo-400/30">
+            <span className="bg-brand-foreground/20 text-brand-foreground/80 text-xs px-3 py-1 rounded-full font-semibold border border-brand-foreground/30">
               LMS - LỘ TRÌNH ĐÀO TẠO & BÁO CÁO TUÂN THỦ
             </span>
-            <h1 className="text-2xl font-bold mt-2">Bước 165: Acknowledgement Report & Job Role Learning Paths</h1>
-            <p className="text-indigo-200 text-sm mt-1">
+            <h1 className="text-2xl font-bold mt-2">Acknowledgement Report & Job Role Learning Paths</h1>
+            <p className="text-brand-foreground/80 text-sm mt-1">
               Báo cáo tỷ lệ xác nhận, gán lộ trình theo chức danh, tự gán khóa khi nhận việc & theo dõi tiến độ
             </p>
           </div>
           <div className="text-right">
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-brand-foreground/15 text-brand-foreground border border-brand-foreground/25">
               ● Tiến độ 100% (4/4 UCs)
             </span>
           </div>
         </div>
 
         {/* Tab Selection */}
-        <div className="flex space-x-2 mt-6 border-t border-white/10 pt-4">
+        <div className="flex space-x-2 mt-6 border-t border-brand-foreground/15 pt-4">
           <button
             onClick={() => setActiveTab('report')}
             className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-              activeTab === 'report' ? 'bg-white text-slate-950 shadow-md' : 'text-slate-200 hover:bg-white/10'
+              activeTab === 'report' ? 'bg-surface text-foreground shadow-md' : 'text-brand-foreground/80 hover:bg-surface/10'
             }`}
           >
             📊 UC_LMS_060: Báo cáo tỷ lệ xác nhận
@@ -158,7 +158,7 @@ export default function LmsPathTrackingPage() {
           <button
             onClick={() => setActiveTab('paths')}
             className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-              activeTab === 'paths' ? 'bg-white text-slate-950 shadow-md' : 'text-slate-200 hover:bg-white/10'
+              activeTab === 'paths' ? 'bg-surface text-foreground shadow-md' : 'text-brand-foreground/80 hover:bg-surface/10'
             }`}
           >
             🎯 UC_LMS_061: Lộ trình theo chức danh
@@ -166,7 +166,7 @@ export default function LmsPathTrackingPage() {
           <button
             onClick={() => setActiveTab('autoassign')}
             className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-              activeTab === 'autoassign' ? 'bg-white text-slate-950 shadow-md' : 'text-slate-200 hover:bg-white/10'
+              activeTab === 'autoassign' ? 'bg-surface text-foreground shadow-md' : 'text-brand-foreground/80 hover:bg-surface/10'
             }`}
           >
             ⚡ UC_LMS_062: Tự gán khi nhận việc
@@ -174,7 +174,7 @@ export default function LmsPathTrackingPage() {
           <button
             onClick={() => setActiveTab('progress')}
             className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-              activeTab === 'progress' ? 'bg-white text-slate-950 shadow-md' : 'text-slate-200 hover:bg-white/10'
+              activeTab === 'progress' ? 'bg-surface text-foreground shadow-md' : 'text-brand-foreground/80 hover:bg-surface/10'
             }`}
           >
             📈 UC_LMS_063: Theo dõi hoàn thành
@@ -184,8 +184,8 @@ export default function LmsPathTrackingPage() {
 
       {/* TAB 1: ACKNOWLEDGEMENT REPORT */}
       {activeTab === 'report' && (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-6">
-          <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+        <div className="rounded-xl border border-border bg-surface shadow-sm p-5 space-y-6">
+          <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
             <span>📊</span> Báo cáo Tỷ lệ Xác nhận Đọc Quy định & Nội quy (UC_LMS_060)
           </h2>
 
@@ -193,16 +193,16 @@ export default function LmsPathTrackingPage() {
             {acknowledgementReports.map((item) => {
               const evalRes = calculateComplianceRatePct(item.acknowledgedCount, item.totalEmployees);
               return (
-                <div key={item.department} className="p-4 rounded-xl border border-slate-200 bg-slate-50 flex flex-col justify-between">
+                <div key={item.department} className="p-4 rounded-xl border border-border bg-slate-50 flex flex-col justify-between">
                   <div>
                     <h3 className="font-bold text-slate-900 text-sm">{item.department}</h3>
-                    <div className="flex justify-between text-xs text-slate-500 mt-2">
+                    <div className="flex justify-between text-xs text-muted-foreground mt-2">
                       <span>Tổng nhân sự: {item.totalEmployees}</span>
                       <span>Đã xác nhận: {item.acknowledgedCount}</span>
                     </div>
                   </div>
 
-                  <div className="mt-4 pt-3 border-t border-slate-200 flex justify-between items-center">
+                  <div className="mt-4 pt-3 border-t border-border flex justify-between items-center">
                     <span className="text-2xl font-extrabold text-slate-900">{evalRes.complianceRatePct}%</span>
                     <span
                       className={`px-2.5 py-0.5 text-xs font-bold rounded-full ${
@@ -227,35 +227,35 @@ export default function LmsPathTrackingPage() {
       {activeTab === 'paths' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
+            <div className="lg:col-span-2 rounded-xl border border-border bg-surface shadow-sm p-5 space-y-4">
               <div className="flex justify-between items-center">
-                <h2 className="text-lg font-bold text-slate-800">🎯 Quản lý Lộ trình Đào tạo Theo Chức danh (UC_LMS_061)</h2>
+                <h2 className="text-lg font-bold text-foreground">🎯 Quản lý Lộ trình Đào tạo Theo Chức danh (UC_LMS_061)</h2>
                 <input
                   type="text"
                   placeholder="Lọc theo chức danh..."
                   value={searchRoleFilter}
                   onChange={(e) => setSearchRoleFilter(e.target.value)}
-                  className="border border-slate-300 rounded-lg text-xs px-3 py-1.5 w-48"
+                  className="border border-border rounded-lg text-xs px-3 py-1.5 w-48"
                 />
               </div>
 
               <div className="space-y-4">
                 {filteredPaths.map((p) => (
-                  <div key={p.id} className="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-3">
+                  <div key={p.id} className="p-4 rounded-xl border border-border bg-slate-50 space-y-3">
                     <div className="flex justify-between items-start">
                       <div>
-                        <span className="px-2 py-0.5 text-xs font-bold rounded bg-indigo-100 text-indigo-800">{p.jobTitle}</span>
+                        <span className="px-2 py-0.5 text-xs font-bold rounded bg-brand-muted text-brand-strong">{p.jobTitle}</span>
                         <h3 className="font-bold text-slate-900 mt-1 text-base">{p.title}</h3>
-                        <p className="text-xs text-slate-500">{p.description}</p>
+                        <p className="text-xs text-muted-foreground">{p.description}</p>
                       </div>
                       <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
                         ⏱️ Hạn hoàn thành: {p.targetDaysToComplete} ngày
                       </span>
                     </div>
 
-                    <div className="bg-white p-3 rounded-lg border border-slate-200 text-xs space-y-1">
-                      <p className="font-semibold text-slate-700">Các khóa học bắt buộc trong lộ trình:</p>
-                      <ul className="list-disc list-inside text-slate-600">
+                    <div className="bg-surface p-3 rounded-lg border border-border text-xs space-y-1">
+                      <p className="font-semibold text-foreground">Các khóa học bắt buộc trong lộ trình:</p>
+                      <ul className="list-disc list-inside text-muted-foreground">
                         {p.courses.map((c, idx) => (
                           <li key={idx}>{c}</li>
                         ))}
@@ -267,49 +267,49 @@ export default function LmsPathTrackingPage() {
             </div>
 
             {/* Create form */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-              <h2 className="text-lg font-bold text-slate-800 mb-4">➕ Tạo Lộ trình Đào tạo Mới</h2>
+            <div className="rounded-xl border border-border bg-surface shadow-sm p-5">
+              <h2 className="text-lg font-bold text-foreground mb-4">➕ Tạo Lộ trình Đào tạo Mới</h2>
               <form onSubmit={handleCreatePath} className="space-y-4 text-sm">
                 <div>
-                  <label className="block text-slate-700 font-medium mb-1">Tên lộ trình:</label>
+                  <label className="block text-foreground font-medium mb-1">Tên lộ trình:</label>
                   <input
                     type="text"
                     value={newPathForm.title}
                     onChange={(e) => setNewPathForm({ ...newPathForm, title: e.target.value })}
-                    className="w-full border border-slate-300 rounded-lg p-2"
+                    className="w-full border border-border rounded-lg p-2"
                     placeholder="VD: Lộ trình Frontend React Senior"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 font-medium mb-1">Chức danh áp dụng:</label>
+                  <label className="block text-foreground font-medium mb-1">Chức danh áp dụng:</label>
                   <input
                     type="text"
                     value={newPathForm.jobTitle}
                     onChange={(e) => setNewPathForm({ ...newPathForm, jobTitle: e.target.value })}
-                    className="w-full border border-slate-300 rounded-lg p-2"
+                    className="w-full border border-border rounded-lg p-2"
                     placeholder="VD: Frontend Developer"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 font-medium mb-1">Mô tả:</label>
+                  <label className="block text-foreground font-medium mb-1">Mô tả:</label>
                   <textarea
                     value={newPathForm.description}
                     onChange={(e) => setNewPathForm({ ...newPathForm, description: e.target.value })}
-                    className="w-full border border-slate-300 rounded-lg p-2"
+                    className="w-full border border-border rounded-lg p-2"
                     rows={2}
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 font-medium mb-1">Thời hạn hoàn thành (ngày):</label>
+                  <label className="block text-foreground font-medium mb-1">Thời hạn hoàn thành (ngày):</label>
                   <input
                     type="number"
                     value={newPathForm.targetDays}
                     onChange={(e) => setNewPathForm({ ...newPathForm, targetDays: Number(e.target.value) })}
-                    className="w-full border border-slate-300 rounded-lg p-2"
+                    className="w-full border border-border rounded-lg p-2"
                   />
                 </div>
 
-                <button type="submit" className="w-full py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700">
+                <button type="submit" className="w-full py-2 bg-brand text-white rounded-lg font-semibold hover:bg-brand-hover">
                   Lưu Lộ trình Đào tạo
                 </button>
               </form>
@@ -322,24 +322,24 @@ export default function LmsPathTrackingPage() {
       {activeTab === 'autoassign' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-              <h2 className="text-lg font-bold text-slate-800 mb-4">⚡ Tự Động Gán Khóa Bắt Buộc Khi Nhận Việc (UC_LMS_062)</h2>
+            <div className="rounded-xl border border-border bg-surface shadow-sm p-5">
+              <h2 className="text-lg font-bold text-foreground mb-4">⚡ Tự Động Gán Khóa Bắt Buộc Khi Nhận Việc (UC_LMS_062)</h2>
               <form onSubmit={handleAutoAssignOnHire} className="space-y-4 text-sm">
                 <div>
-                  <label className="block text-slate-700 font-medium mb-1">Tên nhân viên mới nhận việc:</label>
+                  <label className="block text-foreground font-medium mb-1">Tên nhân viên mới nhận việc:</label>
                   <input
                     type="text"
                     value={onboardForm.employeeName}
                     onChange={(e) => setOnboardForm({ ...onboardForm, employeeName: e.target.value })}
-                    className="w-full border border-slate-300 rounded-lg p-2"
+                    className="w-full border border-border rounded-lg p-2"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 font-medium mb-1">Chức danh vị trí tuyển dụng:</label>
+                  <label className="block text-foreground font-medium mb-1">Chức danh vị trí tuyển dụng:</label>
                   <select
                     value={onboardForm.jobTitle}
                     onChange={(e) => setOnboardForm({ ...onboardForm, jobTitle: e.target.value })}
-                    className="w-full border border-slate-300 rounded-lg p-2 bg-white"
+                    className="w-full border border-border rounded-lg p-2 bg-surface"
                   >
                     <option value="Backend Developer">Backend Developer</option>
                     <option value="Warehouse Operator">Warehouse Operator</option>
@@ -352,26 +352,26 @@ export default function LmsPathTrackingPage() {
               </form>
             </div>
 
-            <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-              <h2 className="text-lg font-bold text-slate-800 mb-4">📋 Kết quả Gán Khóa Đào tạo Tự động</h2>
+            <div className="lg:col-span-2 rounded-xl border border-border bg-surface shadow-sm p-5">
+              <h2 className="text-lg font-bold text-foreground mb-4">📋 Kết quả Gán Khóa Đào tạo Tự động</h2>
               {autoAssignResult ? (
                 <div className="p-4 rounded-xl border border-emerald-200 bg-emerald-50/50 space-y-3">
                   <div className="flex justify-between items-center">
                     <h3 className="font-bold text-emerald-950 text-base">{autoAssignResult.employeeName}</h3>
                     <span className="px-3 py-1 text-xs font-bold rounded-full bg-emerald-600 text-white">✓ Đã gán tự động</span>
                   </div>
-                  <p className="text-xs text-slate-700">
+                  <p className="text-xs text-foreground">
                     Chức danh: <strong>{autoAssignResult.jobTitle}</strong> • Lộ trình: <strong>{autoAssignResult.assignedPathTitle}</strong>
                   </p>
-                  <div className="bg-white p-3 rounded-lg border border-slate-200 text-xs space-y-1">
-                    <p className="font-semibold text-slate-800">Danh sách khóa học được tự động kích hoạt:</p>
-                    <ul className="list-disc list-inside text-slate-600">
+                  <div className="bg-surface p-3 rounded-lg border border-border text-xs space-y-1">
+                    <p className="font-semibold text-foreground">Danh sách khóa học được tự động kích hoạt:</p>
+                    <ul className="list-disc list-inside text-muted-foreground">
                       {autoAssignResult.coursesAssigned.map((c: string, idx: number) => (
                         <li key={idx}>{c}</li>
                       ))}
                     </ul>
                   </div>
-                  <p className="text-xs text-slate-500 italic">Hạn hoàn thành bài học: {autoAssignResult.targetDays} ngày kể từ ngày nhận việc.</p>
+                  <p className="text-xs text-muted-foreground italic">Hạn hoàn thành bài học: {autoAssignResult.targetDays} ngày kể từ ngày nhận việc.</p>
                 </div>
               ) : (
                 <div className="p-8 text-center text-slate-400 text-sm">
@@ -385,17 +385,17 @@ export default function LmsPathTrackingPage() {
 
       {/* TAB 4: PATH COMPLETION TRACKING */}
       {activeTab === 'progress' && (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
-          <h2 className="text-lg font-bold text-slate-800">📈 Theo Dõi Hoàn Thành Lộ Trình Đào Tạo Nhân Viên (UC_LMS_063)</h2>
+        <div className="rounded-xl border border-border bg-surface shadow-sm p-5 space-y-4">
+          <h2 className="text-lg font-bold text-foreground">📈 Theo Dõi Hoàn Thành Lộ Trình Đào Tạo Nhân Viên (UC_LMS_063)</h2>
 
           <div className="space-y-3">
             {userPathProgresses.map((item) => {
               const evalProgress = evaluatePathProgress(item.completedCount, item.totalCount, item.dueDate);
               return (
-                <div key={item.id} className="p-4 rounded-xl border border-slate-200 bg-slate-50 flex justify-between items-center">
+                <div key={item.id} className="p-4 rounded-xl border border-border bg-slate-50 flex justify-between items-center">
                   <div>
                     <h3 className="font-bold text-slate-900">{item.employee}</h3>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       Chức danh: {item.jobTitle} • {item.pathTitle}
                     </p>
                     <div className="w-64 bg-slate-200 rounded-full h-2 mt-2">
@@ -410,7 +410,7 @@ export default function LmsPathTrackingPage() {
 
                   <div className="text-right">
                     <span className="text-lg font-extrabold text-slate-900">{evalProgress.progressPct}%</span>
-                    <p className="text-xs text-slate-500 font-medium mt-0.5">
+                    <p className="text-xs text-muted-foreground font-medium mt-0.5">
                       ({item.completedCount}/{item.totalCount} Khóa học)
                     </p>
                     <span

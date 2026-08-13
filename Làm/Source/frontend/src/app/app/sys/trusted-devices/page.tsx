@@ -85,13 +85,13 @@ export default function TrustedDevicesPage() {
   const activeDevices = trustedDevices.filter(d => d.isActive && new Date(d.expiresAt) > new Date());
 
   return (
-    <div className="p-6 max-w-4xl space-y-6">
+    <div className="max-w-4xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <ShieldCheck className="w-6 h-6 text-indigo-600" /> Quản lý Phiên & Thiết bị Tin cậy (UC_SYS_010–012)
+          <h1 className="font-display text-title font-bold text-foreground flex items-center gap-2">
+            <ShieldCheck className="w-6 h-6 text-brand" /> Quản lý Phiên & Thiết bị Tin cậy (UC_SYS_010–012)
           </h1>
-          <p className="text-slate-500 text-sm mt-1">Danh sách phiên làm việc active (tối đa 5 phiên) và danh sách trình duyệt/thiết bị tin cậy (bỏ qua 2FA trong 30 ngày).</p>
+          <p className="text-body text-muted-foreground mt-1">Danh sách phiên làm việc active (tối đa 5 phiên) và danh sách trình duyệt/thiết bị tin cậy (bỏ qua 2FA trong 30 ngày).</p>
         </div>
         <button type="button" className={btn.soft} onClick={() => void load()}>
           <RefreshCw className="w-4 h-4 mr-1 inline" /> Làm mới
@@ -104,21 +104,21 @@ export default function TrustedDevicesPage() {
       {/* UC_SYS_010 & UC_SYS_011: Sessions */}
       <section className="space-y-3">
         <div className={`${panel} flex items-center justify-between`}>
-          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-            Phiên đăng nhập active: <span className="text-indigo-600 font-bold">{activeSessions.length} / 5</span>
+          <span className="text-sm font-semibold text-foreground dark:text-slate-300">
+            Phiên đăng nhập active: <span className="text-brand font-bold">{activeSessions.length} / 5</span>
           </span>
-          <span className="text-xs text-slate-500">Giới hạn tối đa 5 phiên đồng thời (UC_SYS_011)</span>
+          <span className="text-xs text-muted-foreground">Giới hạn tối đa 5 phiên đồng thời (UC_SYS_011)</span>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 shadow rounded-xl border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800">
+        <div className="bg-surface shadow rounded-xl border border-border divide-y divide-slate-100 dark:divide-slate-800">
           {activeSessions.map((session, idx) => (
             <div key={session.id} className="p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 rounded-lg">
+                <div className="p-2.5 bg-brand-muted  text-brand rounded-lg">
                   <Laptop className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                  <div className="font-semibold text-foreground dark:text-brand-foreground/80 flex items-center gap-2">
                     {session.userAgent ? (session.userAgent.length > 50 ? session.userAgent.slice(0, 50) + "…" : session.userAgent) : "Trình duyệt Web"}
                     {idx === 0 && (
                       <span className="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-medium">Gần nhất / Hiện tại</span>
@@ -139,7 +139,7 @@ export default function TrustedDevicesPage() {
           ))}
 
           {!loading && activeSessions.length === 0 && (
-            <div className="p-6 text-center text-slate-500 text-sm">Không có phiên làm việc active nào.</div>
+            <div className="p-6 text-center text-body text-muted-foreground">Không có phiên làm việc active nào.</div>
           )}
         </div>
       </section>
@@ -147,10 +147,10 @@ export default function TrustedDevicesPage() {
       {/* UC_SYS_012: Trusted Devices */}
       <section className="space-y-3 pt-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-base font-semibold text-slate-800 dark:text-slate-200">
+          <h2 className="text-base font-semibold text-foreground dark:text-brand-foreground/80">
             Thiết bị tin cậy (UC_SYS_012)
           </h2>
-          <span className="text-xs text-slate-500">Đã lưu: {activeDevices.length} thiết bị</span>
+          <span className="text-xs text-muted-foreground">Đã lưu: {activeDevices.length} thiết bị</span>
         </div>
 
         <form onSubmit={handleRegisterDevice} className={`${panel} flex flex-wrap gap-2 items-center`}>
@@ -165,7 +165,7 @@ export default function TrustedDevicesPage() {
           </button>
         </form>
 
-        <div className="bg-white dark:bg-slate-900 shadow rounded-xl border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800">
+        <div className="bg-surface shadow rounded-xl border border-border divide-y divide-slate-100 dark:divide-slate-800">
           {activeDevices.map((device) => (
             <div key={device.id} className="p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
@@ -173,7 +173,7 @@ export default function TrustedDevicesPage() {
                   <ShieldCheck className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="font-semibold text-slate-800 dark:text-slate-200">
+                  <div className="font-semibold text-foreground dark:text-brand-foreground/80">
                     {device.deviceName}
                   </div>
                   <div className="text-xs text-slate-400 mt-0.5">
@@ -191,7 +191,7 @@ export default function TrustedDevicesPage() {
           ))}
 
           {!loading && activeDevices.length === 0 && (
-            <div className="p-6 text-center text-slate-500 text-sm">Chưa có thiết bị tin cậy nào được lưu.</div>
+            <div className="p-6 text-center text-body text-muted-foreground">Chưa có thiết bị tin cậy nào được lưu.</div>
           )}
         </div>
       </section>

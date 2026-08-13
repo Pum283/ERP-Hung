@@ -1,0 +1,25 @@
+---
+description: UI thống nhất — dùng màu Branding (--brand/--accent), btn/field/panel, AppShell; cấm indigo/purple one-off.
+alwaysApply: true
+---
+
+# Thiết kế giao diện thống nhất (Branding)
+
+Nguồn: `KE_HOACH_TRIEN_KHAI_UC.md` §11. Trang điều chỉnh màu: `/app/sys/branding`.
+
+## Bắt buộc
+
+- Dùng token: `bg-brand`, `text-brand`, `bg-brand-muted`, `border-brand`, `text-foreground`, `text-muted-foreground`, `bg-surface`, `border-border`
+- Dùng `btn` / `field` / `panel` / `tableWrap` từ `shared/ui/`
+- Theme: `ThemeBootstrap` + `applyThemeToDocument` (Primary→`--brand*`, Accent→`--accent*`)
+- Trang nằm trong `AppShell`; header/tab theo format ERP (không hero “Bước N”)
+
+## Cấm
+
+- Hard-code `indigo-*`, `purple-*`, `violet-*`, gradient tím/indigo cố định cho UI chính
+- Trang one-off lệch shell / tự vẽ sidebar
+- Fork màu theo module (chỉ Branding + `brand-kit.css` mặc định)
+
+## Khi polish UC cũ
+
+Thay class màu cứng sang brand tokens trong cùng thay đổi.

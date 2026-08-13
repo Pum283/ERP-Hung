@@ -109,7 +109,7 @@ export default function CrmFieldSalesOpsDisputePage() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="p-6 space-y-6">
       {/* Toast */}
       {toast && (
         <div
@@ -122,13 +122,13 @@ export default function CrmFieldSalesOpsDisputePage() {
       )}
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-emerald-950 via-slate-900 to-indigo-950 p-6 rounded-2xl text-white shadow-xl">
+      <div className="bg-brand p-5 rounded-xl text-brand-foreground shadow-sm">
         <div className="flex justify-between items-center">
           <div>
             <span className="bg-emerald-500/30 text-emerald-200 text-xs px-3 py-1 rounded-full font-semibold border border-emerald-400/30">
               CRM - AI RECOMMENDATIONS, FIELD REVENUE & DISPUTES
             </span>
-            <h1 className="text-2xl font-bold mt-2">Bước 173: CRM AI Gợi Ý Việc Ưu Tiên, Doanh Số Field & Khiếu Nại Đơn Hàng</h1>
+            <h1 className="text-2xl font-bold mt-2">CRM AI Gợi Ý Việc Ưu Tiên, Doanh Số Field & Khiếu Nại Đơn Hàng</h1>
             <p className="text-emerald-100 text-sm mt-1">
               AI gợi ý công việc ưu tiên, Dashboard doanh số field, Đối soát chứng từ đơn & Xử lý khiếu nại đơn hàng
             </p>
@@ -183,7 +183,7 @@ export default function CrmFieldSalesOpsDisputePage() {
           <h2 className="text-lg font-bold text-slate-800">🤖 AI Gợi Ý Công Việc Ưu Tiên Cho Field Sales (UC_CRM_097)</h2>
           <div className="space-y-3">
             {aiActions.map((act) => (
-              <div key={act.id} className="p-4 rounded-xl border border-indigo-100 bg-indigo-50/40 flex justify-between items-center">
+              <div key={act.id} className="p-4 rounded-xl border border-indigo-100 bg-brand-muted/40 flex justify-between items-center">
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="px-2 py-0.5 text-xs font-bold rounded bg-rose-100 text-rose-800">Ưu tiên {act.level}</span>
@@ -218,7 +218,7 @@ export default function CrmFieldSalesOpsDisputePage() {
             </div>
             <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
               <span className="text-xs font-semibold text-slate-500">Số Đơn Hàng On-site</span>
-              <p className="text-2xl font-bold text-indigo-600 mt-1">{metrics.ordersCreated} đơn</p>
+              <p className="text-2xl font-bold text-brand mt-1">{metrics.ordersCreated} đơn</p>
             </div>
             <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
               <span className="text-xs font-semibold text-slate-500">Giá Trị Đơn Trung Bình</span>

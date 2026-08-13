@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Manrope, JetBrains_Mono, Be_Vietnam_Pro } from "next/font/google";
+import { ThemeBootstrap } from "@/components/theme/ThemeBootstrap";
 import "./globals.css";
 
 /** Brand Kit fonts — đổi family tại đây; màu/cỡ chữ ở brand-kit.css */
@@ -34,6 +35,7 @@ export default function RootLayout({
       <body
         className={`${brandSans.variable} ${brandDisplay.variable} ${brandMono.variable} antialiased font-sans`}
       >
+        <ThemeBootstrap />
         {children}
       </body>
     </html>

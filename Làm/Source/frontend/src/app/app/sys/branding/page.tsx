@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { fetchTheme, upsertTheme, type SysThemeDto } from "@/shared/api/sys-api";
-import { applyThemeCssVars, validateThemeForm } from "@/shared/api/sys-theme-role-home-msg-helpers";
+import { applyThemeToDocument, validateThemeForm } from "@/shared/api/sys-theme-role-home-msg-helpers";
 import { Palette, RefreshCw } from "lucide-react";
 import { btn } from "@/shared/ui/btn";
 import { field, panel } from "@/shared/ui/field";
@@ -25,8 +25,7 @@ export default function BrandingPage() {
       setPrimary(t.primaryColor || "#0EA5E9");
       setAccent(t.accentColor || "#F59E0B");
       setFavicon(t.faviconUrl || "");
-      const vars = applyThemeCssVars(t.primaryColor, t.accentColor);
-      Object.entries(vars).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
+      applyThemeToDocument(t.primaryColor, t.accentColor, t.faviconUrl);
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -54,22 +53,21 @@ export default function BrandingPage() {
       });
       setTheme(saved);
       setMsg("Đã lưu theme.");
-      const vars = applyThemeCssVars(saved.primaryColor, saved.accentColor);
-      Object.entries(vars).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
+      applyThemeToDocument(saved.primaryColor, saved.accentColor, saved.faviconUrl);
     } catch (err) {
       setError((err as Error).message);
     }
   }
 
   return (
-    <div className="p-6 max-w-3xl space-y-6">
+    <div className="max-w-3xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Palette className="w-6 h-6 text-indigo-600" /> Theme / Branding (UC_SYS_093)
+          <h1 className="font-display text-title font-bold text-foreground flex items-center gap-2">
+            <Palette className="w-6 h-6 text-brand" /> Theme / Branding (UC_SYS_093)
           </h1>
-          <p className="text-slate-500 text-sm mt-1">
-            Màu brand + favicon. Logo upload vẫn ở trang Tenant.
+          <p className="text-body text-muted-foreground mt-1">
+            Primary / Accent áp dụng toàn hệ thống (nút, sidebar, header trang). Logo upload vẫn ở trang Tenant.
           </p>
         </div>
         <button type="button" className={btn.soft} onClick={() => void load()}>
@@ -81,10 +79,10 @@ export default function BrandingPage() {
       {msg && <div className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{msg}</div>}
 
       {loading ? (
-        <div className="text-sm text-slate-500">Đang tải…</div>
+        <div className="text-sm text-muted-foreground">Đang tải…</div>
       ) : (
         <form onSubmit={(e) => void onSave(e)} className={`${panel} space-y-4`}>
-          <div className="text-sm text-slate-600">
+          <div className="text-sm text-muted-foreground">
             Tenant: <strong>{theme?.tenantName}</strong>
             {theme?.logoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -93,22 +91,22 @@ export default function BrandingPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <label className="block space-y-1">
-              <span className="text-xs text-slate-500">Primary (#RRGGBB)</span>
+              <span className="text-xs text-muted-foreground">Primary (#RRGGBB)</span>
               <input className={field} value={primary} onChange={(e) => setPrimary(e.target.value)} />
             </label>
             <label className="block space-y-1">
-              <span className="text-xs text-slate-500">Accent (#RRGGBB)</span>
+              <span className="text-xs text-muted-foreground">Accent (#RRGGBB)</span>
               <input className={field} value={accent} onChange={(e) => setAccent(e.target.value)} />
             </label>
           </div>
           <label className="block space-y-1">
-            <span className="text-xs text-slate-500">Favicon URL</span>
+            <span className="text-xs text-muted-foreground">Favicon URL</span>
             <input className={field} value={favicon} onChange={(e) => setFavicon(e.target.value)} />
           </label>
           <div className="flex gap-3 items-center">
             <span className="h-8 w-8 rounded" style={{ background: primary }} />
             <span className="h-8 w-8 rounded" style={{ background: accent }} />
-            <span className="text-xs text-slate-500">Preview</span>
+            <span className="text-xs text-muted-foreground">Preview</span>
           </div>
           <button type="submit" className={btn.primary}>Lưu theme</button>
         </form>

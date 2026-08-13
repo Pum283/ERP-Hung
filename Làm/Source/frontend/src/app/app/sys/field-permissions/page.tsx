@@ -119,13 +119,13 @@ export default function FieldPermissionsPage() {
   }
 
   return (
-    <div className="p-6 max-w-5xl space-y-6">
+    <div className="max-w-5xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Shield className="w-6 h-6 text-indigo-600" /> Quyền trường nhạy cảm (UC_SYS_031)
+          <h1 className="font-display text-title font-bold text-foreground flex items-center gap-2">
+            <Shield className="w-6 h-6 text-brand" /> Quyền trường nhạy cảm (UC_SYS_031)
           </h1>
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="text-body text-muted-foreground mt-1">
             Danh mục trường + gán None/Masked/Read/Write theo vai trò. Hiệu lực lấy quyền rộng nhất.
           </p>
         </div>
@@ -141,10 +141,10 @@ export default function FieldPermissionsPage() {
         <div className="text-sm font-semibold">Xem trước mask</div>
         <div className="flex flex-wrap gap-3 items-end">
           <label className="block space-y-1">
-            <span className="text-xs text-slate-500">Giá trị thô</span>
+            <span className="text-xs text-muted-foreground">Giá trị thô</span>
             <input className={field} value={preview} onChange={(e) => setPreview(e.target.value)} />
           </label>
-          <div className="text-sm text-slate-700">
+          <div className="text-sm text-foreground">
             Masked: <span className="font-mono">{applyFieldMaskUi(preview, "Masked")}</span>
             {" · "}
             None: <span className="font-mono">{applyFieldMaskUi(preview, "None")}</span>
@@ -168,9 +168,9 @@ export default function FieldPermissionsPage() {
         </div>
       </form>
 
-      <div className="bg-white dark:bg-slate-900 shadow rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+      <div className="bg-surface shadow rounded-xl border border-border overflow-hidden">
         {loading ? (
-          <div className="p-4 text-sm text-slate-500">Đang tải…</div>
+          <div className="p-4 text-sm text-muted-foreground">Đang tải…</div>
         ) : (
           <table className="w-full text-sm">
             <thead className="bg-slate-50 dark:bg-slate-800/50 text-left">
@@ -216,7 +216,7 @@ export default function FieldPermissionsPage() {
           </select>
           <button type="submit" className={btn.primary}>Gán quyền</button>
         </div>
-        <ul className="text-sm text-slate-600 space-y-1">
+        <ul className="text-sm text-muted-foreground space-y-1">
           {rolePerms.map((p) => (
             <li key={p.id} className="font-mono text-xs">{p.fieldKey} → {p.access}</li>
           ))}

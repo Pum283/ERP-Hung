@@ -75,13 +75,13 @@ export default function RoleHomesPage() {
   }
 
   return (
-    <div className="p-6 max-w-4xl space-y-6">
+    <div className="max-w-4xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Home className="w-6 h-6 text-indigo-600" /> Trang chủ theo vai trò (UC_SYS_094)
+          <h1 className="font-display text-title font-bold text-foreground flex items-center gap-2">
+            <Home className="w-6 h-6 text-brand" /> Trang chủ theo vai trò (UC_SYS_094)
           </h1>
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="text-body text-muted-foreground mt-1">
             Priority nhỏ hơn = ưu tiên cao hơn khi user có nhiều role.
           </p>
         </div>
@@ -111,9 +111,9 @@ export default function RoleHomesPage() {
         <button type="submit" className={btn.primary}>Lưu</button>
       </form>
 
-      <div className="bg-white dark:bg-slate-900 shadow rounded-xl border overflow-hidden">
+      <div className="bg-surface shadow rounded-xl border overflow-hidden">
         {loading ? (
-          <div className="p-4 text-sm text-slate-500">Đang tải…</div>
+          <div className="p-4 text-sm text-muted-foreground">Đang tải…</div>
         ) : (
           <table className="w-full text-sm">
             <thead className="bg-slate-50 text-left">

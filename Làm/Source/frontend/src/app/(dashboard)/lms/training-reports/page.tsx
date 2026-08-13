@@ -54,7 +54,7 @@ export default function LmsTrainingReportsPage() {
   ]);
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Toast */}
       {toast && (
         <div
@@ -67,30 +67,30 @@ export default function LmsTrainingReportsPage() {
       )}
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-red-950 via-purple-950 to-slate-900 p-6 rounded-2xl text-white shadow-xl">
+      <div className="bg-brand p-5 rounded-xl text-brand-foreground shadow-sm">
         <div className="flex justify-between items-center">
           <div>
             <span className="bg-rose-500/30 text-rose-200 text-xs px-3 py-1 rounded-full font-semibold border border-rose-400/30">
               LMS - CẢNH BÁO QUÁ HẠN & BÁO CÁO PHÂN TÍCH CHUYÊN SÂU
             </span>
-            <h1 className="text-2xl font-bold mt-2">Bước 166: Overdue Alerts & Learning Analytics</h1>
+            <h1 className="text-2xl font-bold mt-2">Overdue Alerts & Learning Analytics</h1>
             <p className="text-rose-200 text-sm mt-1">
               Cảnh báo quá hạn đào tạo, báo cáo điểm thi, phân tích học viên bỏ dở & hiệu quả khóa học
             </p>
           </div>
           <div className="text-right">
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-brand-foreground/15 text-brand-foreground border border-brand-foreground/25">
               ● Tiến độ 100% (4/4 UCs)
             </span>
           </div>
         </div>
 
         {/* Tab Selection */}
-        <div className="flex space-x-2 mt-6 border-t border-white/10 pt-4">
+        <div className="flex space-x-2 mt-6 border-t border-brand-foreground/15 pt-4">
           <button
             onClick={() => setActiveTab('overdue')}
             className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-              activeTab === 'overdue' ? 'bg-white text-slate-950 shadow-md' : 'text-slate-200 hover:bg-white/10'
+              activeTab === 'overdue' ? 'bg-surface text-foreground shadow-md' : 'text-brand-foreground/80 hover:bg-surface/10'
             }`}
           >
             ⚠️ UC_LMS_064: Cảnh báo quá hạn
@@ -98,7 +98,7 @@ export default function LmsTrainingReportsPage() {
           <button
             onClick={() => setActiveTab('exams')}
             className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-              activeTab === 'exams' ? 'bg-white text-slate-950 shadow-md' : 'text-slate-200 hover:bg-white/10'
+              activeTab === 'exams' ? 'bg-surface text-foreground shadow-md' : 'text-brand-foreground/80 hover:bg-surface/10'
             }`}
           >
             📝 UC_LMS_067: Phân tích điểm thi
@@ -106,7 +106,7 @@ export default function LmsTrainingReportsPage() {
           <button
             onClick={() => setActiveTab('dropouts')}
             className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-              activeTab === 'dropouts' ? 'bg-white text-slate-950 shadow-md' : 'text-slate-200 hover:bg-white/10'
+              activeTab === 'dropouts' ? 'bg-surface text-foreground shadow-md' : 'text-brand-foreground/80 hover:bg-surface/10'
             }`}
           >
             📉 UC_LMS_068: Học viên bỏ dở
@@ -114,7 +114,7 @@ export default function LmsTrainingReportsPage() {
           <button
             onClick={() => setActiveTab('engagement')}
             className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-              activeTab === 'engagement' ? 'bg-white text-slate-950 shadow-md' : 'text-slate-200 hover:bg-white/10'
+              activeTab === 'engagement' ? 'bg-surface text-foreground shadow-md' : 'text-brand-foreground/80 hover:bg-surface/10'
             }`}
           >
             ⭐ UC_LMS_069: Hiệu quả khóa học
@@ -124,9 +124,9 @@ export default function LmsTrainingReportsPage() {
 
       {/* TAB 1: OVERDUE TRAINING ALERTS */}
       {activeTab === 'overdue' && (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-6">
+        <div className="rounded-xl border border-border bg-surface shadow-sm p-5 space-y-6">
           <div className="flex justify-between items-center">
-            <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+            <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
               <span>⚠️</span> Danh sách Cảnh báo Nhân viên Quá hạn Đào tạo (UC_LMS_064)
             </h2>
             <button
@@ -144,7 +144,7 @@ export default function LmsTrainingReportsPage() {
                 <div key={alt.id} className="p-4 rounded-xl border border-rose-200 bg-rose-50/50 flex justify-between items-center">
                   <div>
                     <h3 className="font-bold text-slate-900">{alt.user}</h3>
-                    <p className="text-xs text-slate-600 mt-1">{alt.course}</p>
+                    <p className="text-xs text-muted-foreground mt-1">{alt.course}</p>
                     <span className="text-xs text-rose-700 font-semibold mt-1 block">
                       ⏱️ Hạn chót: {new Date(alt.dueDate).toLocaleDateString('vi-VN')} (Đã quá hạn {days} ngày)
                     </span>
@@ -163,14 +163,14 @@ export default function LmsTrainingReportsPage() {
 
       {/* TAB 2: EXAM ANALYTICS REPORT */}
       {activeTab === 'exams' && (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-6">
-          <h2 className="text-lg font-bold text-slate-800">📝 Báo cáo Thống kê Điểm thi & Tỷ lệ Đạt (UC_LMS_067)</h2>
+        <div className="rounded-xl border border-border bg-surface shadow-sm p-5 space-y-6">
+          <h2 className="text-lg font-bold text-foreground">📝 Báo cáo Thống kê Điểm thi & Tỷ lệ Đạt (UC_LMS_067)</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {examAnalytics.map((ex) => {
               const passRes = calculatePassRatePct(ex.passedAttempts, ex.totalAttempts);
               return (
-                <div key={ex.id} className="p-5 rounded-xl border border-slate-200 bg-slate-50 space-y-4">
+                <div key={ex.id} className="p-5 rounded-xl border border-border bg-slate-50 space-y-4">
                   <div className="flex justify-between items-start">
                     <h3 className="font-bold text-slate-900 text-base">{ex.title}</h3>
                     <span
@@ -187,16 +187,16 @@ export default function LmsTrainingReportsPage() {
                   </div>
 
                   <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                    <div className="p-2 bg-white rounded-lg border border-slate-200">
-                      <p className="text-slate-500">Tổng lượt thi</p>
+                    <div className="p-2 bg-surface rounded-lg border border-border">
+                      <p className="text-muted-foreground">Tổng lượt thi</p>
                       <p className="font-bold text-slate-900 text-sm mt-0.5">{ex.totalAttempts}</p>
                     </div>
-                    <div className="p-2 bg-white rounded-lg border border-slate-200">
-                      <p className="text-slate-500">Đạt / Đậu</p>
+                    <div className="p-2 bg-surface rounded-lg border border-border">
+                      <p className="text-muted-foreground">Đạt / Đậu</p>
                       <p className="font-bold text-emerald-600 text-sm mt-0.5">{ex.passedAttempts}</p>
                     </div>
-                    <div className="p-2 bg-white rounded-lg border border-slate-200">
-                      <p className="text-slate-500">Điểm trung bình</p>
+                    <div className="p-2 bg-surface rounded-lg border border-border">
+                      <p className="text-muted-foreground">Điểm trung bình</p>
                       <p className="font-bold text-blue-600 text-sm mt-0.5">{ex.averageScore}</p>
                     </div>
                   </div>
@@ -209,17 +209,17 @@ export default function LmsTrainingReportsPage() {
 
       {/* TAB 3: DROPOUT ANALYTICS REPORT */}
       {activeTab === 'dropouts' && (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-6">
-          <h2 className="text-lg font-bold text-slate-800">📉 Phân tích Học viên Dừng học Giữa chừng / Dropout (UC_LMS_068)</h2>
+        <div className="rounded-xl border border-border bg-surface shadow-sm p-5 space-y-6">
+          <h2 className="text-lg font-bold text-foreground">📉 Phân tích Học viên Dừng học Giữa chừng / Dropout (UC_LMS_068)</h2>
 
           <div className="space-y-4">
             {dropoutAnalytics.map((dp) => {
               const dropRes = calculateDropoutRatePct(dp.dropoutCount, dp.totalEnrolled);
               return (
-                <div key={dp.id} className="p-5 rounded-xl border border-slate-200 bg-slate-50 flex justify-between items-center">
+                <div key={dp.id} className="p-5 rounded-xl border border-border bg-slate-50 flex justify-between items-center">
                   <div>
                     <h3 className="font-bold text-slate-900">{dp.courseName}</h3>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       Tổng ghi danh: {dp.totalEnrolled} • Đang học tích cực: {dp.activeLearners}
                     </p>
                     <p className="text-xs text-rose-700 font-medium mt-1">
@@ -229,7 +229,7 @@ export default function LmsTrainingReportsPage() {
 
                   <div className="text-right">
                     <span className="text-xl font-extrabold text-rose-600">{dropRes.dropoutRatePct}%</span>
-                    <p className="text-xs text-slate-500 font-medium mt-0.5">({dp.dropoutCount} Học viên)</p>
+                    <p className="text-xs text-muted-foreground font-medium mt-0.5">({dp.dropoutCount} Học viên)</p>
                     <span
                       className={`inline-block mt-1 px-2.5 py-0.5 text-xs font-bold rounded-full ${
                         dropRes.riskLevel === 'High'
@@ -251,24 +251,24 @@ export default function LmsTrainingReportsPage() {
 
       {/* TAB 4: COURSE ENGAGEMENT REPORT */}
       {activeTab === 'engagement' && (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-6">
-          <h2 className="text-lg font-bold text-slate-800">⭐ Báo cáo Hiệu quả & Mức độ Tương tác Khóa học (UC_LMS_069)</h2>
+        <div className="rounded-xl border border-border bg-surface shadow-sm p-5 space-y-6">
+          <h2 className="text-lg font-bold text-foreground">⭐ Báo cáo Hiệu quả & Mức độ Tương tác Khóa học (UC_LMS_069)</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {courseEngagements.map((ce) => (
-              <div key={ce.id} className="p-5 rounded-xl border border-slate-200 bg-slate-50 space-y-4">
+              <div key={ce.id} className="p-5 rounded-xl border border-border bg-slate-50 space-y-4">
                 <h3 className="font-bold text-slate-900 text-base">{ce.courseName}</h3>
                 <div className="grid grid-cols-2 gap-3 text-xs">
-                  <div className="p-3 bg-white rounded-lg border border-slate-200">
-                    <p className="text-slate-500">Tỷ lệ hoàn thành</p>
+                  <div className="p-3 bg-surface rounded-lg border border-border">
+                    <p className="text-muted-foreground">Tỷ lệ hoàn thành</p>
                     <p className="text-lg font-extrabold text-emerald-600 mt-1">{ce.completionRate}%</p>
                   </div>
-                  <div className="p-3 bg-white rounded-lg border border-slate-200">
-                    <p className="text-slate-500">Đánh giá trung bình</p>
+                  <div className="p-3 bg-surface rounded-lg border border-border">
+                    <p className="text-muted-foreground">Đánh giá trung bình</p>
                     <p className="text-lg font-extrabold text-amber-500 mt-1">⭐ {ce.avgRating} / 5.0</p>
                   </div>
                 </div>
-                <div className="flex justify-between text-xs text-slate-500 pt-2 border-t border-slate-200">
+                <div className="flex justify-between text-xs text-muted-foreground pt-2 border-t border-border">
                   <span>💬 {ce.commentsCount} Bình luận & Phản hồi</span>
                   <span>⏱️ TB {ce.avgStudyHours} Giờ học/học viên</span>
                 </div>

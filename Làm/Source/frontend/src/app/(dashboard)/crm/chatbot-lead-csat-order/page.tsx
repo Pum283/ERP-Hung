@@ -80,7 +80,7 @@ export default function CrmChatbotLeadCsatOrderPage() {
   ]);
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="p-6 space-y-6">
       {/* Toast */}
       {toast && (
         <div
@@ -93,13 +93,13 @@ export default function CrmChatbotLeadCsatOrderPage() {
       )}
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-emerald-950 via-teal-950 to-slate-900 p-6 rounded-2xl text-white shadow-xl">
+      <div className="bg-brand p-5 rounded-xl text-brand-foreground shadow-sm">
         <div className="flex justify-between items-center">
           <div>
             <span className="bg-teal-500/30 text-teal-200 text-xs px-3 py-1 rounded-full font-semibold border border-teal-400/30">
               CRM - BOT LEAD CAPTURE, CSAT & ONLINE ORDERS
             </span>
-            <h1 className="text-2xl font-bold mt-2">Bước 170: CRM Chatbot Lead Capture, CSAT Rating & Online Orders</h1>
+            <h1 className="text-2xl font-bold mt-2">CRM Chatbot Lead Capture, CSAT Rating & Online Orders</h1>
             <p className="text-teal-100 text-sm mt-1">
               Chatbot thu thập Lead, Chuyển giao từ Bot sang Tư vấn viên, Đánh giá CSAT & Tiếp nhận Đơn hàng Online
             </p>

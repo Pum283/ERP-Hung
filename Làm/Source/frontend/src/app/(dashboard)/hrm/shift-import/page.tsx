@@ -170,14 +170,14 @@ export default function HrmShiftImportPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-            Bước 158: Import Lịch ca, Lập phiếu phạt, Khấu trừ lương & Bút toán FIN
+            Import Lịch ca, Lập phiếu phạt, Khấu trừ lương & Bút toán FIN
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Import phân ca (UC_HRM_088), Lập phiếu phạt (UC_HRM_124), Áp dụng vào kỳ lương (UC_HRM_125) & Đồng bộ Sổ cái Kế toán FIN (UC_HRM_174).
           </p>
         </div>
         <div>
-          <span className="px-3 py-1 bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 rounded-full text-xs font-semibold">
+          <span className="px-3 py-1 bg-brand-muted text-brand-strong  rounded-full text-xs font-semibold">
             Tiến độ Kế hoạch: 90% [XONG]
           </span>
         </div>
@@ -195,7 +195,7 @@ export default function HrmShiftImportPage() {
       )}
 
       {/* Navigation Tabs */}
-      <div className="flex border-b border-slate-200 dark:border-slate-800 gap-6">
+      <div className="flex border-b border-border gap-6">
         {[
           { key: 'shiftImport', label: '1. Import Lịch ca Excel (UC_HRM_088)' },
           { key: 'penalties', label: '2. Bảng Phạt Nhân sự (UC_HRM_124)' },
@@ -207,8 +207,8 @@ export default function HrmShiftImportPage() {
             onClick={() => setActiveTab(tab.key as any)}
             className={`pb-3 text-sm font-semibold border-b-2 transition-colors ${
               activeTab === tab.key
-                ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
-                : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                ? 'border-brand text-brand '
+                : 'border-transparent text-muted-foreground hover:text-foreground dark:hover:text-slate-300'
             }`}
           >
             {tab.label}
@@ -226,14 +226,14 @@ export default function HrmShiftImportPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <label className="text-xs font-semibold text-foreground dark:text-slate-300">
               Nhập dữ liệu CSV (Mã NV, Mã Ca, Ngày YYYY-MM-DD, Ghi chú):
             </label>
             <textarea
               rows={4}
               value={rawShiftText}
               onChange={(e) => setRawShiftText(e.target.value)}
-              className="w-full p-3 font-mono text-xs border rounded-lg dark:bg-slate-900 border-slate-300 dark:border-slate-700"
+              className="w-full p-3 font-mono text-xs border rounded-lg border-border dark:border-slate-700"
             />
             <button
               onClick={handleParseShifts}
@@ -249,13 +249,13 @@ export default function HrmShiftImportPage() {
                 <h3 className="text-sm font-bold">Kết quả Phân tích ({shiftRows.length} dòng)</h3>
                 <button
                   onClick={handleExecuteShiftImport}
-                  className="px-4 py-2 bg-indigo-600 text-white text-xs font-medium rounded-lg hover:bg-indigo-700 transition"
+                  className="px-4 py-2 bg-brand text-white text-xs font-medium rounded-lg hover:bg-brand-hover transition"
                 >
                   🚀 Thực thi Import Lịch ca
                 </button>
               </div>
 
-              <div className="bg-white dark:bg-slate-900 shadow rounded-lg overflow-hidden border">
+              <div className="bg-surface shadow rounded-lg overflow-hidden border">
                 <table className="w-full text-left text-xs">
                   <thead className="bg-slate-50 dark:bg-slate-800">
                     <tr>
@@ -269,7 +269,7 @@ export default function HrmShiftImportPage() {
                   <tbody className="divide-y">
                     {shiftRows.map((item, idx) => (
                       <tr key={idx} className={item.error ? 'bg-rose-50/50 dark:bg-rose-950/20' : ''}>
-                        <td className="p-2.5 font-mono font-bold text-indigo-600">{item.row.employeeCode}</td>
+                        <td className="p-2.5 font-mono font-bold text-brand">{item.row.employeeCode}</td>
                         <td className="p-2.5 font-mono">{item.row.workShiftCode}</td>
                         <td className="p-2.5">{item.row.workDate}</td>
                         <td className="p-2.5">{item.row.note || '-'}</td>
@@ -289,7 +289,7 @@ export default function HrmShiftImportPage() {
           )}
 
           {shiftResultSummary && (
-            <div className="p-4 bg-indigo-50 border border-indigo-200 text-indigo-900 text-xs rounded-xl space-y-1 font-medium">
+            <div className="p-4 bg-brand-muted border border-brand/30 text-brand-strong text-xs rounded-xl space-y-1 font-medium">
               <p className="font-bold text-sm">🎉 Kết quả phân ca hàng loạt:</p>
               <p>• Tổng phân ca xử lý: {shiftResultSummary.total}</p>
               <p className="text-emerald-600 font-bold">• Phân ca thành công: {shiftResultSummary.success}</p>
@@ -311,15 +311,15 @@ export default function HrmShiftImportPage() {
                 setPenaltyForm({ employeeId: 'emp-101', reason: '', penaltyType: 'LateArrival', amount: 100000 });
                 setIsPenaltyModalOpen(true);
               }}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition"
+              className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium hover:bg-brand-hover transition"
             >
               + Lập phiếu phạt mới
             </button>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 shadow rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800">
+          <div className="bg-surface shadow rounded-lg overflow-hidden border border-border">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+              <thead className="bg-slate-50 dark:bg-slate-800 text-muted-foreground dark:text-slate-300">
                 <tr>
                   <th className="p-3">Lý do phạt</th>
                   <th className="p-3">Loại vi phạm</th>
@@ -332,7 +332,7 @@ export default function HrmShiftImportPage() {
                 {penalties.map((p) => (
                   <tr key={p.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
                     <td className="p-3 font-semibold">{p.reason}</td>
-                    <td className="p-3 font-mono text-xs text-slate-500">{p.penaltyType}</td>
+                    <td className="p-3 font-mono text-xs text-muted-foreground">{p.penaltyType}</td>
                     <td className="p-3 font-bold text-rose-600">-{p.amount.toLocaleString('vi-VN')} đ</td>
                     <td className="p-3">
                       {p.status === 'Applied' ? (
@@ -340,7 +340,7 @@ export default function HrmShiftImportPage() {
                       ) : p.status === 'Pending' ? (
                         <span className="px-2.5 py-0.5 text-xs rounded font-bold bg-amber-100 text-amber-800">Chờ áp dụng</span>
                       ) : (
-                        <span className="px-2.5 py-0.5 text-xs rounded font-bold bg-slate-100 text-slate-600">Đã hủy</span>
+                        <span className="px-2.5 py-0.5 text-xs rounded font-bold bg-slate-100 text-muted-foreground">Đã hủy</span>
                       )}
                     </td>
                     <td className="p-3 text-right space-x-2">
@@ -351,7 +351,7 @@ export default function HrmShiftImportPage() {
                               setPenaltyForm({ id: p.id, employeeId: p.employeeId, reason: p.reason, penaltyType: p.penaltyType, amount: p.amount });
                               setIsPenaltyModalOpen(true);
                             }}
-                            className="text-xs text-indigo-600 hover:underline"
+                            className="text-xs text-brand hover:underline"
                           >
                             Sửa
                           </button>
@@ -396,13 +396,13 @@ export default function HrmShiftImportPage() {
           </div>
 
           {pendingPenalties.length === 0 ? (
-            <div className="p-8 text-center bg-slate-50 dark:bg-slate-900 rounded-xl text-slate-500 text-sm border">
+            <div className="p-8 text-center bg-slate-50 rounded-xl text-body text-muted-foreground border">
               🎉 Không có phiếu phạt nào đang chờ áp dụng.
             </div>
           ) : (
-            <div className="bg-white dark:bg-slate-900 shadow rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800">
+            <div className="bg-surface shadow rounded-lg overflow-hidden border border-border">
               <table className="w-full text-left text-sm">
-                <thead className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                <thead className="bg-slate-50 dark:bg-slate-800 text-muted-foreground dark:text-slate-300">
                   <tr>
                     <th className="p-3 w-10">Chọn</th>
                     <th className="p-3">Lý do phạt</th>
@@ -418,11 +418,11 @@ export default function HrmShiftImportPage() {
                           type="checkbox"
                           checked={selectedPenaltyIds.includes(p.id)}
                           onChange={() => toggleSelectPenalty(p.id)}
-                          className="rounded border-slate-300"
+                          className="rounded border-border"
                         />
                       </td>
                       <td className="p-3 font-semibold">{p.reason}</td>
-                      <td className="p-3 font-mono text-xs text-slate-500">{p.penaltyType}</td>
+                      <td className="p-3 font-mono text-xs text-muted-foreground">{p.penaltyType}</td>
                       <td className="p-3 font-bold text-rose-600">-{p.amount.toLocaleString('vi-VN')} đ</td>
                     </tr>
                   ))}
@@ -451,7 +451,7 @@ export default function HrmShiftImportPage() {
           <div className="p-6 bg-slate-900 text-slate-100 rounded-xl space-y-4 shadow border border-slate-800 font-mono text-xs">
             <h3 className="text-sm font-bold text-emerald-400">📊 PREVIEW BÚT TOÁN KẾ TOÁN LƯƠNG (BALANCED JOURNAL ENTRY)</h3>
             <div className="space-y-2 border-t border-slate-800 pt-3">
-              <p className="text-indigo-300 font-semibold">[NỢ] {finJePreview.debitAccount}</p>
+              <p className="text-brand-foreground/80 font-semibold">[NỢ] {finJePreview.debitAccount}</p>
               <p className="text-emerald-300 font-semibold">[CÓ] {finJePreview.creditAccountSalary}</p>
               <p className="text-amber-300 font-semibold">[CÓ] {finJePreview.creditAccountPenalty}</p>
             </div>
@@ -468,7 +468,7 @@ export default function HrmShiftImportPage() {
       {/* PENALTY MODAL */}
       {isPenaltyModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center p-4 z-50">
-          <form onSubmit={handleSavePenalty} className="bg-white dark:bg-slate-900 rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
+          <form onSubmit={handleSavePenalty} className="bg-surface rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
             <h3 className="text-lg font-bold">{penaltyForm.id ? 'Sửa phiếu phạt' : 'Lập phiếu phạt mới'}</h3>
             <div>
               <label className="text-xs font-semibold">Lý do phạt</label>
@@ -509,7 +509,7 @@ export default function HrmShiftImportPage() {
               <button type="button" onClick={() => setIsPenaltyModalOpen(false)} className="px-4 py-2 border rounded-lg text-sm">
                 Hủy
               </button>
-              <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium">
+              <button type="submit" className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium">
                 Lưu lại
               </button>
             </div>

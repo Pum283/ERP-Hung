@@ -112,14 +112,14 @@ export default function LmsCertSyncOpsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-            Bước 163: Đồng bộ chứng chỉ HRM, Phản hồi bài tập, Thống kê doanh thu & Chống chia sẻ tài khoản LMS
+            Đồng bộ chứng chỉ HRM, Phản hồi bài tập, Thống kê doanh thu & Chống chia sẻ tài khoản LMS
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Đồng bộ chứng chỉ sang HRM (UC_LMS_048), Phản hồi bài tập (UC_LMS_052), Doanh thu (UC_LMS_053) & Chống chia sẻ tài khoản (UC_LMS_054).
           </p>
         </div>
         <div>
-          <span className="px-3 py-1 bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 rounded-full text-xs font-semibold">
+          <span className="px-3 py-1 bg-brand-muted text-brand-strong  rounded-full text-xs font-semibold">
             Tiến độ Kế hoạch: 90% [XONG]
           </span>
         </div>
@@ -137,7 +137,7 @@ export default function LmsCertSyncOpsPage() {
       )}
 
       {/* Navigation Tabs */}
-      <div className="flex border-b border-slate-200 dark:border-slate-800 gap-6">
+      <div className="flex border-b border-border gap-6">
         {[
           { key: 'sync', label: '1. Đồng bộ Chứng chỉ HRM (UC_LMS_048)' },
           { key: 'assignment', label: '2. Phản hồi Bài tập (UC_LMS_052)' },
@@ -149,8 +149,8 @@ export default function LmsCertSyncOpsPage() {
             onClick={() => setActiveTab(tab.key as any)}
             className={`pb-3 text-sm font-semibold border-b-2 transition-colors ${
               activeTab === tab.key
-                ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
-                : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                ? 'border-brand text-brand '
+                : 'border-transparent text-muted-foreground hover:text-foreground dark:hover:text-slate-300'
             }`}
           >
             {tab.label}
@@ -167,9 +167,9 @@ export default function LmsCertSyncOpsPage() {
             <h2 className="text-lg font-semibold">Danh sách Chứng chỉ LMS & Đồng bộ sang Hồ sơ Kỹ năng HRM</h2>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 shadow rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800">
+          <div className="bg-surface shadow rounded-lg overflow-hidden border border-border">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+              <thead className="bg-slate-50 dark:bg-slate-800 text-muted-foreground dark:text-slate-300">
                 <tr>
                   <th className="p-3">Mã chứng chỉ</th>
                   <th className="p-3">Học viên / Nhân sự</th>
@@ -184,7 +184,7 @@ export default function LmsCertSyncOpsPage() {
                   <tr key={c.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
                     <td className="p-3 font-mono font-bold">{c.code}</td>
                     <td className="p-3 font-semibold">{c.learner}</td>
-                    <td className="p-3 text-xs text-slate-600 dark:text-slate-400">{c.course}</td>
+                    <td className="p-3 text-xs text-muted-foreground dark:text-slate-400">{c.course}</td>
                     <td className="p-3">
                       <span className={`px-2 py-0.5 rounded text-xs font-bold ${c.status === 'Active' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}`}>
                         {c.status}
@@ -192,7 +192,7 @@ export default function LmsCertSyncOpsPage() {
                     </td>
                     <td className="p-3">
                       {c.isSynced ? (
-                        <span className="px-2 py-0.5 rounded text-xs font-bold bg-indigo-100 text-indigo-800">
+                        <span className="px-2 py-0.5 rounded text-xs font-bold bg-brand-muted text-brand-strong">
                           ✓ Đã đồng bộ HRM
                         </span>
                       ) : (
@@ -208,7 +208,7 @@ export default function LmsCertSyncOpsPage() {
                         className={`px-3 py-1 text-xs font-medium rounded-lg transition ${
                           c.isSynced
                             ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                            : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                            : 'bg-brand text-white hover:bg-brand-hover'
                         }`}
                       >
                         {c.isSynced ? 'Đã đồng bộ' : '🔄 Đồng bộ HRM'}
@@ -231,7 +231,7 @@ export default function LmsCertSyncOpsPage() {
             <h2 className="text-lg font-semibold">Chấm điểm & Phản hồi Bài tập Học viên</h2>
           </div>
 
-          <form onSubmit={handleGradeAssignment} className="bg-white dark:bg-slate-900 border p-6 rounded-xl space-y-4 shadow-sm">
+          <form onSubmit={handleGradeAssignment} className="bg-surface border p-6 rounded-xl space-y-4 shadow-sm">
             <h3 className="text-sm font-bold border-b pb-2">Chấm bài mới</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -288,7 +288,7 @@ export default function LmsCertSyncOpsPage() {
               />
             </div>
             <div className="flex justify-end">
-              <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition">
+              <button type="submit" className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium hover:bg-brand-hover transition">
                 + Lưu phản hồi & Chấm điểm
               </button>
             </div>
@@ -299,11 +299,11 @@ export default function LmsCertSyncOpsPage() {
             {feedbacks.map((f) => {
               const evalRes = evaluateAssignmentScore(f.score);
               return (
-                <div key={f.id} className="p-4 bg-white dark:bg-slate-900 border rounded-xl shadow-sm space-y-2">
+                <div key={f.id} className="p-4 bg-surface border rounded-xl shadow-sm space-y-2">
                   <div className="flex justify-between items-center">
                     <div>
-                      <h4 className="font-bold text-sm">{f.student} — <span className="text-slate-500 font-normal">{f.lesson}</span></h4>
-                      <a href={f.submissionUrl} target="_blank" rel="noreferrer" className="text-xs text-indigo-600 underline font-mono">
+                      <h4 className="font-bold text-sm">{f.student} — <span className="text-muted-foreground font-normal">{f.lesson}</span></h4>
+                      <a href={f.submissionUrl} target="_blank" rel="noreferrer" className="text-xs text-brand underline font-mono">
                         {f.submissionUrl}
                       </a>
                     </div>
@@ -313,7 +313,7 @@ export default function LmsCertSyncOpsPage() {
                       </span>
                     </div>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800 p-2.5 rounded-lg border">
+                  <p className="text-xs text-muted-foreground dark:text-slate-400 bg-slate-50 dark:bg-slate-800 p-2.5 rounded-lg border">
                     💬 "{f.comment}"
                   </p>
                 </div>
@@ -333,27 +333,27 @@ export default function LmsCertSyncOpsPage() {
           </div>
 
           <div className="grid grid-cols-3 gap-4">
-            <div className="p-5 bg-gradient-to-br from-indigo-500 to-indigo-700 text-white rounded-xl shadow-md space-y-1">
-              <span className="text-xs text-indigo-200 font-medium">Tổng Doanh thu Gộp</span>
+            <div className="p-5 bg-brand text-white rounded-xl shadow-md space-y-1">
+              <span className="text-xs text-brand-foreground/80 font-medium">Tổng Doanh thu Gộp</span>
               <p className="text-2xl font-extrabold">{totalGrossRevenue.toLocaleString('vi-VN')} VNĐ</p>
             </div>
-            <div className="p-5 bg-white dark:bg-slate-900 border rounded-xl shadow-sm space-y-1">
-              <span className="text-xs text-slate-500 font-medium">Tổng Lượt Đăng ký Đã thanh toán</span>
+            <div className="p-5 bg-surface border rounded-xl shadow-sm space-y-1">
+              <span className="text-xs text-muted-foreground font-medium">Tổng Lượt Đăng ký Đã thanh toán</span>
               <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                 {revenueStats.reduce((sum, item) => sum + item.paidEnrollments, 0)} Học viên
               </p>
             </div>
-            <div className="p-5 bg-white dark:bg-slate-900 border rounded-xl shadow-sm space-y-1">
-              <span className="text-xs text-slate-500 font-medium">Doanh thu Trung bình / Khóa</span>
+            <div className="p-5 bg-surface border rounded-xl shadow-sm space-y-1">
+              <span className="text-xs text-muted-foreground font-medium">Doanh thu Trung bình / Khóa</span>
               <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                 {Math.round(totalGrossRevenue / revenueStats.length).toLocaleString('vi-VN')} VNĐ
               </p>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 shadow rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800">
+          <div className="bg-surface shadow rounded-lg overflow-hidden border border-border">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+              <thead className="bg-slate-50 dark:bg-slate-800 text-muted-foreground dark:text-slate-300">
                 <tr>
                   <th className="p-3">Tên Khóa học</th>
                   <th className="p-3">Đơn giá khóa</th>
@@ -371,7 +371,7 @@ export default function LmsCertSyncOpsPage() {
                       <td className="p-3 text-xs font-mono">{item.price.toLocaleString('vi-VN')} VNĐ</td>
                       <td className="p-3 text-xs">{item.totalEnrollments}</td>
                       <td className="p-3 text-xs font-bold text-emerald-600">{item.paidEnrollments}</td>
-                      <td className="p-3 text-right font-bold font-mono text-indigo-600">{rev.formattedVnd}</td>
+                      <td className="p-3 text-right font-bold font-mono text-brand">{rev.formattedVnd}</td>
                     </tr>
                   );
                 })}
@@ -390,7 +390,7 @@ export default function LmsCertSyncOpsPage() {
             <h2 className="text-lg font-semibold">Giám sát & Chống chia sẻ Tài khoản Học viên</h2>
           </div>
 
-          <form onSubmit={handleValidateSession} className="bg-white dark:bg-slate-900 border p-6 rounded-xl space-y-4 shadow-sm">
+          <form onSubmit={handleValidateSession} className="bg-surface border p-6 rounded-xl space-y-4 shadow-sm">
             <h3 className="text-sm font-bold">Mô phỏng Đăng nhập mới từ Thiết bị / IP</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -424,10 +424,10 @@ export default function LmsCertSyncOpsPage() {
           <div className="space-y-3">
             <h3 className="text-sm font-bold">Phiên làm việc Đang hoạt động</h3>
             {activeSessions.map((s, idx) => (
-              <div key={idx} className="p-4 bg-emerald-50/50 dark:bg-slate-900 border border-emerald-200 dark:border-slate-800 rounded-xl flex justify-between items-center">
+              <div key={idx} className="p-4 bg-emerald-50/50 border border-emerald-200 rounded-xl flex justify-between items-center">
                 <div>
                   <h4 className="font-bold text-sm font-mono">{s.deviceId}</h4>
-                  <p className="text-xs text-slate-500 mt-0.5">IP: <span className="font-mono">{s.ipAddress}</span></p>
+                  <p className="text-xs text-muted-foreground mt-0.5">IP: <span className="font-mono">{s.ipAddress}</span></p>
                 </div>
                 <span className="px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded text-xs font-bold">
                   🟢 Đang hoạt động

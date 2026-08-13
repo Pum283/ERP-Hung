@@ -157,14 +157,14 @@ export default function HrmEvalTemplatePage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-            Bước 159: Mẫu KPI, Kỳ đánh giá, Quản lý đánh giá & Tự đánh giá
+            Mẫu KPI, Kỳ đánh giá, Quản lý đánh giá & Tự đánh giá
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Mẫu KPI (UC_HRM_177), Kỳ đánh giá (UC_HRM_178), Quản lý đánh giá nhân sự (UC_HRM_179) & Nhân viên tự đánh giá (UC_HRM_180).
           </p>
         </div>
         <div>
-          <span className="px-3 py-1 bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 rounded-full text-xs font-semibold">
+          <span className="px-3 py-1 bg-brand-muted text-brand-strong  rounded-full text-xs font-semibold">
             Tiến độ Kế hoạch: 90% [XONG]
           </span>
         </div>
@@ -182,7 +182,7 @@ export default function HrmEvalTemplatePage() {
       )}
 
       {/* Navigation Tabs */}
-      <div className="flex border-b border-slate-200 dark:border-slate-800 gap-6">
+      <div className="flex border-b border-border gap-6">
         {[
           { key: 'templates', label: '1. Mẫu KPI / Năng lực (UC_HRM_177)' },
           { key: 'cycles', label: '2. Kỳ Đánh giá (UC_HRM_178)' },
@@ -194,8 +194,8 @@ export default function HrmEvalTemplatePage() {
             onClick={() => setActiveTab(tab.key as any)}
             className={`pb-3 text-sm font-semibold border-b-2 transition-colors ${
               activeTab === tab.key
-                ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
-                : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                ? 'border-brand text-brand '
+                : 'border-transparent text-muted-foreground hover:text-foreground dark:hover:text-slate-300'
             }`}
           >
             {tab.label}
@@ -215,15 +215,15 @@ export default function HrmEvalTemplatePage() {
                 setTemplateForm({ code: '', title: '', maxScore: 100, weight: 100 });
                 setIsTemplateModalOpen(true);
               }}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition"
+              className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium hover:bg-brand-hover transition"
             >
               + Tạo mẫu KPI mới
             </button>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 shadow rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800">
+          <div className="bg-surface shadow rounded-lg overflow-hidden border border-border">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+              <thead className="bg-slate-50 dark:bg-slate-800 text-muted-foreground dark:text-slate-300">
                 <tr>
                   <th className="p-3">Mã mẫu</th>
                   <th className="p-3">Tên mẫu tiêu chuẩn</th>
@@ -235,7 +235,7 @@ export default function HrmEvalTemplatePage() {
               <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
                 {templates.map((t) => (
                   <tr key={t.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                    <td className="p-3 font-mono font-bold text-indigo-600">{t.code}</td>
+                    <td className="p-3 font-mono font-bold text-brand">{t.code}</td>
                     <td className="p-3 font-semibold">{t.title}</td>
                     <td className="p-3 font-bold">{t.maxScore} điểm</td>
                     <td className="p-3 font-bold text-emerald-600">{t.weightPercentage}%</td>
@@ -245,7 +245,7 @@ export default function HrmEvalTemplatePage() {
                           setTemplateForm({ id: t.id, code: t.code, title: t.title, maxScore: t.maxScore, weight: t.weightPercentage });
                           setIsTemplateModalOpen(true);
                         }}
-                        className="text-xs text-indigo-600 hover:underline"
+                        className="text-xs text-brand hover:underline"
                       >
                         Sửa
                       </button>
@@ -270,9 +270,9 @@ export default function HrmEvalTemplatePage() {
             <h2 className="text-lg font-semibold">Danh sách Kỳ Đánh giá Hiệu suất</h2>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 shadow rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800">
+          <div className="bg-surface shadow rounded-lg overflow-hidden border border-border">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+              <thead className="bg-slate-50 dark:bg-slate-800 text-muted-foreground dark:text-slate-300">
                 <tr>
                   <th className="p-3">Tên kỳ đánh giá</th>
                   <th className="p-3">Mã kỳ</th>
@@ -285,11 +285,11 @@ export default function HrmEvalTemplatePage() {
                   <tr key={c.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
                     <td className="p-3 font-semibold">{c.cycleName}</td>
                     <td className="p-3 font-mono text-xs">{c.periodKey}</td>
-                    <td className="p-3 text-xs text-slate-500">{c.dates}</td>
+                    <td className="p-3 text-xs text-muted-foreground">{c.dates}</td>
                     <td className="p-3">
                       <span
                         className={`px-2.5 py-0.5 text-xs rounded font-bold ${
-                          c.status === 'Active' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600'
+                          c.status === 'Active' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-muted-foreground'
                         }`}
                       >
                         {c.status}
@@ -313,8 +313,8 @@ export default function HrmEvalTemplatePage() {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="p-4 bg-white dark:bg-slate-900 border rounded-xl shadow-sm">
-              <p className="text-xs text-slate-500 font-medium">Tổng đánh giá</p>
+            <div className="p-4 bg-surface border rounded-xl shadow-sm">
+              <p className="text-xs text-muted-foreground font-medium">Tổng đánh giá</p>
               <p className="text-2xl font-bold mt-1 text-slate-900 dark:text-slate-100">{cycleCompletionStats.total}</p>
             </div>
             <div className="p-4 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 rounded-xl shadow-sm">
@@ -331,9 +331,9 @@ export default function HrmEvalTemplatePage() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 shadow rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800">
+          <div className="bg-surface shadow rounded-lg overflow-hidden border border-border">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+              <thead className="bg-slate-50 dark:bg-slate-800 text-muted-foreground dark:text-slate-300">
                 <tr>
                   <th className="p-3">Mã phiếu</th>
                   <th className="p-3">Điểm KPI</th>
@@ -353,7 +353,7 @@ export default function HrmEvalTemplatePage() {
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-black ${
                           ev.finalGrade === 'A'
-                            ? 'bg-purple-100 text-purple-800'
+                            ? 'bg-brand-muted text-brand-strong'
                             : ev.finalGrade === 'B'
                             ? 'bg-emerald-100 text-emerald-800'
                             : 'bg-amber-100 text-amber-800'
@@ -369,7 +369,7 @@ export default function HrmEvalTemplatePage() {
                           setEvalForm({ id: ev.id, employeeId: ev.employeeId, kpiScore: ev.kpiScore, competencyScore: ev.competencyScore, comments: '' });
                           setIsEvalModalOpen(true);
                         }}
-                        className="text-xs text-indigo-600 hover:underline"
+                        className="text-xs text-brand hover:underline"
                       >
                         {ev.status === 'Completed' ? 'Sửa điểm' : 'Chấm điểm'}
                       </button>
@@ -391,7 +391,7 @@ export default function HrmEvalTemplatePage() {
             <h2 className="text-lg font-semibold">Phiếu Nhân viên Tự đánh giá Hiệu suất</h2>
           </div>
 
-          <form onSubmit={handleSaveSelfEval} className="bg-white dark:bg-slate-900 border p-6 rounded-xl space-y-4 shadow-sm">
+          <form onSubmit={handleSaveSelfEval} className="bg-surface border p-6 rounded-xl space-y-4 shadow-sm">
             <div>
               <label className="text-xs font-semibold">Kỳ đánh giá</label>
               <input
@@ -433,7 +433,7 @@ export default function HrmEvalTemplatePage() {
                     className={`px-4 py-2 rounded-lg text-sm font-bold border transition ${
                       selfForm.rating === star
                         ? 'bg-amber-500 text-white border-amber-600 shadow'
-                        : 'border-slate-200 hover:bg-slate-50 dark:border-slate-800'
+                        : 'border-border hover:bg-slate-50'
                     }`}
                   >
                     {star} ⭐
@@ -442,7 +442,7 @@ export default function HrmEvalTemplatePage() {
               </div>
             </div>
             <div className="pt-2 flex justify-end">
-              <button type="submit" className="px-5 py-2 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 transition">
+              <button type="submit" className="px-5 py-2 bg-brand text-white font-medium rounded-lg text-sm hover:bg-brand-hover transition">
                 🚀 Gửi Phiếu Tự Đánh Giá
               </button>
             </div>
@@ -453,7 +453,7 @@ export default function HrmEvalTemplatePage() {
       {/* TEMPLATE MODAL */}
       {isTemplateModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center p-4 z-50">
-          <form onSubmit={handleSaveTemplate} className="bg-white dark:bg-slate-900 rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
+          <form onSubmit={handleSaveTemplate} className="bg-surface rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
             <h3 className="text-lg font-bold">{templateForm.id ? 'Sửa mẫu KPI' : 'Tạo mẫu KPI mới'}</h3>
             <div>
               <label className="text-xs font-semibold">Mã mẫu KPI</label>
@@ -501,7 +501,7 @@ export default function HrmEvalTemplatePage() {
               <button type="button" onClick={() => setIsTemplateModalOpen(false)} className="px-4 py-2 border rounded-lg text-sm">
                 Hủy
               </button>
-              <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium">
+              <button type="submit" className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium">
                 Lưu lại
               </button>
             </div>
@@ -512,7 +512,7 @@ export default function HrmEvalTemplatePage() {
       {/* EVALUATION MODAL */}
       {isEvalModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center p-4 z-50">
-          <form onSubmit={handleSaveEvaluation} className="bg-white dark:bg-slate-900 rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
+          <form onSubmit={handleSaveEvaluation} className="bg-surface rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
             <h3 className="text-lg font-bold">Chấm điểm & Xếp loại Đánh giá</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -540,9 +540,9 @@ export default function HrmEvalTemplatePage() {
                 />
               </div>
             </div>
-            <div className="p-3 bg-indigo-50 border border-indigo-200 text-indigo-900 text-xs rounded-lg font-semibold">
+            <div className="p-3 bg-brand-muted border border-brand/30 text-brand-strong text-xs rounded-lg font-semibold">
               Xếp loại dự kiến:{' '}
-              <span className="text-sm font-bold text-indigo-700">
+              <span className="text-sm font-bold text-brand-strong">
                 Hạng {calculateFinalKpiGrade(evalForm.kpiScore, evalForm.competencyScore).grade} (
                 {calculateFinalKpiGrade(evalForm.kpiScore, evalForm.competencyScore).finalScore} điểm)
               </span>
@@ -551,7 +551,7 @@ export default function HrmEvalTemplatePage() {
               <button type="button" onClick={() => setIsEvalModalOpen(false)} className="px-4 py-2 border rounded-lg text-sm">
                 Hủy
               </button>
-              <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium">
+              <button type="submit" className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium">
                 Lưu kết quả
               </button>
             </div>

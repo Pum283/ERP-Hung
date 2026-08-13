@@ -131,14 +131,14 @@ export default function LmsExamMentoringPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-            Bước 161: Thời gian làm bài & Chống gian lận, Checklist kèm cặp, Đánh giá Mentoring LMS
+            Thời gian làm bài & Chống gian lận, Checklist kèm cặp, Đánh giá Mentoring LMS
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Thời gian & chống gian lận (UC_LMS_015), Checklist kèm cặp (UC_LMS_024), Đánh giá mentor (UC_LMS_026) & Báo cáo hiệu quả (UC_LMS_027).
           </p>
         </div>
         <div>
-          <span className="px-3 py-1 bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 rounded-full text-xs font-semibold">
+          <span className="px-3 py-1 bg-brand-muted text-brand-strong  rounded-full text-xs font-semibold">
             Tiến độ Kế hoạch: 90% [XONG]
           </span>
         </div>
@@ -160,7 +160,7 @@ export default function LmsExamMentoringPage() {
       )}
 
       {/* Navigation Tabs */}
-      <div className="flex border-b border-slate-200 dark:border-slate-800 gap-6">
+      <div className="flex border-b border-border gap-6">
         {[
           { key: 'anticheat', label: '1. Thời gian & Chống gian lận (UC_LMS_015)' },
           { key: 'checklist', label: '2. Checklist Kèm cặp Mentoring (UC_LMS_024)' },
@@ -172,8 +172,8 @@ export default function LmsExamMentoringPage() {
             onClick={() => setActiveTab(tab.key as any)}
             className={`pb-3 text-sm font-semibold border-b-2 transition-colors ${
               activeTab === tab.key
-                ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
-                : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                ? 'border-brand text-brand '
+                : 'border-transparent text-muted-foreground hover:text-foreground dark:hover:text-slate-300'
             }`}
           >
             {tab.label}
@@ -206,9 +206,9 @@ export default function LmsExamMentoringPage() {
             </div>
 
             {/* Simulation Controls */}
-            <div className="p-6 bg-white dark:bg-slate-900 border rounded-xl shadow-sm space-y-4 md:col-span-2">
-              <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200">Giả lập Hành vi Gian lận (Anti-cheat Trigger)</h3>
-              <p className="text-xs text-slate-500">
+            <div className="p-6 bg-surface border rounded-xl shadow-sm space-y-4 md:col-span-2">
+              <h3 className="text-sm font-bold text-foreground dark:text-brand-foreground/80">Giả lập Hành vi Gian lận (Anti-cheat Trigger)</h3>
+              <p className="text-xs text-muted-foreground">
                 Hệ thống tự động ghi nhận khi học viên chuyển tab browser, mất focus hoặc hết thời gian và tự động nộp bài khi quá ngưỡng.
               </p>
               <div className="flex flex-wrap gap-3 pt-2">
@@ -247,11 +247,11 @@ export default function LmsExamMentoringPage() {
           <div className="flex justify-between items-center">
             <div>
               <h2 className="text-lg font-semibold">Checklist Tiến độ Kèm cặp Mentoring</h2>
-              <p className="text-xs text-slate-500 mt-0.5">Tiến độ hoàn thành: {progress.completed}/{progress.total} mục ({progress.percentage}%)</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Tiến độ hoàn thành: {progress.completed}/{progress.total} mục ({progress.percentage}%)</p>
             </div>
             <button
               onClick={() => setIsTaskModalOpen(true)}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition"
+              className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium hover:bg-brand-hover transition"
             >
               + Thêm mục Checklist
             </button>
@@ -262,7 +262,7 @@ export default function LmsExamMentoringPage() {
             <div className="bg-emerald-500 h-2.5 transition-all duration-500" style={{ width: `${progress.percentage}%` }}></div>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 border rounded-xl divide-y divide-slate-200 dark:divide-slate-800 shadow-sm">
+          <div className="bg-surface border rounded-xl divide-y divide-slate-200 dark:divide-slate-800 shadow-sm">
             {checklists.map((t) => (
               <div key={t.id} className="p-4 flex items-center justify-between hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
                 <div className="flex items-center gap-3">
@@ -270,9 +270,9 @@ export default function LmsExamMentoringPage() {
                     type="checkbox"
                     checked={t.isCompleted}
                     onChange={() => handleToggleTask(t.id)}
-                    className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                    className="w-4 h-4 rounded text-brand focus:ring-brand cursor-pointer"
                   />
-                  <span className={`text-sm ${t.isCompleted ? 'line-through text-slate-400' : 'font-medium text-slate-800 dark:text-slate-200'}`}>
+                  <span className={`text-sm ${t.isCompleted ? 'line-through text-slate-400' : 'font-medium text-foreground dark:text-brand-foreground/80'}`}>
                     {t.taskName}
                   </span>
                 </div>
@@ -296,7 +296,7 @@ export default function LmsExamMentoringPage() {
             <h2 className="text-lg font-semibold">Đánh giá 2 chiều giữa Mentor và Học viên</h2>
             <button
               onClick={() => setIsEvalModalOpen(true)}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition"
+              className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium hover:bg-brand-hover transition"
             >
               + Gửi Đánh giá mới
             </button>
@@ -304,14 +304,14 @@ export default function LmsExamMentoringPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {evaluations.map((e) => (
-              <div key={e.id} className="p-5 bg-white dark:bg-slate-900 border rounded-xl shadow-sm space-y-2">
+              <div key={e.id} className="p-5 bg-surface border rounded-xl shadow-sm space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="px-2.5 py-0.5 text-xs font-bold rounded bg-indigo-50 text-indigo-700">
+                  <span className="px-2.5 py-0.5 text-xs font-bold rounded bg-brand-muted text-brand-strong">
                     {e.type === 'MentorToMentee' ? 'Mentor đánh giá Học viên' : 'Học viên đánh giá Mentor'}
                   </span>
                   <span className="text-amber-500 font-bold text-sm">{'⭐'.repeat(e.rating)} ({e.rating}/5)</span>
                 </div>
-                <p className="text-sm text-slate-700 dark:text-slate-300 italic">"{e.feedback}"</p>
+                <p className="text-sm text-foreground dark:text-slate-300 italic">"{e.feedback}"</p>
               </div>
             ))}
           </div>
@@ -328,9 +328,9 @@ export default function LmsExamMentoringPage() {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="p-4 bg-indigo-50 border border-indigo-200 rounded-xl shadow-sm">
-              <p className="text-xs text-indigo-700 font-bold">Tổng số cặp Mentoring</p>
-              <p className="text-2xl font-bold mt-1 text-indigo-900">{report.completionRatePct > 0 ? 5 : 0} cặp</p>
+            <div className="p-4 bg-brand-muted border border-brand/30 rounded-xl shadow-sm">
+              <p className="text-xs text-brand-strong font-bold">Tổng số cặp Mentoring</p>
+              <p className="text-2xl font-bold mt-1 text-brand-strong">{report.completionRatePct > 0 ? 5 : 0} cặp</p>
             </div>
             <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl shadow-sm">
               <p className="text-xs text-emerald-700 font-bold">Tỷ lệ hoàn thành Checklist</p>
@@ -340,9 +340,9 @@ export default function LmsExamMentoringPage() {
               <p className="text-xs text-amber-700 font-bold">Điểm Mentor đánh giá TB</p>
               <p className="text-2xl font-bold mt-1 text-amber-900">⭐ {report.avgMentorRating} / 5</p>
             </div>
-            <div className="p-4 bg-purple-50 border border-purple-200 rounded-xl shadow-sm">
-              <p className="text-xs text-purple-700 font-bold">Điểm Học viên đánh giá TB</p>
-              <p className="text-2xl font-bold mt-1 text-purple-900">⭐ {report.avgMenteeRating} / 5</p>
+            <div className="p-4 bg-brand-muted border border-brand/30 rounded-xl shadow-sm">
+              <p className="text-xs text-brand-strong font-bold">Điểm Học viên đánh giá TB</p>
+              <p className="text-2xl font-bold mt-1 text-brand-strong">⭐ {report.avgMenteeRating} / 5</p>
             </div>
           </div>
         </div>
@@ -351,7 +351,7 @@ export default function LmsExamMentoringPage() {
       {/* CHECKLIST MODAL */}
       {isTaskModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center p-4 z-50">
-          <form onSubmit={handleAddTask} className="bg-white dark:bg-slate-900 rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
+          <form onSubmit={handleAddTask} className="bg-surface rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
             <h3 className="text-lg font-bold">Thêm mục Checklist Kèm cặp</h3>
             <div>
               <label className="text-xs font-semibold">Tên công việc cần hoàn thành</label>
@@ -367,7 +367,7 @@ export default function LmsExamMentoringPage() {
               <button type="button" onClick={() => setIsTaskModalOpen(false)} className="px-4 py-2 border rounded-lg text-sm">
                 Hủy
               </button>
-              <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium">
+              <button type="submit" className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium">
                 Thêm công việc
               </button>
             </div>
@@ -378,7 +378,7 @@ export default function LmsExamMentoringPage() {
       {/* EVALUATION MODAL */}
       {isEvalModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center p-4 z-50">
-          <form onSubmit={handleSaveEvaluation} className="bg-white dark:bg-slate-900 rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
+          <form onSubmit={handleSaveEvaluation} className="bg-surface rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
             <h3 className="text-lg font-bold">Gửi Đánh giá Mentoring</h3>
             <div>
               <label className="text-xs font-semibold">Chiều đánh giá</label>
@@ -419,7 +419,7 @@ export default function LmsExamMentoringPage() {
               <button type="button" onClick={() => setIsEvalModalOpen(false)} className="px-4 py-2 border rounded-lg text-sm">
                 Hủy
               </button>
-              <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium">
+              <button type="submit" className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium">
                 Gửi đánh giá
               </button>
             </div>

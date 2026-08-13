@@ -121,7 +121,7 @@ export default function CrmRewardSurveyRetentionCommissionPage() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="p-6 space-y-6">
       {/* Toast */}
       {toast && (
         <div
@@ -134,13 +134,13 @@ export default function CrmRewardSurveyRetentionCommissionPage() {
       )}
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-amber-950 via-slate-900 to-emerald-950 p-6 rounded-2xl text-white shadow-xl">
+      <div className="bg-brand p-5 rounded-xl text-brand-foreground shadow-sm">
         <div className="flex justify-between items-center">
           <div>
             <span className="bg-amber-500/30 text-amber-200 text-xs px-3 py-1 rounded-full font-semibold border border-amber-400/30">
               CRM - REWARDS, CSAT SURVEYS, RETENTION & COMMISSIONS
             </span>
-            <h1 className="text-2xl font-bold mt-2">Bước 176: CRM Đổi Quà Tích Điểm, Khảo Sát CSAT, Retention & Rule Hoa Hồng</h1>
+            <h1 className="text-2xl font-bold mt-2">CRM Đổi Quà Tích Điểm, Khảo Sát CSAT, Retention & Rule Hoa Hồng</h1>
             <p className="text-amber-100 text-sm mt-1">
               Đổi quà tích điểm, Khảo sát mức độ hài lòng, Báo cáo retention tỷ lệ tái mua & Cấu hình quy tắc hoa hồng
             </p>
@@ -325,7 +325,7 @@ export default function CrmRewardSurveyRetentionCommissionPage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
               <span className="text-xs font-semibold text-slate-500">Tổng Khách Hàng Hoạt Động</span>
-              <p className="text-2xl font-bold text-indigo-600 mt-1">{retentionData.totalCustomers} KH</p>
+              <p className="text-2xl font-bold text-brand mt-1">{retentionData.totalCustomers} KH</p>
             </div>
             <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
               <span className="text-xs font-semibold text-slate-500">Khách Hàng Tái Mua Đa Kỳ</span>

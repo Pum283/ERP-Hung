@@ -94,7 +94,7 @@ export default function CrmOmnichannelRoutingSlaPage() {
   ]);
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="p-6 space-y-6">
       {/* Toast */}
       {toast && (
         <div
@@ -107,13 +107,13 @@ export default function CrmOmnichannelRoutingSlaPage() {
       )}
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-blue-950 p-6 rounded-2xl text-white shadow-xl">
+      <div className="bg-brand p-5 rounded-xl text-brand-foreground shadow-sm">
         <div className="flex justify-between items-center">
           <div>
             <span className="bg-blue-500/30 text-blue-200 text-xs px-3 py-1 rounded-full font-semibold border border-blue-400/30">
               CRM - CHAT ROUTING, SLA & SCRIPTED BOT
             </span>
-            <h1 className="text-2xl font-bold mt-2">Bước 169: CRM Omnichannel Routing, SLA & Scripted Chatbot</h1>
+            <h1 className="text-2xl font-bold mt-2">CRM Omnichannel Routing, SLA & Scripted Chatbot</h1>
             <p className="text-blue-100 text-sm mt-1">
               Phân phối hội thoại theo Rule, Chuyển giao cuộc chat, Cảnh báo vi phạm SLA & Kịch bản Bot tự động
             </p>
@@ -330,7 +330,7 @@ export default function CrmOmnichannelRoutingSlaPage() {
                     <p className="font-bold text-slate-700">Các bước kịch bản:</p>
                     {steps.map((st, idx) => (
                       <div key={idx} className="flex gap-2 items-start text-slate-600">
-                        <span className="font-semibold text-indigo-600">Bước {st.step}:</span>
+                        <span className="font-semibold text-brand">Bước {st.step}:</span>
                         <span>{st.text}</span>
                       </div>
                     ))}

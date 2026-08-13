@@ -87,13 +87,13 @@ export default function PushDevicesPage() {
   }
 
   return (
-    <div className="p-6 max-w-4xl space-y-6">
+    <div className="max-w-4xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Bell className="w-6 h-6 text-indigo-600" /> Push devices (UC_SYS_062)
+          <h1 className="font-display text-title font-bold text-foreground flex items-center gap-2">
+            <Bell className="w-6 h-6 text-brand" /> Push devices (UC_SYS_062)
           </h1>
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="text-body text-muted-foreground mt-1">
             Đăng ký FCM/APNs/Web token. Gửi thử ghi IntegrationCallLog (stub, chưa gọi FCM thật).
           </p>
         </div>
@@ -130,20 +130,20 @@ export default function PushDevicesPage() {
         <button type="button" className={btn.soft} onClick={() => void onTest()}>Gửi stub push</button>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 shadow rounded-xl border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800">
+      <div className="bg-surface shadow rounded-xl border border-border divide-y divide-slate-100 dark:divide-slate-800">
         {loading ? (
-          <div className="p-4 text-sm text-slate-500">Đang tải…</div>
+          <div className="p-4 text-sm text-muted-foreground">Đang tải…</div>
         ) : devices.length === 0 ? (
-          <div className="p-4 text-sm text-slate-500">Chưa có device.</div>
+          <div className="p-4 text-sm text-muted-foreground">Chưa có device.</div>
         ) : (
           devices.map((d) => (
             <div key={d.id} className="p-4 flex items-center justify-between gap-3">
               <div>
-                <div className="font-medium text-slate-800 dark:text-slate-100">
+                <div className="font-medium text-foreground dark:text-slate-100">
                   {formatPushPlatformLabel(d.platform)}
                   {d.appVersion ? ` · v${d.appVersion}` : ""}
                 </div>
-                <div className="text-xs font-mono text-slate-500 break-all">{d.deviceToken}</div>
+                <div className="text-xs font-mono text-muted-foreground break-all">{d.deviceToken}</div>
                 <div className="text-xs text-slate-400 mt-1">
                   Last seen: {new Date(d.lastSeenAt).toLocaleString("vi-VN")}
                 </div>

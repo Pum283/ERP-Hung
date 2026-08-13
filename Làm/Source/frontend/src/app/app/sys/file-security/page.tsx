@@ -60,13 +60,13 @@ export default function FileSecurityPage() {
   }
 
   return (
-    <div className="p-6 max-w-5xl space-y-6">
+    <div className="max-w-5xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <ShieldAlert className="w-6 h-6 text-indigo-600" /> Bảo mật file (UC_SYS_071)
+          <h1 className="font-display text-title font-bold text-foreground flex items-center gap-2">
+            <ShieldAlert className="w-6 h-6 text-brand" /> Bảo mật file (UC_SYS_071)
           </h1>
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="text-body text-muted-foreground mt-1">
             Stub scanner (EICAR). File Infected bị chặn tải xuống.
           </p>
         </div>
@@ -80,9 +80,9 @@ export default function FileSecurityPage() {
 
       <div className={`${panel} overflow-hidden p-0`}>
         {loading ? (
-          <div className="p-4 text-sm text-slate-500">Đang tải…</div>
+          <div className="p-4 text-sm text-muted-foreground">Đang tải…</div>
         ) : files.length === 0 ? (
-          <div className="p-4 text-sm text-slate-500">Chưa có file.</div>
+          <div className="p-4 text-sm text-muted-foreground">Chưa có file.</div>
         ) : (
           <table className="w-full text-sm">
             <thead className="bg-slate-50 text-left">

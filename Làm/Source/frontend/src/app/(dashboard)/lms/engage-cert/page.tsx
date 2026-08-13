@@ -166,14 +166,14 @@ export default function LmsEngageCertPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-            Bước 162: Nhắc học tiếp, Diễn đàn thảo luận, Xác thực & Thu hồi Chứng chỉ LMS
+            Nhắc học tiếp, Diễn đàn thảo luận, Xác thực & Thu hồi Chứng chỉ LMS
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Nhắc học tiếp (UC_LMS_038), Diễn đàn (UC_LMS_039), Xác thực chứng chỉ (UC_LMS_046) & Thu hồi chứng chỉ (UC_LMS_047).
           </p>
         </div>
         <div>
-          <span className="px-3 py-1 bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 rounded-full text-xs font-semibold">
+          <span className="px-3 py-1 bg-brand-muted text-brand-strong  rounded-full text-xs font-semibold">
             Tiến độ Kế hoạch: 90% [XONG]
           </span>
         </div>
@@ -191,7 +191,7 @@ export default function LmsEngageCertPage() {
       )}
 
       {/* Navigation Tabs */}
-      <div className="flex border-b border-slate-200 dark:border-slate-800 gap-6">
+      <div className="flex border-b border-border gap-6">
         {[
           { key: 'reminder', label: '1. Nhắc học tiếp (UC_LMS_038)' },
           { key: 'forum', label: '2. Diễn đàn thảo luận (UC_LMS_039)' },
@@ -203,8 +203,8 @@ export default function LmsEngageCertPage() {
             onClick={() => setActiveTab(tab.key as any)}
             className={`pb-3 text-sm font-semibold border-b-2 transition-colors ${
               activeTab === tab.key
-                ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
-                : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                ? 'border-brand text-brand '
+                : 'border-transparent text-muted-foreground hover:text-foreground dark:hover:text-slate-300'
             }`}
           >
             {tab.label}
@@ -221,7 +221,7 @@ export default function LmsEngageCertPage() {
             <h2 className="text-lg font-semibold">Cấu hình Lịch Nhắc học tiếp cho Học viên</h2>
           </div>
 
-          <form onSubmit={handleSaveReminder} className="bg-white dark:bg-slate-900 border p-6 rounded-xl space-y-4 shadow-sm">
+          <form onSubmit={handleSaveReminder} className="bg-surface border p-6 rounded-xl space-y-4 shadow-sm">
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="text-xs font-semibold">Tần suất nhắc nhở</label>
@@ -248,7 +248,7 @@ export default function LmsEngageCertPage() {
               </div>
             </div>
             <div className="flex justify-end">
-              <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition">
+              <button type="submit" className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium hover:bg-brand-hover transition">
                 + Thiết lập Nhắc học
               </button>
             </div>
@@ -257,13 +257,13 @@ export default function LmsEngageCertPage() {
           <div className="space-y-3">
             <h3 className="text-sm font-bold">Danh sách Lịch Nhắc học đang kích hoạt</h3>
             {reminders.map((r) => (
-              <div key={r.id} className="p-4 bg-indigo-50/50 dark:bg-slate-900 border border-indigo-100 dark:border-slate-800 rounded-xl flex justify-between items-center">
+              <div key={r.id} className="p-4 bg-brand-muted/50 border border-brand/20 rounded-xl flex justify-between items-center">
                 <div>
-                  <h4 className="font-semibold text-sm text-indigo-950 dark:text-indigo-200">{r.courseName}</h4>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">"{r.message}"</p>
+                  <h4 className="font-semibold text-sm text-brand-strong ">{r.courseName}</h4>
+                  <p className="text-xs text-muted-foreground dark:text-slate-400 mt-0.5">"{r.message}"</p>
                 </div>
                 <div className="text-right">
-                  <span className="px-2.5 py-0.5 text-xs rounded font-bold bg-indigo-100 text-indigo-800">
+                  <span className="px-2.5 py-0.5 text-xs rounded font-bold bg-brand-muted text-brand-strong">
                     {r.frequency}
                   </span>
                 </div>
@@ -282,7 +282,7 @@ export default function LmsEngageCertPage() {
             <h2 className="text-lg font-semibold">Diễn đàn Thảo luận & Hỏi đáp Khóa học LMS</h2>
             <button
               onClick={() => setIsTopicModalOpen(true)}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition"
+              className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium hover:bg-brand-hover transition"
             >
               + Tạo chủ đề mới
             </button>
@@ -292,16 +292,16 @@ export default function LmsEngageCertPage() {
             {topics.map((t) => {
               const preview = formatForumTopicPreview(t.title, t.content);
               return (
-                <div key={t.id} className="p-5 bg-white dark:bg-slate-900 border rounded-xl shadow-sm space-y-2">
+                <div key={t.id} className="p-5 bg-surface border rounded-xl shadow-sm space-y-2">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center gap-2">
                       {t.isPinned && <span className="px-2 py-0.5 bg-amber-100 text-amber-800 rounded text-xs font-bold">📌 Ghim</span>}
                       <h3 className="font-bold text-sm text-slate-900 dark:text-slate-100">{t.title}</h3>
                     </div>
-                    <span className="text-xs text-slate-500 font-medium">💬 {t.replies} câu trả lời</span>
+                    <span className="text-xs text-muted-foreground font-medium">💬 {t.replies} câu trả lời</span>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">{preview.preview}</p>
-                  <p className="text-[11px] text-slate-400">Đăng bởi: <span className="font-semibold text-slate-600 dark:text-slate-300">{t.author}</span></p>
+                  <p className="text-xs text-muted-foreground dark:text-slate-400">{preview.preview}</p>
+                  <p className="text-[11px] text-slate-400">Đăng bởi: <span className="font-semibold text-muted-foreground dark:text-slate-300">{t.author}</span></p>
                 </div>
               );
             })}
@@ -318,7 +318,7 @@ export default function LmsEngageCertPage() {
             <h2 className="text-lg font-semibold">Cổng Tra cứu & Xác thực Chứng chỉ Điện tử</h2>
           </div>
 
-          <form onSubmit={handleVerify} className="flex gap-3 bg-white dark:bg-slate-900 border p-4 rounded-xl shadow-sm">
+          <form onSubmit={handleVerify} className="flex gap-3 bg-surface border p-4 rounded-xl shadow-sm">
             <input
               type="text"
               placeholder="Nhập mã chứng chỉ (VD: CERT-2026-X999)"
@@ -327,7 +327,7 @@ export default function LmsEngageCertPage() {
               className="flex-1 p-2.5 border rounded-lg text-sm font-mono dark:bg-slate-800"
               required
             />
-            <button type="submit" className="px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition">
+            <button type="submit" className="px-5 py-2.5 bg-brand text-white text-sm font-medium rounded-lg hover:bg-brand-hover transition">
               🔍 Xác thực ngay
             </button>
           </form>
@@ -372,9 +372,9 @@ export default function LmsEngageCertPage() {
             </button>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 shadow rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800">
+          <div className="bg-surface shadow rounded-lg overflow-hidden border border-border">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+              <thead className="bg-slate-50 dark:bg-slate-800 text-muted-foreground dark:text-slate-300">
                 <tr>
                   <th className="p-3">Mã Chứng chỉ</th>
                   <th className="p-3">Lý do thu hồi</th>
@@ -386,8 +386,8 @@ export default function LmsEngageCertPage() {
                 {revocations.map((r) => (
                   <tr key={r.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
                     <td className="p-3 font-mono font-bold text-rose-600">{r.certCode}</td>
-                    <td className="p-3 text-xs font-medium text-slate-700 dark:text-slate-300">{r.reason}</td>
-                    <td className="p-3 text-xs text-slate-500">{r.date}</td>
+                    <td className="p-3 text-xs font-medium text-foreground dark:text-slate-300">{r.reason}</td>
+                    <td className="p-3 text-xs text-muted-foreground">{r.date}</td>
                     <td className="p-3 text-xs font-semibold">{r.by}</td>
                   </tr>
                 ))}
@@ -400,7 +400,7 @@ export default function LmsEngageCertPage() {
       {/* TOPIC MODAL */}
       {isTopicModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center p-4 z-50">
-          <form onSubmit={handleCreateTopic} className="bg-white dark:bg-slate-900 rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
+          <form onSubmit={handleCreateTopic} className="bg-surface rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
             <h3 className="text-lg font-bold">Tạo Chủ đề Thảo luận mới</h3>
             <div>
               <label className="text-xs font-semibold">Tiêu đề chủ đề</label>
@@ -428,7 +428,7 @@ export default function LmsEngageCertPage() {
                 id="pinCheck"
                 checked={topicForm.isPinned}
                 onChange={(e) => setTopicForm({ ...topicForm, isPinned: e.target.checked })}
-                className="w-4 h-4 text-indigo-600 rounded"
+                className="w-4 h-4 text-brand rounded"
               />
               <label htmlFor="pinCheck" className="text-xs font-semibold">Ghim chủ đề lên đầu trang</label>
             </div>
@@ -436,7 +436,7 @@ export default function LmsEngageCertPage() {
               <button type="button" onClick={() => setIsTopicModalOpen(false)} className="px-4 py-2 border rounded-lg text-sm">
                 Hủy
               </button>
-              <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium">
+              <button type="submit" className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium">
                 Đăng bài
               </button>
             </div>
@@ -447,7 +447,7 @@ export default function LmsEngageCertPage() {
       {/* REVOKE MODAL */}
       {isRevokeModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center p-4 z-50">
-          <form onSubmit={handleRevoke} className="bg-white dark:bg-slate-900 rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
+          <form onSubmit={handleRevoke} className="bg-surface rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
             <h3 className="text-lg font-bold text-rose-600">Quyết định Thu hồi Chứng chỉ</h3>
             <div>
               <label className="text-xs font-semibold">Mã chứng chỉ bị thu hồi</label>

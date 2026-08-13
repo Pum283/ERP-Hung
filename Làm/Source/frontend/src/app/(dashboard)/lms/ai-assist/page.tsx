@@ -141,7 +141,7 @@ export default function LmsAiAssistPage() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Toast */}
       {toast && (
         <div
@@ -154,30 +154,30 @@ export default function LmsAiAssistPage() {
       )}
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-900 via-indigo-900 to-cyan-900 p-6 rounded-2xl text-white shadow-xl">
+      <div className="bg-brand p-5 rounded-xl text-brand-foreground shadow-sm">
         <div className="flex justify-between items-center">
           <div>
-            <span className="bg-cyan-500/30 text-cyan-200 text-xs px-3 py-1 rounded-full font-semibold border border-cyan-400/30">
+            <span className="bg-brand-foreground/20 text-brand-foreground/90 text-xs px-3 py-1 rounded-full font-semibold border border-brand-foreground/30">
               LMS - AI HỖ TRỢ HỌC TẬP THÔNG MINH
             </span>
-            <h1 className="text-2xl font-bold mt-2">Bước 167: AI Learning Assistant Suite</h1>
-            <p className="text-cyan-100 text-sm mt-1">
+            <h1 className="text-2xl font-bold mt-2">AI Learning Assistant Suite</h1>
+            <p className="text-brand-foreground/80 text-sm mt-1">
               Gợi ý khóa học AI, Tóm tắt bài học tự động, Tạo Quiz trắc nghiệm từ tài liệu & Trợ lý hỏi đáp AI
             </p>
           </div>
           <div className="text-right">
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-brand-foreground/15 text-brand-foreground border border-brand-foreground/25">
               ● Tiến độ 90% (4/4 UCs)
             </span>
           </div>
         </div>
 
         {/* Tab Selection */}
-        <div className="flex space-x-2 mt-6 border-t border-white/10 pt-4">
+        <div className="flex space-x-2 mt-6 border-t border-brand-foreground/15 pt-4">
           <button
             onClick={() => setActiveTab('recommend')}
             className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-              activeTab === 'recommend' ? 'bg-white text-slate-950 shadow-md' : 'text-slate-200 hover:bg-white/10'
+              activeTab === 'recommend' ? 'bg-surface text-foreground shadow-md' : 'text-brand-foreground/80 hover:bg-surface/10'
             }`}
           >
             🎯 UC_LMS_071: Gợi ý khóa học AI
@@ -185,7 +185,7 @@ export default function LmsAiAssistPage() {
           <button
             onClick={() => setActiveTab('summary')}
             className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-              activeTab === 'summary' ? 'bg-white text-slate-950 shadow-md' : 'text-slate-200 hover:bg-white/10'
+              activeTab === 'summary' ? 'bg-surface text-foreground shadow-md' : 'text-brand-foreground/80 hover:bg-surface/10'
             }`}
           >
             📄 UC_LMS_072: AI Tóm tắt bài học
@@ -193,7 +193,7 @@ export default function LmsAiAssistPage() {
           <button
             onClick={() => setActiveTab('quiz')}
             className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-              activeTab === 'quiz' ? 'bg-white text-slate-950 shadow-md' : 'text-slate-200 hover:bg-white/10'
+              activeTab === 'quiz' ? 'bg-surface text-foreground shadow-md' : 'text-brand-foreground/80 hover:bg-surface/10'
             }`}
           >
             ⚡ UC_LMS_073: AI Tạo Quiz
@@ -201,7 +201,7 @@ export default function LmsAiAssistPage() {
           <button
             onClick={() => setActiveTab('qna')}
             className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-              activeTab === 'qna' ? 'bg-white text-slate-950 shadow-md' : 'text-slate-200 hover:bg-white/10'
+              activeTab === 'qna' ? 'bg-surface text-foreground shadow-md' : 'text-brand-foreground/80 hover:bg-surface/10'
             }`}
           >
             🤖 UC_LMS_074: Trợ lý Hỏi đáp AI
@@ -211,15 +211,15 @@ export default function LmsAiAssistPage() {
 
       {/* TAB 1: AI RECOMMENDATIONS */}
       {activeTab === 'recommend' && (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-6">
+        <div className="rounded-xl border border-border bg-surface shadow-sm p-5 space-y-6">
           <div className="flex justify-between items-center">
             <div>
-              <h2 className="text-lg font-bold text-slate-800">🎯 Gợi Ý Khóa Học Tiếp Theo Bằng AI (UC_LMS_071)</h2>
-              <p className="text-xs text-slate-500 mt-1">
+              <h2 className="text-lg font-bold text-foreground">🎯 Gợi Ý Khóa Học Tiếp Theo Bằng AI (UC_LMS_071)</h2>
+              <p className="text-xs text-muted-foreground mt-1">
                 Kỹ năng hiện tại của học viên: {userSkills.map((s) => `[${s}]`).join(' ')}
               </p>
             </div>
-            <span className="px-3 py-1 text-xs font-bold rounded-full bg-purple-100 text-purple-800">
+            <span className="px-3 py-1 text-xs font-bold rounded-full bg-brand-muted text-brand-strong">
               🤖 AI Engine Personalization Active
             </span>
           </div>
@@ -228,10 +228,10 @@ export default function LmsAiAssistPage() {
             {aiRecommendations.map((rec) => {
               const matchScore = calculateAiMatchScore(userSkills, rec.reqSkills);
               return (
-                <div key={rec.id} className="p-5 rounded-xl border border-purple-200 bg-purple-50/40 space-y-4">
+                <div key={rec.id} className="p-5 rounded-xl border border-brand/30 bg-brand-muted/40 space-y-4">
                   <div className="flex justify-between items-start">
                     <div>
-                      <span className="px-2 py-0.5 text-xs font-bold rounded bg-purple-200 text-purple-900">{rec.code}</span>
+                      <span className="px-2 py-0.5 text-xs font-bold rounded bg-brand-muted text-brand-strong">{rec.code}</span>
                       <h3 className="font-bold text-slate-900 mt-1 text-base">{rec.title}</h3>
                     </div>
                     <span className="px-3 py-1 text-xs font-extrabold rounded-full bg-emerald-600 text-white">
@@ -239,15 +239,15 @@ export default function LmsAiAssistPage() {
                     </span>
                   </div>
 
-                  <div className="bg-white p-3 rounded-lg border border-slate-200 text-xs space-y-1">
-                    <p className="font-semibold text-purple-900">Lý do AI đề xuất:</p>
-                    <p className="text-slate-600 italic">{rec.reason}</p>
+                  <div className="bg-surface p-3 rounded-lg border border-border text-xs space-y-1">
+                    <p className="font-semibold text-brand-strong">Lý do AI đề xuất:</p>
+                    <p className="text-muted-foreground italic">{rec.reason}</p>
                   </div>
 
                   <div className="flex items-center gap-1.5 flex-wrap text-xs">
-                    <span className="text-slate-500 font-medium">Kỹ năng yêu cầu:</span>
+                    <span className="text-muted-foreground font-medium">Kỹ năng yêu cầu:</span>
                     {rec.reqSkills.map((sk) => (
-                      <span key={sk} className="px-2 py-0.5 text-xs rounded-full bg-slate-200 text-slate-700">
+                      <span key={sk} className="px-2 py-0.5 text-xs rounded-full bg-slate-200 text-foreground">
                         {sk}
                       </span>
                     ))}
@@ -263,53 +263,53 @@ export default function LmsAiAssistPage() {
       {activeTab === 'summary' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-              <h2 className="text-lg font-bold text-slate-800 mb-4">📄 Tóm Tắt Bài Học Bằng AI (UC_LMS_072)</h2>
+            <div className="rounded-xl border border-border bg-surface shadow-sm p-5">
+              <h2 className="text-lg font-bold text-foreground mb-4">📄 Tóm Tắt Bài Học Bằng AI (UC_LMS_072)</h2>
               <form onSubmit={handleGenerateSummary} className="space-y-4 text-sm">
                 <div>
-                  <label className="block text-slate-700 font-medium mb-1">Tiêu đề bài học:</label>
+                  <label className="block text-foreground font-medium mb-1">Tiêu đề bài học:</label>
                   <input
                     type="text"
                     value={summaryInput.title}
                     onChange={(e) => setSummaryInput({ ...summaryInput, title: e.target.value })}
-                    className="w-full border border-slate-300 rounded-lg p-2"
+                    className="w-full border border-border rounded-lg p-2"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 font-medium mb-1">Nội dung bài học thô (Text / Transcript):</label>
+                  <label className="block text-foreground font-medium mb-1">Nội dung bài học thô (Text / Transcript):</label>
                   <textarea
                     value={summaryInput.rawText}
                     onChange={(e) => setSummaryInput({ ...summaryInput, rawText: e.target.value })}
-                    className="w-full border border-slate-300 rounded-lg p-2 font-mono text-xs"
+                    className="w-full border border-border rounded-lg p-2 font-mono text-xs"
                     rows={6}
                   />
                 </div>
 
-                <button type="submit" className="w-full py-2.5 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700">
+                <button type="submit" className="w-full py-2.5 bg-brand text-white rounded-lg font-semibold hover:bg-brand-hover">
                   ✨ Kích hoạt AI Tóm Tắt Ý Chính
                 </button>
               </form>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-              <h2 className="text-lg font-bold text-slate-800 mb-4">✨ Kết quả Tóm tắt AI</h2>
+            <div className="rounded-xl border border-border bg-surface shadow-sm p-5">
+              <h2 className="text-lg font-bold text-foreground mb-4">✨ Kết quả Tóm tắt AI</h2>
               {aiSummaryResult ? (
-                <div className="p-4 rounded-xl border border-indigo-200 bg-indigo-50/50 space-y-4 text-xs">
-                  <h3 className="font-bold text-indigo-950 text-sm">{aiSummaryResult.title}</h3>
-                  <p className="text-slate-700">{aiSummaryResult.overview}</p>
+                <div className="p-4 rounded-xl border border-brand/30 bg-brand-muted/50 space-y-4 text-xs">
+                  <h3 className="font-bold text-brand-strong text-sm">{aiSummaryResult.title}</h3>
+                  <p className="text-foreground">{aiSummaryResult.overview}</p>
 
-                  <div className="bg-white p-3 rounded-lg border border-slate-200 space-y-1">
-                    <p className="font-bold text-slate-800">📌 Các điểm mấu chốt (Key Takeaways):</p>
-                    <ul className="list-disc list-inside text-slate-600 space-y-1">
+                  <div className="bg-surface p-3 rounded-lg border border-border space-y-1">
+                    <p className="font-bold text-foreground">📌 Các điểm mấu chốt (Key Takeaways):</p>
+                    <ul className="list-disc list-inside text-muted-foreground space-y-1">
                       {aiSummaryResult.takeaways.map((t: string, idx: number) => (
                         <li key={idx}>{t}</li>
                       ))}
                     </ul>
                   </div>
 
-                  <div className="bg-white p-3 rounded-lg border border-slate-200 space-y-1">
-                    <p className="font-bold text-slate-800">💡 Gợi ý chủ đề học tiếp theo:</p>
-                    <ul className="list-disc list-inside text-slate-600 space-y-1">
+                  <div className="bg-surface p-3 rounded-lg border border-border space-y-1">
+                    <p className="font-bold text-foreground">💡 Gợi ý chủ đề học tiếp theo:</p>
+                    <ul className="list-disc list-inside text-muted-foreground space-y-1">
                       {aiSummaryResult.nextTopics.map((nt: string, idx: number) => (
                         <li key={idx}>{nt}</li>
                       ))}
@@ -330,47 +330,47 @@ export default function LmsAiAssistPage() {
       {activeTab === 'quiz' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-              <h2 className="text-lg font-bold text-slate-800 mb-4">⚡ AI Tạo Quiz Trắc Nghiệm Tự Động (UC_LMS_073)</h2>
+            <div className="rounded-xl border border-border bg-surface shadow-sm p-5">
+              <h2 className="text-lg font-bold text-foreground mb-4">⚡ AI Tạo Quiz Trắc Nghiệm Tự Động (UC_LMS_073)</h2>
               <form onSubmit={handleGenerateQuiz} className="space-y-4 text-sm">
                 <div>
-                  <label className="block text-slate-700 font-medium mb-1">Chủ đề bài học:</label>
+                  <label className="block text-foreground font-medium mb-1">Chủ đề bài học:</label>
                   <input
                     type="text"
                     value={quizInput.topic}
                     onChange={(e) => setQuizInput({ ...quizInput, topic: e.target.value })}
-                    className="w-full border border-slate-300 rounded-lg p-2"
+                    className="w-full border border-border rounded-lg p-2"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 font-medium mb-1">Số lượng câu hỏi sinh tự động:</label>
+                  <label className="block text-foreground font-medium mb-1">Số lượng câu hỏi sinh tự động:</label>
                   <input
                     type="number"
                     value={quizInput.questionCount}
                     onChange={(e) => setQuizInput({ ...quizInput, questionCount: Number(e.target.value) })}
-                    className="w-full border border-slate-300 rounded-lg p-2"
+                    className="w-full border border-border rounded-lg p-2"
                     min={1}
                     max={10}
                   />
                 </div>
 
-                <button type="submit" className="w-full py-2.5 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700">
+                <button type="submit" className="w-full py-2.5 bg-brand text-white rounded-lg font-semibold hover:bg-brand-hover">
                   🎲 AI Sinh Đề Thi Trắc Nghiệm
                 </button>
               </form>
             </div>
 
-            <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-              <h2 className="text-lg font-bold text-slate-800 mb-4">📋 Đề Thi Trắc Nghiệm AI Vừa Sinh</h2>
+            <div className="lg:col-span-2 rounded-xl border border-border bg-surface shadow-sm p-5">
+              <h2 className="text-lg font-bold text-foreground mb-4">📋 Đề Thi Trắc Nghiệm AI Vừa Sinh</h2>
               {generatedQuiz ? (
                 <div className="space-y-4 text-xs">
-                  <span className="px-3 py-1 text-xs font-bold rounded-full bg-purple-100 text-purple-800">
+                  <span className="px-3 py-1 text-xs font-bold rounded-full bg-brand-muted text-brand-strong">
                     Chủ đề: {generatedQuiz.topic} ({generatedQuiz.questions.length} câu hỏi)
                   </span>
 
                   <div className="space-y-3">
                     {generatedQuiz.questions.map((q: any, idx: number) => (
-                      <div key={idx} className="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+                      <div key={idx} className="p-4 rounded-xl border border-border bg-slate-50 space-y-2">
                         <p className="font-bold text-slate-900 text-sm">
                           Câu {idx + 1}: {q.questionText}
                         </p>
@@ -378,10 +378,10 @@ export default function LmsAiAssistPage() {
                           {q.options.map((opt: string, optIdx: number) => (
                             <div
                               key={optIdx}
-                              className={`p-2 rounded border text-slate-700 ${
+                              className={`p-2 rounded border text-foreground ${
                                 optIdx === q.correctOptionIndex
                                   ? 'bg-emerald-100 border-emerald-300 font-semibold text-emerald-900'
-                                  : 'bg-white border-slate-200'
+                                  : 'bg-surface border-border'
                               }`}
                             >
                               {String.fromCharCode(65 + optIdx)}. {opt} {optIdx === q.correctOptionIndex && '✓ (Đáp án đúng)'}
@@ -404,15 +404,15 @@ export default function LmsAiAssistPage() {
 
       {/* TAB 4: AI LEARNING QNA CHATBOT */}
       {activeTab === 'qna' && (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
-          <h2 className="text-lg font-bold text-slate-800">🤖 Trợ Lý Học Tập Hỏi Đáp AI 24/7 (UC_LMS_074)</h2>
+        <div className="rounded-xl border border-border bg-surface shadow-sm p-5 space-y-4">
+          <h2 className="text-lg font-bold text-foreground">🤖 Trợ Lý Học Tập Hỏi Đáp AI 24/7 (UC_LMS_074)</h2>
 
-          <div className="h-80 border border-slate-200 rounded-xl p-4 overflow-y-auto space-y-3 bg-slate-50">
+          <div className="h-80 border border-border rounded-xl p-4 overflow-y-auto space-y-3 bg-slate-50">
             {chatMessages.map((msg, idx) => (
               <div key={idx} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div
                   className={`max-w-xl p-3 rounded-2xl text-xs font-medium ${
-                    msg.sender === 'user' ? 'bg-indigo-600 text-white rounded-br-none' : 'bg-white border border-slate-200 text-slate-800 rounded-bl-none shadow-sm'
+                    msg.sender === 'user' ? 'bg-brand text-white rounded-br-none' : 'bg-surface border border-border text-foreground rounded-bl-none shadow-sm'
                   }`}
                 >
                   {msg.text}
@@ -427,7 +427,7 @@ export default function LmsAiAssistPage() {
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
               placeholder="Đặt câu hỏi về bài học cho Trợ lý AI..."
-              className="flex-1 border border-slate-300 rounded-lg text-xs px-3 py-2"
+              className="flex-1 border border-border rounded-lg text-xs px-3 py-2"
             />
             <button type="submit" className="px-5 py-2 bg-cyan-600 text-white rounded-lg font-semibold text-xs hover:bg-cyan-700">
               Gửi câu hỏi

@@ -132,14 +132,14 @@ export default function HrmLmsEvalCatalogPage() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b pb-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-            Bước 160: Tổng hợp Đánh giá HRM, Tag Kỹ năng, Version & Đề thi Random LMS
+            Tổng hợp Đánh giá HRM, Tag Kỹ năng, Version & Đề thi Random LMS
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Tổng hợp kết quả đánh giá (UC_HRM_181), Tag kỹ năng/vị trí (UC_LMS_007), Phiên bản nội dung (UC_LMS_008) & Đề thi random (UC_LMS_013).
           </p>
         </div>
         <div>
-          <span className="px-3 py-1 bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300 rounded-full text-xs font-semibold">
+          <span className="px-3 py-1 bg-brand-muted text-brand-strong  rounded-full text-xs font-semibold">
             Tiến độ Kế hoạch: 90% [XONG]
           </span>
         </div>
@@ -157,7 +157,7 @@ export default function HrmLmsEvalCatalogPage() {
       )}
 
       {/* Navigation Tabs */}
-      <div className="flex border-b border-slate-200 dark:border-slate-800 gap-6">
+      <div className="flex border-b border-border gap-6">
         {[
           { key: 'summary', label: '1. Báo cáo Tổng hợp Đánh giá (UC_HRM_181)' },
           { key: 'tags', label: '2. Tag Kỹ năng / Vị trí LMS (UC_LMS_007)' },
@@ -169,8 +169,8 @@ export default function HrmLmsEvalCatalogPage() {
             onClick={() => setActiveTab(tab.key as any)}
             className={`pb-3 text-sm font-semibold border-b-2 transition-colors ${
               activeTab === tab.key
-                ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400'
-                : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                ? 'border-brand text-brand '
+                : 'border-transparent text-muted-foreground hover:text-foreground dark:hover:text-slate-300'
             }`}
           >
             {tab.label}
@@ -191,9 +191,9 @@ export default function HrmLmsEvalCatalogPage() {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div className="p-4 bg-purple-50 border border-purple-200 rounded-xl shadow-sm">
-              <p className="text-xs text-purple-700 font-bold">Xếp loại Hạng A (Xuất sắc)</p>
-              <p className="text-2xl font-bold mt-1 text-purple-900">{gradeDist.distributions.A.count} người ({gradeDist.distributions.A.percentage}%)</p>
+            <div className="p-4 bg-brand-muted border border-brand/30 rounded-xl shadow-sm">
+              <p className="text-xs text-brand-strong font-bold">Xếp loại Hạng A (Xuất sắc)</p>
+              <p className="text-2xl font-bold mt-1 text-brand-strong">{gradeDist.distributions.A.count} người ({gradeDist.distributions.A.percentage}%)</p>
             </div>
             <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl shadow-sm">
               <p className="text-xs text-emerald-700 font-bold">Xếp loại Hạng B (Khá / Tốt)</p>
@@ -223,15 +223,15 @@ export default function HrmLmsEvalCatalogPage() {
                 setTagForm({ courseId: 'crs-101', tagName: '', tagType: 'Skill' });
                 setIsTagModalOpen(true);
               }}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition"
+              className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium hover:bg-brand-hover transition"
             >
               + Gắn Tag mới
             </button>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 shadow rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800">
+          <div className="bg-surface shadow rounded-lg overflow-hidden border border-border">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+              <thead className="bg-slate-50 dark:bg-slate-800 text-muted-foreground dark:text-slate-300">
                 <tr>
                   <th className="p-3">Tên Tag gắn</th>
                   <th className="p-3">Loại Tag</th>
@@ -241,7 +241,7 @@ export default function HrmLmsEvalCatalogPage() {
               <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
                 {tags.map((t) => (
                   <tr key={t.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/50">
-                    <td className="p-3 font-bold text-indigo-600">{t.tagName}</td>
+                    <td className="p-3 font-bold text-brand">{t.tagName}</td>
                     <td className="p-3">
                       <span className="px-2.5 py-0.5 text-xs rounded font-bold bg-sky-100 text-sky-800">
                         {t.tagType}
@@ -272,15 +272,15 @@ export default function HrmLmsEvalCatalogPage() {
                 setVerForm({ version: '2.1', changelog: '' });
                 setIsVerModalOpen(true);
               }}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition"
+              className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium hover:bg-brand-hover transition"
             >
               + Phát hành phiên bản mới
             </button>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 shadow rounded-lg overflow-hidden border border-slate-200 dark:border-slate-800">
+          <div className="bg-surface shadow rounded-lg overflow-hidden border border-border">
             <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+              <thead className="bg-slate-50 dark:bg-slate-800 text-muted-foreground dark:text-slate-300">
                 <tr>
                   <th className="p-3">Khóa học</th>
                   <th className="p-3">Số phiên bản</th>
@@ -294,7 +294,7 @@ export default function HrmLmsEvalCatalogPage() {
                     <td className="p-3 font-semibold">{v.courseName}</td>
                     <td className="p-3 font-mono font-bold text-emerald-600">v{v.version}</td>
                     <td className="p-3 text-xs">{v.changelog}</td>
-                    <td className="p-3 text-xs text-slate-500">{v.date}</td>
+                    <td className="p-3 text-xs text-muted-foreground">{v.date}</td>
                   </tr>
                 ))}
               </tbody>
@@ -312,7 +312,7 @@ export default function HrmLmsEvalCatalogPage() {
             <h2 className="text-lg font-semibold">Sinh Đề thi Ngẫu nhiên từ Ngân hàng Câu hỏi</h2>
           </div>
 
-          <form onSubmit={handleGenerateExam} className="bg-white dark:bg-slate-900 border p-6 rounded-xl space-y-4 shadow-sm">
+          <form onSubmit={handleGenerateExam} className="bg-surface border p-6 rounded-xl space-y-4 shadow-sm">
             <div>
               <label className="text-xs font-semibold">Tên đề thi</label>
               <input
@@ -358,7 +358,7 @@ export default function HrmLmsEvalCatalogPage() {
               </div>
             </div>
             <div className="pt-2 flex justify-end">
-              <button type="submit" className="px-5 py-2.5 bg-indigo-600 text-white font-medium rounded-lg text-sm hover:bg-indigo-700 transition">
+              <button type="submit" className="px-5 py-2.5 bg-brand text-white font-medium rounded-lg text-sm hover:bg-brand-hover transition">
                 🎲 Sinh Đề Thi Ngẫu Nhiên
               </button>
             </div>
@@ -383,7 +383,7 @@ export default function HrmLmsEvalCatalogPage() {
       {/* TAG MODAL */}
       {isTagModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center p-4 z-50">
-          <form onSubmit={handleSaveTag} className="bg-white dark:bg-slate-900 rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
+          <form onSubmit={handleSaveTag} className="bg-surface rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
             <h3 className="text-lg font-bold">Gắn Tag Kỹ năng / Vị trí</h3>
             <div>
               <label className="text-xs font-semibold">Tên Tag</label>
@@ -411,7 +411,7 @@ export default function HrmLmsEvalCatalogPage() {
               <button type="button" onClick={() => setIsTagModalOpen(false)} className="px-4 py-2 border rounded-lg text-sm">
                 Hủy
               </button>
-              <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium">
+              <button type="submit" className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium">
                 Gắn Tag
               </button>
             </div>
@@ -422,7 +422,7 @@ export default function HrmLmsEvalCatalogPage() {
       {/* VERSION MODAL */}
       {isVerModalOpen && (
         <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center p-4 z-50">
-          <form onSubmit={handleSaveVersion} className="bg-white dark:bg-slate-900 rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
+          <form onSubmit={handleSaveVersion} className="bg-surface rounded-xl p-6 max-w-md w-full space-y-4 shadow-xl">
             <h3 className="text-lg font-bold">Phát hành Phiên bản mới</h3>
             <div>
               <label className="text-xs font-semibold">Số phiên bản (VD: 2.1)</label>
@@ -448,7 +448,7 @@ export default function HrmLmsEvalCatalogPage() {
               <button type="button" onClick={() => setIsVerModalOpen(false)} className="px-4 py-2 border rounded-lg text-sm">
                 Hủy
               </button>
-              <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium">
+              <button type="submit" className="px-4 py-2 bg-brand text-white rounded-lg text-sm font-medium">
                 Phát hành
               </button>
             </div>

@@ -77,13 +77,13 @@ export default function IpRulesPage() {
   }
 
   return (
-    <div className="p-6 max-w-4xl space-y-6">
+    <div className="max-w-4xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <Shield className="w-6 h-6 text-indigo-600" /> IP allow/deny (UC_SYS_082)
+          <h1 className="font-display text-title font-bold text-foreground flex items-center gap-2">
+            <Shield className="w-6 h-6 text-brand" /> IP allow/deny (UC_SYS_082)
           </h1>
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="text-body text-muted-foreground mt-1">
             Deny thắng Allow. Có Allow → allowlist. Áp dụng khi đăng nhập.
           </p>
         </div>
@@ -109,23 +109,23 @@ export default function IpRulesPage() {
 
       <div className={`${panel} flex flex-wrap gap-2 items-end`}>
         <label className="block space-y-1 flex-1">
-          <span className="text-xs text-slate-500">Kiểm tra IP</span>
+          <span className="text-xs text-muted-foreground">Kiểm tra IP</span>
           <input className={field} value={checkIp} onChange={(e) => setCheckIp(e.target.value)} />
         </label>
         <button type="button" className={btn.soft} onClick={() => void onCheck()}>Check</button>
       </div>
 
-      <div className="bg-white dark:bg-slate-900 shadow rounded-xl border divide-y">
+      <div className="bg-surface shadow rounded-xl border divide-y">
         {loading ? (
-          <div className="p-4 text-sm text-slate-500">Đang tải…</div>
+          <div className="p-4 text-sm text-muted-foreground">Đang tải…</div>
         ) : rows.length === 0 ? (
-          <div className="p-4 text-sm text-slate-500">Chưa có rule — mọi IP được phép.</div>
+          <div className="p-4 text-sm text-muted-foreground">Chưa có rule — mọi IP được phép.</div>
         ) : (
           rows.map((r) => (
             <div key={r.id} className="p-4 flex items-center justify-between gap-3 text-sm">
               <div>
                 <div className="font-mono">{r.ipAddressOrCidr} · {r.ruleType}</div>
-                <div className="text-slate-500">{r.description || "—"} {r.isActive ? "" : "(inactive)"}</div>
+                <div className="text-muted-foreground">{r.description || "—"} {r.isActive ? "" : "(inactive)"}</div>
               </div>
               <button type="button" className={btn.soft} onClick={() => void onDelete(r.id)}>Xóa</button>
             </div>

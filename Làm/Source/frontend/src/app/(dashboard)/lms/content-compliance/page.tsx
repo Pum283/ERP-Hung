@@ -129,7 +129,7 @@ export default function LmsContentCompliancePage() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Toast */}
       {toast && (
         <div
@@ -142,30 +142,30 @@ export default function LmsContentCompliancePage() {
       )}
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-900 via-indigo-900 to-purple-900 p-6 rounded-2xl text-white shadow-xl">
+      <div className="bg-brand p-5 rounded-xl text-brand-foreground shadow-sm">
         <div className="flex justify-between items-center">
           <div>
             <span className="bg-blue-500/30 text-blue-200 text-xs px-3 py-1 rounded-full font-semibold border border-blue-400/30">
               LMS - ĐÀO TẠO & QUẢN TRỊ BẢO MẬT
             </span>
-            <h1 className="text-2xl font-bold mt-2">Bước 164: Video Protection, Surveys & Shift Training Gate</h1>
+            <h1 className="text-2xl font-bold mt-2">Video Protection, Surveys & Shift Training Gate</h1>
             <p className="text-blue-200 text-sm mt-1">
               Chống tải video, khảo sát hiểu bài, khảo sát tuân thủ & chốt cổng đào tạo trước ca
             </p>
           </div>
           <div className="text-right">
-            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-brand-foreground/15 text-brand-foreground border border-brand-foreground/25">
               ● Tiến độ 100% (4/4 UCs)
             </span>
           </div>
         </div>
 
         {/* Tab Selection */}
-        <div className="flex space-x-2 mt-6 border-t border-white/10 pt-4">
+        <div className="flex space-x-2 mt-6 border-t border-brand-foreground/15 pt-4">
           <button
             onClick={() => setActiveTab('protection')}
             className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-              activeTab === 'protection' ? 'bg-white text-blue-950 shadow-md' : 'text-blue-200 hover:bg-white/10'
+              activeTab === 'protection' ? 'bg-surface text-blue-950 shadow-md' : 'text-blue-200 hover:bg-surface/10'
             }`}
           >
             🔒 UC_LMS_055: Chặn tải Video
@@ -173,7 +173,7 @@ export default function LmsContentCompliancePage() {
           <button
             onClick={() => setActiveTab('comprehension')}
             className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-              activeTab === 'comprehension' ? 'bg-white text-blue-950 shadow-md' : 'text-blue-200 hover:bg-white/10'
+              activeTab === 'comprehension' ? 'bg-surface text-blue-950 shadow-md' : 'text-blue-200 hover:bg-surface/10'
             }`}
           >
             📝 UC_LMS_056: Khảo sát hiểu bài
@@ -181,7 +181,7 @@ export default function LmsContentCompliancePage() {
           <button
             onClick={() => setActiveTab('compliance')}
             className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-              activeTab === 'compliance' ? 'bg-white text-blue-950 shadow-md' : 'text-blue-200 hover:bg-white/10'
+              activeTab === 'compliance' ? 'bg-surface text-blue-950 shadow-md' : 'text-blue-200 hover:bg-surface/10'
             }`}
           >
             🛡️ UC_LMS_057: Khảo sát tuân thủ
@@ -189,7 +189,7 @@ export default function LmsContentCompliancePage() {
           <button
             onClick={() => setActiveTab('gate')}
             className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${
-              activeTab === 'gate' ? 'bg-white text-blue-950 shadow-md' : 'text-blue-200 hover:bg-white/10'
+              activeTab === 'gate' ? 'bg-surface text-blue-950 shadow-md' : 'text-blue-200 hover:bg-surface/10'
             }`}
           >
             🚪 UC_LMS_059: Hoàn thành trước ca
@@ -202,13 +202,13 @@ export default function LmsContentCompliancePage() {
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* List */}
-            <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-              <h2 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+            <div className="lg:col-span-2 rounded-xl border border-border bg-surface shadow-sm p-5">
+              <h2 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
                 <span>📹</span> Danh sách Video Bài học được Cấu hình Bảo vệ
               </h2>
               <div className="space-y-3">
                 {videoConfigs.map((vid) => (
-                  <div key={vid.lessonId} className="p-4 rounded-lg border border-slate-200 hover:border-blue-400 bg-slate-50 transition-all flex justify-between items-center">
+                  <div key={vid.lessonId} className="p-4 rounded-lg border border-border hover:border-blue-400 bg-slate-50 transition-all flex justify-between items-center">
                     <div>
                       <h3 className="font-semibold text-slate-900">{vid.title}</h3>
                       <div className="flex gap-2 mt-2 text-xs">
@@ -235,15 +235,15 @@ export default function LmsContentCompliancePage() {
             </div>
 
             {/* Test Console */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-              <h2 className="text-lg font-bold text-slate-800 mb-4">⚙️ Giả lập Trình phát Video DRM</h2>
+            <div className="rounded-xl border border-border bg-surface shadow-sm p-5">
+              <h2 className="text-lg font-bold text-foreground mb-4">⚙️ Giả lập Trình phát Video DRM</h2>
               <div className="space-y-4 text-sm">
                 <div>
-                  <label className="block text-slate-700 font-medium mb-1">Vai trò người xem:</label>
+                  <label className="block text-foreground font-medium mb-1">Vai trò người xem:</label>
                   <select
                     value={testUserRole}
                     onChange={(e: any) => setTestUserRole(e.target.value)}
-                    className="w-full border border-slate-300 rounded-lg p-2 bg-white"
+                    className="w-full border border-border rounded-lg p-2 bg-surface"
                   >
                     <option value="Learner">Học viên (Learner)</option>
                     <option value="Instructor">Giảng viên (Instructor)</option>
@@ -251,12 +251,12 @@ export default function LmsContentCompliancePage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-slate-700 font-medium mb-1">Tên người dùng:</label>
+                  <label className="block text-foreground font-medium mb-1">Tên người dùng:</label>
                   <input
                     type="text"
                     value={testUserName}
                     onChange={(e) => setTestUserName(e.target.value)}
-                    className="w-full border border-slate-300 rounded-lg p-2"
+                    className="w-full border border-border rounded-lg p-2"
                   />
                 </div>
 
@@ -286,14 +286,14 @@ export default function LmsContentCompliancePage() {
       {activeTab === 'comprehension' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-              <h2 className="text-lg font-bold text-slate-800 mb-4">📋 Khảo sát Hiểu bài Sau Khóa học (UC_LMS_056)</h2>
+            <div className="lg:col-span-2 rounded-xl border border-border bg-surface shadow-sm p-5">
+              <h2 className="text-lg font-bold text-foreground mb-4">📋 Khảo sát Hiểu bài Sau Khóa học (UC_LMS_056)</h2>
               <div className="divide-y divide-slate-100">
                 {comprehensionSurveys.map((sur) => (
                   <div key={sur.id} className="py-3 flex justify-between items-center">
                     <div>
                       <h3 className="font-semibold text-slate-900">{sur.title}</h3>
-                      <p className="text-xs text-slate-500 mt-0.5">Khóa: {sur.course} • Điểm đạt: {sur.targetPassingScore}%</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">Khóa: {sur.course} • Điểm đạt: {sur.targetPassingScore}%</p>
                     </div>
                     <div className="text-right">
                       <span className="px-2.5 py-1 text-xs font-bold rounded-full bg-emerald-100 text-emerald-800">
@@ -305,44 +305,44 @@ export default function LmsContentCompliancePage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-              <h2 className="text-lg font-bold text-slate-800 mb-4">✍️ Thử nghiệm Nộp bài Khảo sát</h2>
+            <div className="rounded-xl border border-border bg-surface shadow-sm p-5">
+              <h2 className="text-lg font-bold text-foreground mb-4">✍️ Thử nghiệm Nộp bài Khảo sát</h2>
               <form onSubmit={handleTestComprehensionSurvey} className="space-y-4 text-sm">
                 <div>
-                  <label className="block text-slate-700 font-medium mb-1">Câu 1: Điểm hiểu khái niệm (0-10)</label>
+                  <label className="block text-foreground font-medium mb-1">Câu 1: Điểm hiểu khái niệm (0-10)</label>
                   <input
                     type="number"
                     min="0"
                     max="10"
                     value={surveyAnswers.q1}
                     onChange={(e) => setSurveyAnswers({ ...surveyAnswers, q1: Number(e.target.value) })}
-                    className="w-full border border-slate-300 rounded-lg p-2"
+                    className="w-full border border-border rounded-lg p-2"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 font-medium mb-1">Câu 2: Điểm ứng dụng thực tế (0-10)</label>
+                  <label className="block text-foreground font-medium mb-1">Câu 2: Điểm ứng dụng thực tế (0-10)</label>
                   <input
                     type="number"
                     min="0"
                     max="10"
                     value={surveyAnswers.q2}
                     onChange={(e) => setSurveyAnswers({ ...surveyAnswers, q2: Number(e.target.value) })}
-                    className="w-full border border-slate-300 rounded-lg p-2"
+                    className="w-full border border-border rounded-lg p-2"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-700 font-medium mb-1">Câu 3: Điểm tự tin vận hành (0-10)</label>
+                  <label className="block text-foreground font-medium mb-1">Câu 3: Điểm tự tin vận hành (0-10)</label>
                   <input
                     type="number"
                     min="0"
                     max="10"
                     value={surveyAnswers.q3}
                     onChange={(e) => setSurveyAnswers({ ...surveyAnswers, q3: Number(e.target.value) })}
-                    className="w-full border border-slate-300 rounded-lg p-2"
+                    className="w-full border border-border rounded-lg p-2"
                   />
                 </div>
 
-                <button type="submit" className="w-full py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700">
+                <button type="submit" className="w-full py-2 bg-brand text-white rounded-lg font-semibold hover:bg-brand-hover">
                   Tính điểm & Kiểm tra
                 </button>
 
@@ -360,17 +360,17 @@ export default function LmsContentCompliancePage() {
 
       {/* TAB 3: COMPLIANCE SURVEY */}
       {activeTab === 'compliance' && (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-          <h2 className="text-lg font-bold text-slate-800 mb-4">🛡️ Khảo sát Tuân thủ Quy định & An toàn (UC_LMS_057)</h2>
+        <div className="rounded-xl border border-border bg-surface shadow-sm p-5">
+          <h2 className="text-lg font-bold text-foreground mb-4">🛡️ Khảo sát Tuân thủ Quy định & An toàn (UC_LMS_057)</h2>
           <div className="space-y-4">
             {complianceSurveys.map((cs) => (
-              <div key={cs.id} className="p-4 rounded-xl border border-slate-200 bg-slate-50 flex justify-between items-center">
+              <div key={cs.id} className="p-4 rounded-xl border border-border bg-slate-50 flex justify-between items-center">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 text-xs font-bold rounded bg-slate-200 text-slate-800">{cs.code}</span>
+                    <span className="px-2 py-0.5 text-xs font-bold rounded bg-slate-200 text-foreground">{cs.code}</span>
                     <h3 className="font-bold text-slate-900">{cs.title}</h3>
                   </div>
-                  <p className="text-xs text-slate-500 mt-1">Phạm vi: {cs.department} • Bắt buộc: {cs.isMandatory ? 'Có' : 'Không'}</p>
+                  <p className="text-xs text-muted-foreground mt-1">Phạm vi: {cs.department} • Bắt buộc: {cs.isMandatory ? 'Có' : 'Không'}</p>
                 </div>
                 <button
                   onClick={() => handleToggleSignCompliance(cs.id)}
@@ -390,14 +390,14 @@ export default function LmsContentCompliancePage() {
       {activeTab === 'gate' && (
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-              <h2 className="text-lg font-bold text-slate-800 mb-4">🚪 Trạng thái Cổng Đào tạo Trước Ca (UC_LMS_059)</h2>
+            <div className="lg:col-span-2 rounded-xl border border-border bg-surface shadow-sm p-5">
+              <h2 className="text-lg font-bold text-foreground mb-4">🚪 Trạng thái Cổng Đào tạo Trước Ca (UC_LMS_059)</h2>
               <div className="space-y-3">
                 {shiftGates.map((g) => (
-                  <div key={g.id} className="p-4 rounded-lg border border-slate-200 bg-slate-50 flex justify-between items-center">
+                  <div key={g.id} className="p-4 rounded-lg border border-border bg-slate-50 flex justify-between items-center">
                     <div>
                       <h3 className="font-bold text-slate-900">{g.employee}</h3>
-                      <p className="text-xs text-slate-500 mt-1">
+                      <p className="text-xs text-muted-foreground mt-1">
                         Ca: {g.shift} ({g.shiftDate}) • Khóa: {g.course}
                       </p>
                     </div>
@@ -415,16 +415,16 @@ export default function LmsContentCompliancePage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-              <h2 className="text-lg font-bold text-slate-800 mb-4">⚡ Đánh giá Cổng Vào Ca</h2>
+            <div className="rounded-xl border border-border bg-surface shadow-sm p-5">
+              <h2 className="text-lg font-bold text-foreground mb-4">⚡ Đánh giá Cổng Vào Ca</h2>
               <form onSubmit={handleEvaluateGate} className="space-y-4 text-sm">
                 <div>
-                  <label className="block text-slate-700 font-medium mb-1">Nhân viên:</label>
-                  <input type="text" value={testGate.employeeName} readOnly className="w-full border border-slate-200 bg-slate-100 rounded-lg p-2" />
+                  <label className="block text-foreground font-medium mb-1">Nhân viên:</label>
+                  <input type="text" value={testGate.employeeName} readOnly className="w-full border border-border bg-slate-100 rounded-lg p-2" />
                 </div>
                 <div>
-                  <label className="block text-slate-700 font-medium mb-1">Ca làm việc:</label>
-                  <input type="text" value={testGate.shiftName} readOnly className="w-full border border-slate-200 bg-slate-100 rounded-lg p-2" />
+                  <label className="block text-foreground font-medium mb-1">Ca làm việc:</label>
+                  <input type="text" value={testGate.shiftName} readOnly className="w-full border border-border bg-slate-100 rounded-lg p-2" />
                 </div>
                 <div className="flex items-center gap-2 pt-2">
                   <input
@@ -434,7 +434,7 @@ export default function LmsContentCompliancePage() {
                     onChange={(e) => setTestGate({ ...testGate, isMandatoryCompleted: e.target.checked })}
                     className="w-4 h-4 text-blue-600 rounded"
                   />
-                  <label htmlFor="chkCompleted" className="text-slate-800 font-medium">
+                  <label htmlFor="chkCompleted" className="text-foreground font-medium">
                     Đã hoàn thành khóa học bắt buộc trước ca
                   </label>
                 </div>
