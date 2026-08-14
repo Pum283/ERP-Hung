@@ -29,6 +29,7 @@ public static partial class DbSeeder
     private static readonly Guid DeptLegal = Guid.Parse("55555555-5555-5555-5555-555555555512");
     private static readonly Guid DeptWh = Guid.Parse("55555555-5555-5555-5555-555555555513");
     private static readonly Guid DeptSalesHcm = Guid.Parse("55555555-5555-5555-5555-555555555514");
+    private static readonly Guid DeptEcom = Guid.Parse("55555555-5555-5555-5555-555555555515");
 
     private static Guid U(int n) => Guid.Parse($"aaaaaaaa-aaaa-aaaa-aaaa-{n:D12}");
     private static Guid E(int n) => Guid.Parse($"bbbbbbbb-bbbb-bbbb-bbbb-{n:D12}");
@@ -53,6 +54,7 @@ public static partial class DbSeeder
             (DeptLegal, "LEGAL", "Pháp chế", OrgHq, 7),
             (DeptWh, "WH", "Kho vận", OrgHcm, 8),
             (DeptSalesHcm, "SALES_HCM", "Kinh doanh HCM", OrgHcm, 9),
+            (DeptEcom, "ECOM", "Thương mại điện tử (Ecom)", OrgHq, 10),
         };
         foreach (var d in extraDepts)
         {
@@ -113,11 +115,16 @@ public static partial class DbSeeder
             ("SALES", "Nhân viên Kinh doanh", "STAFF", 33),
             ("OPS", "Nhân viên Vận hành", "STAFF", 34),
             ("MKT", "Nhân viên Marketing", "STAFF", 35),
+            ("EDITOR", "Editor / Biên tập nội dung", "STAFF", 39),
+            ("ECOM_MGR", "Trưởng phòng Ecom", "MANAGER", 18),
+            ("ECOM", "Nhân viên Ecom", "STAFF", 40),
             ("LEGAL", "Chuyên viên Pháp chế", "STAFF", 36),
             ("WH", "Nhân viên Kho", "STAFF", 37),
             ("ASSIST", "Trợ lý", "STAFF", 38),
+            ("DIR", "Giám đốc", "DIRECTOR", 0),
             ("INTERN_DEV", "Thực tập Dev", "INTERN", 40),
             ("INTERN_HR", "Thực tập HR", "INTERN", 41),
+            ("INTERN_IT", "Thực tập sinh CNTT", "INTERN", 42),
         };
         foreach (var t in titleDefs)
         {
@@ -233,123 +240,51 @@ public static partial class DbSeeder
     }
 
     /// <summary>
-    /// Người mẫu: (user#, emp#, username, name, email, phone, dept, jl, title, type, gender, hire, role, managerUser#, extraRoles[])
+    /// Roster công ty: mã NV = tên gọi + viết tắt họ/đệm (vd. Nguyễn Đình Mạnh Hùng → HungNDM).
+    /// (user#, emp#, username=mãNV, name, email, phone, dept, jl, title, type, gender, hire, role, managerUser#, extraRoles[])
     /// </summary>
     private static List<(int Un, int En, string User, string Name, string Email, string Phone,
         Guid Dept, string Jl, string Title, string Type, string Gender, DateOnly Hire, Guid Role, int? MgrUn, Guid[] ExtraRoles)>
         BuildCompanyRoster()
     {
+        // Username / EmployeeCode dùng cùng mã viết tắt (HungNDM).
         return
         [
-            // —— Ban giám đốc ——
-            (1, 1, "ceo", "Nguyễn Văn Quang", "quang.nguyen@demo.local", "0902000001",
-                DeptBod, "DIRECTOR", "CEO", "FT", "Male", new DateOnly(2015, 3, 1), RoleExecutive, null, [RoleApprover]),
-            (2, 2, "dceo", "Trần Minh Châu", "chau.tran@demo.local", "0902000002",
-                DeptBod, "DEPUTY", "DCEO", "FT", "Female", new DateOnly(2017, 6, 1), RoleExecutive, 1, [RoleApprover]),
-            (3, 3, "cfo", "Lê Hoàng Phúc", "phuc.le@demo.local", "0902000003",
-                DeptFinance, "DEPUTY", "CFO", "FT", "Male", new DateOnly(2018, 1, 10), RoleFinManager, 1, [RoleApprover, RoleExecutive]),
-            (4, 4, "chro", "Phạm Thị Lan Anh", "lananh.pham@demo.local", "0902000004",
-                DeptHr, "DEPUTY", "CHRO", "FT", "Female", new DateOnly(2018, 4, 15), RoleHrManager, 1, [RoleApprover, RoleExecutive]),
-            (5, 5, "cto", "Hoàng Đức Khoa", "khoa.hoang@demo.local", "0902000005",
-                DeptIt, "DEPUTY", "CTO", "FT", "Male", new DateOnly(2018, 9, 1), RoleItManager, 1, [RoleApprover, RoleExecutive]),
-            (6, 6, "assist.ceo", "Ngô Thu Hà", "ha.ngo@demo.local", "0902000006",
-                DeptBod, "STAFF", "ASSIST", "FT", "Female", new DateOnly(2020, 2, 1), RoleStaff, 1, []),
-
-            // —— HR ——
-            (101, 101, "hr.manager", "Trần Thị Hương", "huong.tran@demo.local", "0901000002",
-                DeptHr, "MANAGER", "HR_MGR", "FT", "Female", new DateOnly(2019, 3, 1), RoleHrManager, 4, [RoleDeptManager, RoleApprover]),
-            (102, 102, "hr.lead", "Võ Thanh Tùng", "tung.vo@demo.local", "0902000102",
-                DeptHr, "LEAD", "HR_LEAD", "FT", "Male", new DateOnly(2020, 5, 12), RoleDeptManager, 101, [RoleApprover]),
-            (103, 103, "hr.spec1", "Lê Minh Anh", "anh.le@demo.local", "0901000003",
-                DeptHr, "STAFF", "HR_SPEC", "FT", "Female", new DateOnly(2021, 6, 10), RoleStaff, 101, []),
-            (104, 104, "hr.spec2", "Phạm Quốc Bảo", "bao.pham@demo.local", "0901000004",
-                DeptHr, "STAFF", "HR_SPEC", "PROBATION", "Male", new DateOnly(2025, 11, 1), RoleStaff, 101, []),
-            (105, 105, "hr.spec3", "Đinh Thị Ngọc", "ngoc.dinh@demo.local", "0902000105",
-                DeptHr, "STAFF", "HR_SPEC", "FT", "Female", new DateOnly(2022, 8, 20), RoleStaff, 102, []),
-            (106, 106, "hr.intern", "Nguyễn Hà My", "my.nguyen@demo.local", "0902000106",
-                DeptHr, "INTERN", "INTERN_HR", "INTERN", "Female", new DateOnly(2026, 2, 1), RoleIntern, 102, []),
+            // —— Ban giám đốc / Tài chính ——
+            (1, 1, "SangTQ", "Trần Quang Sang", "sangtq@demo.local", "0903000001",
+                DeptBod, "DIRECTOR", "DIR", "FT", "Male", new DateOnly(2018, 1, 15), RoleExecutive, null, [RoleApprover]),
+            (2, 2, "PhuongHTK", "Huỳnh Thị Kim Phương", "phuonghtk@demo.local", "0903000002",
+                DeptFinance, "STAFF", "ACC", "FT", "Female", new DateOnly(2019, 4, 1), RoleAccountant, 1, []),
 
             // —— IT ——
-            (201, 201, "it.manager", "Hoàng Đức Minh", "minh.hoang@demo.local", "0901000005",
-                DeptIt, "MANAGER", "IT_MGR", "FT", "Male", new DateOnly(2019, 8, 20), RoleItManager, 5, [RoleDeptManager, RoleApprover]),
-            (202, 202, "dev.lead", "Cao Xuân Trường", "truong.cao@demo.local", "0902000202",
-                DeptIt, "LEAD", "DEV_LEAD", "FT", "Male", new DateOnly(2020, 1, 15), RoleDeptManager, 201, [RoleApprover]),
-            (203, 203, "dev.lan", "Ngô Thị Lan", "lan.ngo@demo.local", "0901000006",
-                DeptIt, "STAFF", "DEV", "FT", "Female", new DateOnly(2022, 2, 14), RoleStaff, 202, []),
-            (204, 204, "dev.tuan", "Đỗ Văn Tuấn", "tuan.do@demo.local", "0901000007",
-                DeptIt, "STAFF", "DEV", "FT", "Male", new DateOnly(2023, 5, 2), RoleStaff, 202, []),
-            (205, 205, "dev.hung", "Vũ Quang Hùng", "hung.vu@demo.local", "0901000008",
-                DeptIt, "STAFF", "DEV", "INTERN", "Male", new DateOnly(2026, 1, 6), RoleIntern, 202, []),
-            (206, 206, "dev.linh", "Bùi Khánh Linh", "linh.bui@demo.local", "0902000206",
-                DeptIt, "STAFF", "DEV", "FT", "Female", new DateOnly(2024, 3, 1), RoleStaff, 202, []),
-            (207, 207, "dev.phong", "Trần Nhật Phong", "phong.tran@demo.local", "0902000207",
-                DeptIt, "STAFF", "DEV", "FT", "Male", new DateOnly(2021, 11, 8), RoleStaff, 201, []),
-            (208, 208, "it.intern", "Lý Minh Đức", "duc.ly@demo.local", "0902000208",
-                DeptIt, "INTERN", "INTERN_DEV", "INTERN", "Male", new DateOnly(2026, 3, 1), RoleIntern, 202, []),
-
-            // —— Sales HQ ——
-            (301, 301, "sales.manager", "Bùi Thanh Hà", "ha.bui@demo.local", "0901000009",
-                DeptSales, "MANAGER", "SALES_MGR", "FT", "Female", new DateOnly(2020, 4, 12), RoleSalesManager, 2, [RoleDeptManager, RoleApprover]),
-            (302, 302, "sales.lead", "Nguyễn Khắc Việt", "viet.nguyen@demo.local", "0902000302",
-                DeptSales, "LEAD", "SALES_LEAD", "FT", "Male", new DateOnly(2021, 2, 1), RoleDeptManager, 301, [RoleApprover]),
-            (303, 303, "sales.nam", "Nguyễn Thành Nam", "nam.nguyen@demo.local", "0901000010",
-                DeptSales, "STAFF", "SALES", "FT", "Male", new DateOnly(2022, 9, 1), RoleStaff, 302, []),
-            (304, 304, "sales.mai", "Đặng Thu Mai", "mai.dang@demo.local", "0901000011",
-                DeptSales, "STAFF", "SALES", "FT", "Female", new DateOnly(2024, 1, 15), RoleStaff, 302, []),
-            (305, 305, "sales.hue", "Phan Thị Huệ", "hue.phan@demo.local", "0902000305",
-                DeptSales, "STAFF", "SALES", "FT", "Female", new DateOnly(2023, 6, 1), RoleStaff, 301, []),
-            (306, 306, "sales.dat", "Lương Quốc Đạt", "dat.luong@demo.local", "0902000306",
-                DeptSales, "STAFF", "SALES", "PROBATION", "Male", new DateOnly(2025, 12, 1), RoleStaff, 302, []),
-
-            // —— Finance ——
-            (401, 401, "fin.manager", "Đỗ Thị Kim Ngân", "ngan.do@demo.local", "0902000401",
-                DeptFinance, "MANAGER", "FIN_MGR", "FT", "Female", new DateOnly(2019, 7, 1), RoleFinManager, 3, [RoleDeptManager, RoleApprover]),
-            (402, 402, "fin.acc1", "Lý Thị Kim", "kim.ly@demo.local", "0901000012",
-                DeptFinance, "STAFF", "ACC", "FT", "Female", new DateOnly(2021, 1, 4), RoleAccountant, 401, []),
-            (403, 403, "fin.acc2", "Trịnh Văn Khoa", "khoa.trinh@demo.local", "0901000013",
-                DeptFinance, "STAFF", "ACC", "CONTRACT", "Male", new DateOnly(2024, 7, 1), RoleAccountant, 401, []),
-            (404, 404, "fin.acc3", "Hoàng Mỹ Dung", "dung.hoang@demo.local", "0902000404",
-                DeptFinance, "STAFF", "ACC", "FT", "Female", new DateOnly(2022, 4, 18), RoleAccountant, 401, []),
+            (3, 3, "LuongTND", "Trần Nguyễn Đức Lương", "luongtnd@demo.local", "0903000003",
+                DeptIt, "MANAGER", "IT_MGR", "FT", "Male", new DateOnly(2019, 8, 1), RoleItManager, 1, [RoleDeptManager, RoleApprover]),
+            (4, 4, "HungNDM", "Nguyễn Đình Mạnh Hùng", "hungndm@demo.local", "0903000004",
+                DeptIt, "STAFF", "DEV", "FT", "Male", new DateOnly(2021, 3, 1), RoleStaff, 3, []),
+            (5, 5, "HungDNB", "Đinh Nguyễn Bảo Hưng", "hungdnb@demo.local", "0903000005",
+                DeptIt, "STAFF", "DEV", "FT", "Male", new DateOnly(2022, 5, 10), RoleStaff, 3, []),
+            (6, 6, "HuyTQ", "Trần Quang Huy", "huytq@demo.local", "0903000006",
+                DeptIt, "STAFF", "DEV", "FT", "Male", new DateOnly(2023, 2, 20), RoleStaff, 3, []),
+            (7, 7, "DaiLT", "Lê Tấn Đại", "dailt@demo.local", "0903000007",
+                DeptIt, "INTERN", "INTERN_IT", "INTERN", "Male", new DateOnly(2026, 1, 6), RoleIntern, 3, []),
 
             // —— Marketing ——
-            (501, 501, "mkt.manager", "Tạ Hoàng Yến", "yen.ta@demo.local", "0902000501",
-                DeptMkt, "MANAGER", "MKT_MGR", "FT", "Female", new DateOnly(2020, 9, 1), RoleDeptManager, 2, [RoleApprover]),
-            (502, 502, "mkt.nv1", "Chu Văn Sơn", "son.chu@demo.local", "0902000502",
-                DeptMkt, "STAFF", "MKT", "FT", "Male", new DateOnly(2022, 5, 1), RoleStaff, 501, []),
-            (503, 503, "mkt.nv2", "Đặng Thảo Vy", "vy.dang@demo.local", "0902000503",
-                DeptMkt, "STAFF", "MKT", "FT", "Female", new DateOnly(2023, 8, 15), RoleStaff, 501, []),
+            (8, 8, "TrangNTT", "Nguyễn Thị Thùy Trang", "trangntt@demo.local", "0903000008",
+                DeptMkt, "MANAGER", "MKT_MGR", "FT", "Female", new DateOnly(2020, 6, 1), RoleDeptManager, 1, [RoleApprover]),
+            (9, 9, "HungPT", "Phạm Thành Hưng", "hungpt@demo.local", "0903000009",
+                DeptMkt, "STAFF", "EDITOR", "FT", "Male", new DateOnly(2022, 9, 15), RoleStaff, 8, []),
 
-            // —— Legal ——
-            (601, 601, "legal.manager", "Mai Quốc Việt", "viet.mai@demo.local", "0902000601",
-                DeptLegal, "MANAGER", "LEGAL_MGR", "FT", "Male", new DateOnly(2019, 12, 1), RoleDeptManager, 2, [RoleApprover]),
-            (602, 602, "legal.nv1", "Trương Ánh Nguyệt", "nguyet.truong@demo.local", "0902000602",
-                DeptLegal, "STAFF", "LEGAL", "FT", "Female", new DateOnly(2021, 3, 22), RoleStaff, 601, []),
-
-            // —— Ops HCM ——
-            (701, 701, "ops.lead", "Phan Hải Đăng", "dang.phan@demo.local", "0901000014",
-                DeptOps, "MANAGER", "OPS_MGR", "FT", "Male", new DateOnly(2020, 10, 8), RoleDeptManager, 2, [RoleApprover]),
-            (702, 702, "ops.nv1", "Mai Thị Oanh", "oanh.mai@demo.local", "0901000015",
-                DeptOps, "STAFF", "OPS", "FT", "Female", new DateOnly(2023, 3, 20), RoleStaff, 701, []),
-            (703, 703, "ops.nv2", "Huỳnh Tấn Tài", "tai.huynh@demo.local", "0902000703",
-                DeptOps, "STAFF", "OPS", "FT", "Male", new DateOnly(2022, 7, 1), RoleStaff, 701, []),
-            (704, 704, "ops.nv3", "Lâm Bảo Châu", "chau.lam@demo.local", "0902000704",
-                DeptOps, "STAFF", "OPS", "PROBATION", "Female", new DateOnly(2025, 10, 1), RoleStaff, 701, []),
-
-            // —— Warehouse HCM ——
-            (801, 801, "wh.manager", "Nguyễn Văn Kho", "kho.nguyen@demo.local", "0902000801",
-                DeptWh, "MANAGER", "WH_MGR", "FT", "Male", new DateOnly(2021, 1, 5), RoleDeptManager, 701, [RoleApprover]),
-            (802, 802, "wh.nv1", "Trần Quốc Bảo", "bao.tran@demo.local", "0902000802",
-                DeptWh, "STAFF", "WH", "FT", "Male", new DateOnly(2022, 11, 1), RoleStaff, 801, []),
-            (803, 803, "wh.nv2", "Lê Thị Hạnh", "hanh.le@demo.local", "0902000803",
-                DeptWh, "STAFF", "WH", "FT", "Female", new DateOnly(2024, 2, 12), RoleStaff, 801, []),
-
-            // —— Sales HCM ——
-            (901, 901, "sales.hcm.mgr", "Võ Thị Kim Chi", "chi.vo@demo.local", "0902000901",
-                DeptSalesHcm, "MANAGER", "SALES_MGR", "FT", "Female", new DateOnly(2021, 4, 1), RoleSalesManager, 301, [RoleDeptManager, RoleApprover]),
-            (902, 902, "sales.hcm1", "Phạm Đức Anh", "anh.pham@demo.local", "0902000902",
-                DeptSalesHcm, "STAFF", "SALES", "FT", "Male", new DateOnly(2023, 1, 9), RoleStaff, 901, []),
-            (903, 903, "sales.hcm2", "Ngô Bảo Trân", "tran.ngo@demo.local", "0902000903",
-                DeptSalesHcm, "STAFF", "SALES", "FT", "Female", new DateOnly(2024, 6, 1), RoleStaff, 901, []),
+            // —— Ecom ——
+            (10, 10, "TuyetHTA", "Hoàng Thị Ánh Tuyết", "tuyethta@demo.local", "0903000010",
+                DeptEcom, "MANAGER", "ECOM_MGR", "FT", "Female", new DateOnly(2020, 11, 1), RoleDeptManager, 1, [RoleApprover]),
+            (11, 11, "HuongLTT", "Lê Thị Thanh Hương", "huongltt@demo.local", "0903000011",
+                DeptEcom, "STAFF", "ECOM", "FT", "Female", new DateOnly(2022, 1, 10), RoleStaff, 10, []),
+            (12, 12, "HaNTC", "Nguyễn Thị Cẩm Hà", "hantc@demo.local", "0903000012",
+                DeptEcom, "STAFF", "ECOM", "FT", "Female", new DateOnly(2023, 4, 5), RoleStaff, 10, []),
+            (13, 13, "TranVTH", "Võ Thị Hà Tràn", "tranvth@demo.local", "0903000013",
+                DeptEcom, "STAFF", "ECOM", "FT", "Female", new DateOnly(2023, 8, 18), RoleStaff, 10, []),
+            (14, 14, "HanhTTH", "Trần Thị Hồng Hạnh", "hanhtth@demo.local", "0903000014",
+                DeptEcom, "STAFF", "ECOM", "FT", "Female", new DateOnly(2024, 2, 1), RoleStaff, 10, []),
         ];
     }
 }

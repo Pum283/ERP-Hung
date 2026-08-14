@@ -186,6 +186,38 @@ public static class DependencyInjection
         services.AddScoped<IPurPriceHistoryAlertPrConsolidateRfqService, PurPriceHistoryAlertPrConsolidateRfqService>();
         services.AddScoped<IPurQuotationCompareAwardPoConfirmService, PurQuotationCompareAwardPoConfirmService>();
         services.AddScoped<IPurRejectReturnDeliveryProtocolDiscrepancyService, PurRejectReturnDeliveryProtocolDiscrepancyService>();
+        services.AddScoped<IPurAdvanceBlanketContractExpirationService, PurAdvanceBlanketContractExpirationService>();
+        services.AddScoped<IPurOtdReportRfqSavingsService, PurOtdReportRfqSavingsService>();
+        services.AddScoped<IInvProductImageBarcodeQrService, InvProductImageBarcodeQrService>();
+        services.AddScoped<IInvLocationCustomerReturnLabelTechnicalDispatchService, InvLocationCustomerReturnLabelTechnicalDispatchService>();
+        services.AddScoped<IInvProjectTransferSerialTrackingService, InvProjectTransferSerialTrackingService>();
+        services.AddScoped<IInvLotTraceStocktakeLockInternalRequestService, InvLotTraceStocktakeLockInternalRequestService>();
+        services.AddScoped<IInvMaterialRequisitionApprovalSlowMovingService, InvMaterialRequisitionApprovalSlowMovingService>();
+        services.AddScoped<IInvDispatchPurposeReportService, InvDispatchPurposeReportService>();
+        services.AddScoped<ILogFleetPricingZoneService, LogFleetPricingZoneService>();
+        services.AddScoped<ILogShiftTripPodRescheduleService, LogShiftTripPodRescheduleService>();
+        services.AddScoped<ILogRealtimeGpsInternalTransferService, LogRealtimeGpsInternalTransferService>();
+        services.AddScoped<ILogDriverProductivityCostService, LogDriverProductivityCostService>();
+        services.AddScoped<IMfgRoutingStageShiftCapacityService, MfgRoutingStageShiftCapacityService>();
+        services.AddScoped<IMfgScrapBomDemandMrpService, MfgScrapBomDemandMrpService>();
+        services.AddScoped<IMfgScheduleProgressReworkCostService, MfgScheduleProgressReworkCostService>();
+        services.AddScoped<IMfgCostVarianceQcInspectionService, MfgCostVarianceQcInspectionService>();
+        services.AddScoped<IMfgQuarantineYieldBatchParamService, MfgQuarantineYieldBatchParamService>();
+        services.AddScoped<IMfgPackBlendOeeService, MfgPackBlendOeeService>();
+        services.AddScoped<IFsmServicePricingService, FsmServicePricingService>();
+        services.AddScoped<IFsmSkillTerritoryWarrantyContractService, FsmSkillTerritoryWarrantyContractService>();
+        services.AddScoped<IFsmDispatchChecklistPhotoReturnService, FsmDispatchChecklistPhotoReturnService>();
+        services.AddScoped<IFsmRepairFeedbackReopenFinanceService, FsmRepairFeedbackReopenFinanceService>();
+        services.AddScoped<IFsmEquipmentMaintenanceService, FsmEquipmentMaintenanceService>();
+        services.AddScoped<IFsmOfflineExpenseFirstFixService, FsmOfflineExpenseFirstFixService>();
+        services.AddScoped<IFsmWarrantyClaimReportService, FsmWarrantyClaimReportService>();
+        services.AddScoped<IPjmChecklistGanttPlanChangeService, PjmChecklistGanttPlanChangeService>();
+        services.AddScoped<IPjmTimesheetBudgetChecklistService, PjmTimesheetBudgetChecklistService>();
+        services.AddScoped<IPjmHandoverChangeRequestService, PjmHandoverChangeRequestService>();
+        services.AddScoped<IPjmWarrantyProductivityService, PjmWarrantyProductivityService>();
+        services.AddScoped<IFinCurrencyCashFlowCategoryService, FinCurrencyCashFlowCategoryService>();
+        services.AddScoped<IFinRecurringVoucherAdvanceVaultService, FinRecurringVoucherAdvanceVaultService>();
+        services.AddScoped<IFinStatementOffsetDunningBadDebtService, FinStatementOffsetDunningBadDebtService>();
         return services;
     }
 

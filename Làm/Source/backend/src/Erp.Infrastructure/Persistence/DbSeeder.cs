@@ -78,7 +78,7 @@ public static partial class DbSeeder
         await SeedPersonnelAsync(db, ct);
         await SeedLeaveBalancesAsync(db, ct);
         await db.SaveChangesAsync(ct);
-        log.LogInformation("Seed sync OK (full company roster · perms/menus/leave).");
+        log.LogInformation("Seed sync OK (roster Pum · mã NV dạng HungNDM · perms/menus/leave).");
     }
 
     private static async Task EnsureAllLicenseModulesAsync(AppDbContext db, CancellationToken ct)

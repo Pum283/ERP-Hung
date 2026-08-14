@@ -41,8 +41,11 @@ public sealed class AuthService : IAuthService
     public async Task<LoginResponse> LoginAsync(LoginRequest request, string? ip, string? ua, CancellationToken ct = default)
     {
         var login = request.Username.Trim();
+        var loginLower = login.ToLowerInvariant();
         var user = await _db.Users.FirstOrDefaultAsync(
-            u => !u.IsDeleted && (u.Username == login || u.Email == login), ct);
+            u => !u.IsDeleted && (
+                u.Username.ToLower() == loginLower
+                || (u.Email != null && u.Email.ToLower() == loginLower)), ct);
 
         async Task Fail(string reason, Guid? tenantId = null, Guid? userId = null)
         {
